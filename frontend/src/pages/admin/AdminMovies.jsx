@@ -71,15 +71,15 @@ const AdminMovies = () => {
 
   return (
     <div className="animate-fade-in space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-white">Manage Movies</h2>
-        <button onClick={handleAddNew} className="px-6 py-2.5 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-500 transition-all">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white">Manage Movies</h2>
+        <button onClick={handleAddNew} className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-500 transition-all">
           + Add Movie
         </button>
       </div>
 
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-gray-300">
+      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-x-auto w-full">
+        <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
           <thead className="bg-purple-900/20 text-gray-400 font-medium">
             <tr>
               <th className="px-6 py-4">Title</th>
@@ -145,7 +145,7 @@ const AdminMovies = () => {
                 <label className="text-sm font-medium text-gray-400">Description</label>
                 <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors" rows="3" placeholder="Movie synopsis..."></textarea>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-400">Duration (min)</label>
                   <input required type="number" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors" placeholder="120" />
@@ -155,7 +155,7 @@ const AdminMovies = () => {
                   <input type="text" value={formData.genre} onChange={e => setFormData({...formData, genre: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors" placeholder="Sci-Fi" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-400">Release Date</label>
                   <input type="date" value={formData.release_date} onChange={e => setFormData({...formData, release_date: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors [color-scheme:dark]" />
@@ -168,15 +168,15 @@ const AdminMovies = () => {
                   )}
                 </div>
               </div>
-              <div className="flex items-center justify-between pt-2 pb-2">
-                <div className="space-y-1 w-1/2 pr-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 pb-2 gap-4">
+                <div className="space-y-1 w-full sm:w-1/2 sm:pr-2">
                   <label className="text-sm font-medium text-gray-400">Release Status</label>
                   <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors">
                     <option value="Now Showing">Now Showing</option>
                     <option value="Coming Soon">Coming Soon</option>
                   </select>
                 </div>
-                <div className="flex items-center gap-3 w-1/2 pl-2">
+                <div className="flex items-center gap-3 w-full sm:w-1/2 sm:pl-2">
                   <input type="checkbox" id="isActive" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} className="w-4 h-4 text-purple-600 bg-[#0d0914] border-purple-900/50 rounded focus:ring-purple-500 focus:ring-2 mt-6" />
                   <label htmlFor="isActive" className="text-sm font-medium text-gray-300 cursor-pointer mt-6">
                     Active (Visible publicly)

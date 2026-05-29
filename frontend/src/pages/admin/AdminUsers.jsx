@@ -22,11 +22,11 @@ const AdminUsers = () => {
   return (
     <div className="animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-white">Registered Users</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-white">Registered Users</h2>
       </div>
 
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-hidden shadow-lg">
-        <table className="w-full text-left text-sm text-gray-300">
+      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-x-auto w-full shadow-lg">
+        <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
           <thead className="bg-purple-900/20 text-gray-400 font-medium">
             <tr>
               <th className="px-6 py-4">ID</th>

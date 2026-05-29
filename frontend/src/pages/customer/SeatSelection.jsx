@@ -122,43 +122,45 @@ const SeatSelection = () => {
                         </div>
 
                         {/* Seat Grid */}
-                        <div className="flex flex-col gap-4 items-center">
-                            {sortedRows.map(row => (
-                                <div key={row} className="flex items-center gap-4">
-                                    <span className="text-gray-500 font-bold w-4 text-center">{row}</span>
-                                    <div className="flex gap-2">
-                                        {rowMap[row].map(seat => {
-                                            const isBooked = bookedTickets.some(t => t.seat.toString() === seat.id.toString());
-                                            const isSelected = selectedSeats.some(s => s.id === seat.id);
-                                            const isVIP = seat.tier === 'Gold';
+                        <div className="overflow-x-auto w-full pb-6 custom-scrollbar">
+                            <div className="flex flex-col gap-4 items-center min-w-max mx-auto px-4">
+                                {sortedRows.map(row => (
+                                    <div key={row} className="flex items-center gap-4">
+                                        <span className="text-gray-500 font-bold w-4 text-center">{row}</span>
+                                        <div className="flex gap-2">
+                                            {rowMap[row].map(seat => {
+                                                const isBooked = bookedTickets.some(t => t.seat.toString() === seat.id.toString());
+                                                const isSelected = selectedSeats.some(s => s.id === seat.id);
+                                                const isVIP = seat.tier === 'Gold';
 
-                                            let seatClass = "w-8 h-8 rounded-t-lg rounded-b-sm cursor-pointer transition-all flex items-center justify-center text-[10px] font-bold ";
-                                            
-                                            if (isBooked) {
-                                                seatClass += "bg-gray-800 text-gray-600 cursor-not-allowed";
-                                            } else if (isSelected) {
-                                                seatClass += "bg-green-500 text-white shadow-[0_0_10px_rgba(34,197,94,0.5)] scale-110";
-                                            } else if (isVIP) {
-                                                seatClass += "bg-[#2a1d3a] border border-purple-500/50 text-purple-400 hover:bg-purple-600/30";
-                                            } else {
-                                                seatClass += "bg-[#2a1d3a] border border-gray-600 text-gray-400 hover:bg-gray-700";
-                                            }
+                                                let seatClass = "w-8 h-8 rounded-t-lg rounded-b-sm cursor-pointer transition-all flex items-center justify-center text-[10px] font-bold ";
+                                                
+                                                if (isBooked) {
+                                                    seatClass += "bg-gray-800 text-gray-600 cursor-not-allowed";
+                                                } else if (isSelected) {
+                                                    seatClass += "bg-green-500 text-white shadow-[0_0_10px_rgba(34,197,94,0.5)] scale-110";
+                                                } else if (isVIP) {
+                                                    seatClass += "bg-[#2a1d3a] border border-purple-500/50 text-purple-400 hover:bg-purple-600/30";
+                                                } else {
+                                                    seatClass += "bg-[#2a1d3a] border border-gray-600 text-gray-400 hover:bg-gray-700";
+                                                }
 
-                                            return (
-                                                <div 
-                                                    key={seat.id} 
-                                                    className={seatClass}
-                                                    onClick={() => handleSeatClick(seat)}
-                                                    title={`${seat.seat_label} - Rs. ${getPrice(seat.tier, showtime.start_time)}`}
-                                                >
-                                                    {seat.seat_label}
-                                                </div>
-                                            );
-                                        })}
+                                                return (
+                                                    <div 
+                                                        key={seat.id} 
+                                                        className={seatClass}
+                                                        onClick={() => handleSeatClick(seat)}
+                                                        title={`${seat.seat_label} - Rs. ${getPrice(seat.tier, showtime.start_time)}`}
+                                                    >
+                                                        {seat.seat_label}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <span className="text-gray-500 font-bold w-4 text-center">{row}</span>
                                     </div>
-                                    <span className="text-gray-500 font-bold w-4 text-center">{row}</span>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
 
                         {/* Legend */}

@@ -87,15 +87,15 @@ const AdminShowtimes = () => {
 
   return (
     <div className="animate-fade-in space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-white">Manage Showtimes</h2>
-        <button onClick={() => setShowModal(true)} className="px-6 py-2.5 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-500 transition-all">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white">Manage Showtimes</h2>
+        <button onClick={() => setShowModal(true)} className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-500 transition-all">
           + Schedule Movie
         </button>
       </div>
 
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-gray-300">
+      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-x-auto w-full">
+        <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
           <thead className="bg-purple-900/20 text-gray-400 font-medium">
             <tr>
               <th className="px-6 py-4">Movie</th>

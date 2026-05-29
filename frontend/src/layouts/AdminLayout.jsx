@@ -1,20 +1,56 @@
-import React, { useState, useContext } from 'react';
-import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const AdminLayout = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Close sidebar on route change on mobile
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
+
   return (
-    <div className="min-h-screen bg-[#0d0914] text-white flex font-sans">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#1a1225] border-r border-purple-900/30 flex flex-col">
-        <Link to="/" className="p-6 flex items-center gap-3 border-b border-purple-900/30 hover:bg-white/5 transition-colors">
+    <div className="min-h-screen bg-[#0d0914] text-white flex flex-col md:flex-row font-sans">
+      {/* Mobile Top Bar */}
+      <div className="md:hidden bg-[#1a1225] border-b border-purple-900/30 p-4 flex items-center justify-between sticky top-0 z-40">
+        <Link to="/admin/dashboard" className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-purple-600"></div>
           <h1 className="text-xl font-bold tracking-wider text-purple-400">HamroCinema</h1>
         </Link>
-        <nav className="flex-1 p-4 flex flex-col gap-2">
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-gray-300 focus:outline-none">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {isSidebarOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* Sidebar Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+
+      {/* Sidebar */}
+      <aside className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#1a1225] border-r border-purple-900/30 flex flex-col transition-transform duration-300 ease-in-out`}>
+        <div className="p-6 flex items-center justify-between border-b border-purple-900/30 md:justify-start">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-purple-600"></div>
+            <h1 className="text-xl font-bold tracking-wider text-purple-400 hidden md:block">HamroCinema</h1>
+          </div>
+          <button className="md:hidden text-gray-400" onClick={() => setIsSidebarOpen(false)}>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        
+        <nav className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
           <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
             Dashboard
           </NavLink>
@@ -31,11 +67,12 @@ const AdminLayout = () => {
             Users
           </NavLink>
         </nav>
-        <div className="p-4 border-t border-purple-900/30 relative">
+        
+        <div className="p-4 border-t border-purple-900/30 relative mt-auto">
           {isProfileOpen && (
             <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#2a1d3a] border border-purple-900/50 rounded-xl overflow-hidden shadow-xl animate-fade-in z-50">
               <button onClick={() => navigate('/forgot-password')} className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                Change / Forgot Password
+                Change Password
               </button>
               <button onClick={logoutUser} className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors border-t border-purple-900/30">
                 Log Out
@@ -51,7 +88,7 @@ const AdminLayout = () => {
               <p className="text-sm font-semibold truncate text-white">{user?.username || 'Admin User'}</p>
               <p className="text-xs text-gray-500 truncate">{user?.role || 'Administrator'}</p>
             </div>
-            <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
             </svg>
           </button>
@@ -59,7 +96,7 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full overflow-x-hidden">
         <Outlet />
       </main>
     </div>

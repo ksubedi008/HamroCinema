@@ -12,7 +12,7 @@ const AdminMovies = () => {
 
   const fetchMovies = () => {
     setLoading(true);
-    axios.get('http://localhost:8000/api/movies/')
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`)
       .then(res => { setMovies(res.data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
   };
@@ -35,8 +35,8 @@ const AdminMovies = () => {
     }
 
     const request = editingMovieId 
-      ? axios.patch(`http://localhost:8000/api/movies/${editingMovieId}/`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
-      : axios.post('http://localhost:8000/api/movies/', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      ? axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/movies/${editingMovieId}/`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      : axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
 
     request
       .then(res => {

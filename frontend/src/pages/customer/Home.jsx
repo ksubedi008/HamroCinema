@@ -10,7 +10,7 @@ const Home = () => {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const res = await axios.get('http://localhost:8000/api/movies/');
+                const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`);
                 // Only show active movies
                 const activeMovies = res.data.filter(m => m.is_active);
                 setNowShowingMovies(activeMovies.filter(m => m.status === 'Now Showing' || !m.status));

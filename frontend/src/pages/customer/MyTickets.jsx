@@ -15,15 +15,15 @@ const MyTickets = () => {
         const fetchBookings = async () => {
             try {
                 // Fetch bookings (backend automatically filters to the logged-in user)
-                const res = await axios.get('http://localhost:8000/api/bookings/');
+                const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`);
                 
                 // Fetch all tickets to map to bookings
                 // A more optimized backend would serialize tickets inside bookings, 
                 // but we can just fetch tickets and filter here for now.
-                const ticketsRes = await axios.get('http://localhost:8000/api/tickets/');
+                const ticketsRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/tickets/`);
                 
                 // Also need showtimes to display details
-                const stRes = await axios.get('http://localhost:8000/api/showtimes/');
+                const stRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`);
 
                 // Combine the data
                 const bookingsWithDetails = res.data.map(b => {

@@ -18,17 +18,17 @@ const SeatSelection = () => {
         const fetchDetails = async () => {
             try {
                 // Fetch showtime details
-                const stRes = await axios.get(`http://localhost:8000/api/showtimes/${id}/`);
+                const stRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/${id}/`);
                 setShowtime(stRes.data);
 
                 // Fetch seats for this screen
-                const seatRes = await axios.get(`http://localhost:8000/api/seats/?screen=${stRes.data.screen}`);
+                const seatRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/seats/?screen=${stRes.data.screen}`);
                 // API might not filter by screen natively if not configured, let's filter manually just in case
                 const screenSeats = seatRes.data.filter(s => s.screen.toString() === stRes.data.screen.toString());
                 setSeats(screenSeats);
 
                 // Fetch existing tickets for this showtime to see what's booked
-                const ticketRes = await axios.get(`http://localhost:8000/api/tickets/?showtime=${id}`);
+                const ticketRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/tickets/?showtime=${id}`);
                 const stTickets = ticketRes.data.filter(t => t.showtime.toString() === id.toString() && t.lock_status !== 'Available');
                 setBookedTickets(stTickets);
 

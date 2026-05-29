@@ -6,7 +6,7 @@ const AdminBookings = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/bookings/')
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`)
       .then(res => { setBookings(res.data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
   }, []);

@@ -15,9 +15,9 @@ const AdminShowtimes = () => {
     setLoading(true);
     try {
       const [showRes, movRes, scrRes] = await Promise.all([
-        axios.get('http://localhost:8000/api/showtimes/'),
-        axios.get('http://localhost:8000/api/movies/'),
-        axios.get('http://localhost:8000/api/screens/')
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`),
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/screens/`)
       ]);
       setShowtimes(showRes.data);
       setMovies(movRes.data);
@@ -56,7 +56,7 @@ const AdminShowtimes = () => {
             const localStart = (new Date(dateObj.getTime() - tzOffset)).toISOString().slice(0, 16);
             const localEnd = (new Date(endDate.getTime() - tzOffset)).toISOString().slice(0, 16);
             
-            return axios.post('http://localhost:8000/api/showtimes/', {
+            return axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`, {
                 movie: formData.movie,
                 screen: formData.screen,
                 start_time: localStart,
@@ -77,7 +77,7 @@ const AdminShowtimes = () => {
   const handleDelete = async (id) => {
     if(window.confirm('Are you sure you want to cancel this showtime?')) {
       try {
-        await axios.delete(`http://localhost:8000/api/showtimes/${id}/`);
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/${id}/`);
         fetchData();
       } catch (err) {
         console.error(err);

@@ -18,8 +18,8 @@ const MovieDetails = () => {
         const fetchDetails = async () => {
             try {
                 const [movRes, showRes] = await Promise.all([
-                    axios.get(`http://localhost:8000/api/movies/${id}/`),
-                    axios.get('http://localhost:8000/api/showtimes/')
+                    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/${id}/`),
+                    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`)
                 ]);
                 setMovie(movRes.data);
                 

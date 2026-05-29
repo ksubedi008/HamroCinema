@@ -10,9 +10,9 @@ const DashboardHome = () => {
     const fetchData = async () => {
       try {
         const [movRes, showRes, bookRes] = await Promise.all([
-          axios.get('http://localhost:8000/api/movies/'),
-          axios.get('http://localhost:8000/api/showtimes/'),
-          axios.get('http://localhost:8000/api/bookings/')
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`),
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`),
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`)
         ]);
         
         const now = new Date();

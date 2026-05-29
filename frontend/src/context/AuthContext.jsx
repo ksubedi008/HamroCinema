@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const loginUser = async (username, password) => {
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/login/', {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login/`, {
                 username,
                 password
             });
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/refresh/', {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh/`, {
                 refresh: authTokens.refresh
             });
             if (response.status === 200) {

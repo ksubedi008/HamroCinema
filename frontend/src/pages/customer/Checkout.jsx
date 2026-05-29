@@ -35,7 +35,7 @@ const Checkout = () => {
         
         try {
             // 1. Create the booking
-            const bookingRes = await axios.post('http://localhost:8000/api/bookings/', {
+            const bookingRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`, {
                 user: user.id,
                 showtime: showtime.id,
                 total_amount: finalPrice,
@@ -47,7 +47,7 @@ const Checkout = () => {
 
             // 2. Create ticket items
             const ticketPromises = selectedSeats.map(seat => 
-                axios.post('http://localhost:8000/api/tickets/', {
+                axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/tickets/`, {
                     booking: bookingId,
                     showtime: showtime.id,
                     seat: seat.id,
@@ -61,7 +61,7 @@ const Checkout = () => {
             const pointsEarned = selectedSeats.length * 10;
             const newPointBalance = (user.loyalty_points || 0) - pointsToUse + pointsEarned;
             
-            await axios.patch(`http://localhost:8000/api/users/${user.id}/`, {
+            await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user.id}/`, {
                 loyalty_points: newPointBalance
             });
             

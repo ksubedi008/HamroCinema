@@ -37,13 +37,28 @@ const AdminShowtimes = () => {
     const selectedMovie = movies.find(m => m.id.toString() === formData.movie.toString());
     if (!selectedMovie) return;
 
+    // Find the actual screen object to get its name (e.g., "Screen 1")
+    const selectedScreen = screens.find(s => s.id.toString() === formData.screen.toString());
+    if (!selectedScreen) return;
+
+    // Define a dictionary mapping screen names to their specific shift schedules
+    const screenSchedules = {
+        "Screen 1": [
+            { name: 'Morning', hours: 6, mins: 45 }, // 06:45 AM
+            { name: 'Day', hours: 12, mins: 15 },    // 12:15 PM
+            { name: 'Night', hours: 19, mins: 45 }   // 07:45 PM
+        ],
+        "Screen 2": [
+            { name: 'Morning', hours: 7, mins: 15 }, // 07:15 AM
+            { name: 'Day', hours: 13, mins: 15 },    // 01:15 PM
+            { name: 'Night', hours: 18, mins: 15 }   // 06:15 PM
+        ]
+    };
+
+    // Use the specific schedule for the selected screen, or fallback to Screen 1
+    const shifts = screenSchedules[selectedScreen.screen_name] || screenSchedules["Screen 1"];
+
     const totalMinutes = selectedMovie.duration + 15;
-    
-    const shifts = [
-        { name: 'Morning', hours: 6, mins: 45 },
-        { name: 'Day', hours: 12, mins: 45 },
-        { name: 'Night', hours: 19, mins: 30 }
-    ];
 
     try {
         const promises = shifts.map(shift => {
@@ -166,8 +181,8 @@ const AdminShowtimes = () => {
                 <label className="text-sm font-medium text-gray-400">Show Date</label>
                 <input required type="date" value={formData.show_date} onChange={e => setFormData({...formData, show_date: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 [color-scheme:dark]" />
                 <p className="text-xs text-gray-500 mt-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-purple-500 inline-block"></span>
-                  Morning (6:45 AM), Day (12:45 PM), and Night (7:30 PM) showtimes will be automatically generated.
+                  <span className="w-2 h-2 rounded-full bg-purple-500 inline-block flex-shrink-0"></span>
+                  Morning, Day, and Night showtimes will be dynamically generated based on the selected screen's schedule.
                 </p>
               </div>
               <div className="pt-4 flex justify-end gap-3">

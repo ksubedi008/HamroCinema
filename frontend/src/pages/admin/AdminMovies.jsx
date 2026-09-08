@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import OpenGraphPreview from '../../components/OpenGraphPreview';
 
 const AdminMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -183,6 +184,15 @@ const AdminMovies = () => {
                   </label>
                 </div>
               </div>
+
+              {/* Real-time Social Share Preview */}
+              <OpenGraphPreview 
+                title={formData.title} 
+                genre={formData.genre} 
+                description={formData.description} 
+                poster={formData.poster} 
+              />
+
               <div className="pt-4 flex justify-end gap-3">
                 <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 rounded-xl border border-gray-700 text-gray-300 hover:bg-gray-800 transition-colors">Cancel</button>
                 <button type="submit" className="px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-500 transition-colors">Save Movie</button>

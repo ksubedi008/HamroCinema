@@ -37,11 +37,13 @@ class ShowtimeSerializer(serializers.ModelSerializer):
         if not movie or not screen or not start_time:
             return data
 
-        # 1. Calculate end_time using the movie's duration
-        end_time = start_time + timedelta(minutes=movie.duration)
+        # 1. Calculate end_time including the movie's duration AND a 30-minute turnaround buffer
+        # The 30 extra minutes account for cleaning the theater and playing trailers for the next show.
+        total_blocked_minutes = movie.duration + 30
+        end_time = start_time + timedelta(minutes=total_blocked_minutes)
         data['end_time'] = end_time
 
-        # 2. Check for overlaps on the same screen
+        # 2. Check for overlaps on the same screen within this newly buffered window
         # Formula for overlap: (Existing Start < New End) AND (Existing End > New Start)
         overlapping_shows = Showtime.objects.filter(
             screen=screen,

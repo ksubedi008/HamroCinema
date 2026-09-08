@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
 const AdminShowtimes = () => {
@@ -7,6 +7,7 @@ const AdminShowtimes = () => {
   const [screens, setScreens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('upcoming');
   const [formData, setFormData] = useState({
     movie: '', screen: '', show_date: ''
   });
@@ -19,7 +20,9 @@ const AdminShowtimes = () => {
         axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`),
         axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/screens/`)
       ]);
-      setShowtimes(showRes.data);
+      // Sort showtimes by start_time descending to keep history organized
+      const sortedShowtimes = showRes.data.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+      setShowtimes(sortedShowtimes);
       setMovies(movRes.data);
       setScreens(scrRes.data);
     } catch (err) {
@@ -29,6 +32,17 @@ const AdminShowtimes = () => {
   };
 
   useEffect(() => { fetchData(); }, []);
+
+  // Filter Data Dynamically
+  const { upcomingShowtimes, historyShowtimes } = useMemo(() => {
+    const now = new Date();
+    return {
+      upcomingShowtimes: showtimes.filter(st => new Date(st.end_time) > now),
+      historyShowtimes: showtimes.filter(st => new Date(st.end_time) <= now)
+    };
+  }, [showtimes]);
+
+  const displayShowtimes = activeTab === 'upcoming' ? upcomingShowtimes : historyShowtimes;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,6 +98,7 @@ const AdminShowtimes = () => {
         setShowModal(false);
         fetchData();
         setFormData({ movie: '', screen: '', show_date: '' });
+        setActiveTab('upcoming'); // Jump to upcoming to see the newly scheduled movies
     } catch (err) {
         console.error("Error scheduling showtimes:", err);
     }
@@ -103,53 +118,93 @@ const AdminShowtimes = () => {
   return (
     <div className="animate-fade-in space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white">Manage Showtimes</h2>
-        <button onClick={() => setShowModal(true)} className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-500 transition-all">
+        <div>
+            <h2 className="text-3xl font-bold text-white tracking-wider">Manage Showtimes</h2>
+            <p className="text-gray-400 mt-1">Schedule and monitor all theater activity.</p>
+        </div>
+        <button onClick={() => setShowModal(true)} className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold tracking-wider hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all transform hover:-translate-y-0.5">
           + Schedule Movie
         </button>
       </div>
 
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-x-auto w-full">
+      {/* Tabbed UI */}
+      <div className="flex items-center gap-4 border-b border-purple-900/30 pb-4">
+        <button 
+          onClick={() => setActiveTab('upcoming')}
+          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'upcoming' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'bg-white/5 text-gray-400 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+        >
+          Upcoming Showtimes ({upcomingShowtimes.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab('history')}
+          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'history' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'bg-white/5 text-gray-400 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+        >
+          History ({historyShowtimes.length})
+        </button>
+      </div>
+
+      {/* Table Container - Fixed Height with Sticky Header */}
+      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl w-full max-h-[600px] overflow-y-auto relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
         <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
-          <thead className="bg-purple-900/20 text-gray-400 font-medium">
+          <thead className="bg-[#241836] text-gray-400 font-semibold uppercase tracking-wider text-xs sticky top-0 z-10 shadow-md">
             <tr>
-              <th className="px-6 py-4">Movie</th>
-              <th className="px-6 py-4">Screen</th>
-              <th className="px-6 py-4">Start Time</th>
-              <th className="px-6 py-4">Shift</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-6 py-5">Movie</th>
+              <th className="px-6 py-5">Screen</th>
+              <th className="px-6 py-5">Start Time</th>
+              <th className="px-6 py-5">Shift</th>
+              <th className="px-6 py-5">Status</th>
+              <th className="px-6 py-5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-purple-900/20">
-            {showtimes.map(st => {
+            {displayShowtimes.map(st => {
               const now = new Date();
               const stStart = new Date(st.start_time);
               const stEnd = new Date(st.end_time);
               
               let statusBadge;
-              if (now > stEnd) statusBadge = <span className="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs border border-gray-500/30">Ended</span>;
-              else if (now >= stStart && now <= stEnd) statusBadge = <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs border border-green-500/30">Playing</span>;
-              else statusBadge = <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs border border-blue-500/30">Upcoming</span>;
+              if (now > stEnd) statusBadge = <span className="bg-gray-500/20 text-gray-400 px-3 py-1 rounded-md text-xs font-bold border border-gray-500/30 uppercase tracking-widest">Ended</span>;
+              else if (now >= stStart && now <= stEnd) statusBadge = <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-md text-xs font-bold border border-green-500/30 uppercase tracking-widest shadow-[0_0_10px_rgba(34,197,94,0.3)]">Playing</span>;
+              else statusBadge = <span className="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-md text-xs font-bold border border-cyan-500/30 uppercase tracking-widest shadow-[0_0_10px_rgba(34,211,238,0.2)]">Upcoming</span>;
 
               return (
               <tr key={st.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4 font-bold text-white">{st.movie_title || `Movie ID: ${st.movie}`}</td>
-                <td className="px-6 py-4">{st.screen_name || `Screen ID: ${st.screen}`}</td>
-                <td className="px-6 py-4">{stStart.toLocaleString()}</td>
+                <td className="px-6 py-4 font-medium text-purple-300">{st.screen_name || `Screen ID: ${st.screen}`}</td>
+                <td className="px-6 py-4 text-gray-300 font-medium">
+                    {stStart.toLocaleDateString()} <span className="text-gray-500 mx-1">•</span> {stStart.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                </td>
                 <td className="px-6 py-4">
                   {stStart.getHours() < 12 ? 'Morning' : stStart.getHours() < 17 ? 'Day' : 'Night'}
                 </td>
                 <td className="px-6 py-4">{statusBadge}</td>
                 <td className="px-6 py-4 text-right">
                   {now <= stStart && (
-                    <button onClick={() => handleDelete(st.id)} className="text-red-400 hover:text-red-300 font-medium px-3 py-1 rounded hover:bg-red-400/10 transition-colors">Cancel</button>
+                    <button onClick={() => handleDelete(st.id)} className="text-red-400 hover:text-red-300 font-bold px-3 py-1.5 rounded hover:bg-red-400/10 transition-colors uppercase tracking-widest text-xs border border-transparent hover:border-red-500/30">Cancel</button>
+                  )}
+                  {now > stStart && (
+                    <span className="text-gray-600 text-xs uppercase tracking-widest font-semibold">—</span>
                   )}
                 </td>
               </tr>
             )})}
-            {showtimes.length === 0 && !loading && (
-              <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">No showtimes scheduled.</td></tr>
+            {displayShowtimes.length === 0 && !loading && (
+              <tr><td colSpan="6" className="px-6 py-16 text-center text-gray-500">
+                  <div className="flex flex-col items-center gap-3">
+                      <svg className="w-12 h-12 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-lg">No {activeTab} showtimes found.</p>
+                  </div>
+              </td></tr>
+            )}
+            {loading && (
+              <tr><td colSpan="6" className="px-6 py-16 text-center text-purple-400">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+                    <p>Loading records...</p>
+                  </div>
+              </td></tr>
             )}
           </tbody>
         </table>

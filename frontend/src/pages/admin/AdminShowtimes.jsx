@@ -8,6 +8,7 @@ const AdminShowtimes = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
     movie: '', screen: '', show_date: ''
   });
@@ -42,7 +43,14 @@ const AdminShowtimes = () => {
     };
   }, [showtimes]);
 
-  const displayShowtimes = activeTab === 'upcoming' ? upcomingShowtimes : historyShowtimes;
+  const displayShowtimes = activeTab === 'upcoming' 
+    ? upcomingShowtimes 
+    : historyShowtimes.filter(st => {
+        if (!searchQuery) return true;
+        const searchLower = searchQuery.toLowerCase();
+        const titleMatch = (st.movie_title || `Movie ID: ${st.movie}`).toLowerCase().includes(searchLower);
+        return titleMatch;
+      });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -130,7 +138,7 @@ const AdminShowtimes = () => {
       {/* Tabbed UI */}
       <div className="flex items-center gap-4 border-b border-purple-900/30 pb-4">
         <button 
-          onClick={() => setActiveTab('upcoming')}
+          onClick={() => { setActiveTab('upcoming'); setSearchQuery(''); }}
           className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'upcoming' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'bg-white/5 text-gray-400 border border-white/5 hover:bg-white/10 hover:text-white'}`}
         >
           Upcoming Showtimes ({upcomingShowtimes.length})
@@ -142,6 +150,26 @@ const AdminShowtimes = () => {
           History ({historyShowtimes.length})
         </button>
       </div>
+
+      {/* Search Bar (Only visible in History tab) */}
+      {activeTab === 'history' && (
+        <div className="flex justify-end animate-fade-in">
+          <div className="relative w-full sm:w-80">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input 
+              type="text" 
+              placeholder="Search historical movies..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-[#1a1225] border border-purple-900/30 rounded-xl pl-10 pr-4 py-2.5 text-white focus:outline-none focus:border-cyan-500/50 focus:shadow-[0_0_15px_rgba(34,211,238,0.15)] transition-all placeholder-gray-500"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Table Container - Fixed Height with Sticky Header */}
       <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl w-full max-h-[600px] overflow-y-auto relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
@@ -194,7 +222,11 @@ const AdminShowtimes = () => {
                       <svg className="w-12 h-12 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <p className="text-lg">No {activeTab} showtimes found.</p>
+                      {activeTab === 'history' && searchQuery ? (
+                        <p className="text-lg">No historical showtimes found for <span className="text-white font-bold">"{searchQuery}"</span>.</p>
+                      ) : (
+                        <p className="text-lg">No {activeTab} showtimes found.</p>
+                      )}
                   </div>
               </td></tr>
             )}

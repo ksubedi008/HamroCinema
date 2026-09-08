@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const DashboardHome = () => {
   const [movies, setMovies] = useState([]);
@@ -38,8 +39,13 @@ const DashboardHome = () => {
   }, []);
 
   return (
-    <div className="space-y-10 animate-fade-in pb-10 font-sans">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+    <div className="space-y-10 pb-10 font-sans">
+      <motion.header 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6"
+      >
         <div>
           <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 mb-2 tracking-tight">System Overview</h2>
           <p className="text-gray-400 text-sm tracking-widest uppercase font-semibold">Cinematic Command Center</p>
@@ -51,12 +57,18 @@ const DashboardHome = () => {
             Add Movie
           </span>
         </Link>
-      </header>
+      </motion.header>
 
       {/* Floating Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Movies Card */}
-        <div className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(168,85,247,0.3)] hover:border-purple-500/30 flex items-center justify-between overflow-hidden relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(168,85,247,0.3)] hover:border-purple-500/30 flex items-center justify-between overflow-hidden relative"
+        >
           <div className="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 blur-2xl rounded-full group-hover:bg-purple-500/30 transition-all duration-500"></div>
           <div className="relative z-10">
             <p className="text-gray-400 text-xs tracking-widest font-bold uppercase mb-2">Total Movies</p>
@@ -67,10 +79,16 @@ const DashboardHome = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
             </svg>
           </div>
-        </div>
+        </motion.div>
 
         {/* Active Showtimes Card */}
-        <div className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(34,211,238,0.3)] hover:border-cyan-500/30 flex items-center justify-between overflow-hidden relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(34,211,238,0.3)] hover:border-cyan-500/30 flex items-center justify-between overflow-hidden relative"
+        >
           <div className="absolute -right-6 -top-6 w-24 h-24 bg-cyan-500/20 blur-2xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-500"></div>
           <div className="relative z-10">
             <p className="text-gray-400 text-xs tracking-widest font-bold uppercase mb-2">Active Showtimes</p>
@@ -81,10 +99,16 @@ const DashboardHome = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-        </div>
+        </motion.div>
 
         {/* Total Revenue Card */}
-        <div className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(236,72,153,0.3)] hover:border-pink-500/30 flex items-center justify-between overflow-hidden relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(236,72,153,0.3)] hover:border-pink-500/30 flex items-center justify-between overflow-hidden relative"
+        >
           <div className="absolute -right-6 -top-6 w-24 h-24 bg-pink-500/20 blur-2xl rounded-full group-hover:bg-pink-500/30 transition-all duration-500"></div>
           <div className="relative z-10">
             <p className="text-gray-400 text-xs tracking-widest font-bold uppercase mb-2">Total Revenue</p>
@@ -95,15 +119,21 @@ const DashboardHome = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Cinematic Movie Grid */}
       <div className="pt-4">
-        <div className="flex items-center gap-3 mb-8">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center gap-3 mb-8"
+        >
           <div className="w-12 h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full"></div>
           <h3 className="text-2xl font-bold text-white tracking-wider">Now Showing</h3>
-        </div>
+        </motion.div>
         
         {loading ? (
           <div className="flex justify-center py-20">
@@ -111,8 +141,15 @@ const DashboardHome = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-            {movies.filter(movie => movie.status === 'Now Showing' && movie.is_active).map(movie => (
-              <div key={movie.id} className="group relative bg-[#0a0510] rounded-2xl overflow-hidden border border-white/5 hover:border-purple-500/40 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] transition-all duration-500 hover:-translate-y-1">
+            {movies.filter(movie => movie.status === 'Now Showing' && movie.is_active).map((movie, index) => (
+              <motion.div 
+                key={movie.id} 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+                className="group relative bg-[#0a0510] rounded-2xl overflow-hidden border border-white/5 hover:border-purple-500/40 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] transition-all duration-500 hover:-translate-y-1"
+              >
                 {/* Floating Genre Badge */}
                 {movie.genre && (
                   <div className="absolute top-3 left-3 z-20 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-[10px] font-black text-white tracking-widest uppercase shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:border-purple-400/50 group-hover:text-purple-300 transition-colors">
@@ -146,11 +183,15 @@ const DashboardHome = () => {
                     <div className={`w-2 h-2 rounded-full ${movie.is_active ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]'}`}></div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
             
             {movies.filter(movie => movie.status === 'Now Showing' && movie.is_active).length === 0 && (
-              <div className="col-span-full py-16 flex flex-col items-center justify-center bg-white/5 rounded-3xl border border-white/10 border-dashed backdrop-blur-sm">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                className="col-span-full py-16 flex flex-col items-center justify-center bg-white/5 rounded-3xl border border-white/10 border-dashed backdrop-blur-sm"
+              >
                 <svg className="w-16 h-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
                 </svg>
@@ -158,7 +199,7 @@ const DashboardHome = () => {
                 <Link to="/admin/movies" className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium transition-colors border border-white/10">
                   Import or Add Movies
                 </Link>
-              </div>
+              </motion.div>
             )}
           </div>
         )}

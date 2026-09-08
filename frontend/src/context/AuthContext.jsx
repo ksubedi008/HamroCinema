@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
     const [authTokens, setAuthTokens] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null);
+    // FIX: Initialize user synchronously from localStorage to prevent ProtectedRoute from kicking the user to /login on first render
+    const [user, setUser] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')).user : null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -20,10 +21,10 @@ export const AuthProvider = ({ children }) => {
                 setAuthTokens(response.data);
                 setUser(response.data.user);
                 localStorage.setItem('authTokens', JSON.stringify(response.data));
-                
+
                 // Set default axios header
                 axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
-                
+
                 if (response.data.user.role === 'Admin' || response.data.user.role === 'Manager') {
                     navigate('/admin/dashboard');
                 } else {
@@ -97,7 +98,7 @@ export const AuthProvider = ({ children }) => {
         if (user) {
             const updatedUser = { ...user, loyalty_points: newPoints };
             setUser(updatedUser);
-            
+
             // Also update the tokens in local storage so refresh persists it
             if (authTokens) {
                 const updatedTokens = { ...authTokens, user: updatedUser };

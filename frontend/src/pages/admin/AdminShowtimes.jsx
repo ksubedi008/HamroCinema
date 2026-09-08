@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import SEO from '../../components/SEO';
 
 const AdminShowtimes = () => {
   const [showtimes, setShowtimes] = useState([]);
@@ -125,6 +126,7 @@ const AdminShowtimes = () => {
 
   return (
     <div className="animate-fade-in space-y-6">
+      <SEO title="Manage Showtimes | HamroCinema Admin" />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <h2 className="text-3xl font-bold text-white tracking-wider">Manage Showtimes</h2>

@@ -29,7 +29,9 @@ function ErrorFallback({ error, resetErrorBoundary }) {
           className="w-full relative group overflow-hidden px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] transition-all duration-300"
         >
           <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-          <span className="relative z-10">Return to Command Center</span>
+          <span className="relative z-10">
+            {window.location.pathname.startsWith('/admin') ? 'Return to Command Center' : 'Return to Home'}
+          </span>
         </button>
       </div>
     </div>
@@ -41,8 +43,11 @@ const GlobalErrorBoundary = ({ children }) => {
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
       onReset={() => {
-        // Soft reset to dashboard to escape broken state
-        window.location.href = '/admin/dashboard';
+        if (window.location.pathname.startsWith('/admin')) {
+          window.location.href = '/admin/dashboard';
+        } else {
+          window.location.href = '/';
+        }
       }}
     >
       {children}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { motion } from 'framer-motion';
 
 const SeatSelection = () => {
     const { id } = useParams(); // showtime id
@@ -93,8 +94,19 @@ const SeatSelection = () => {
     });
 
     return (
-        <div className="w-full pb-20 animate-fade-in bg-[#0d0914] min-h-screen pt-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full pb-20 min-h-screen pt-8 relative overflow-hidden"
+        >
+            {/* Ambient Mesh Gradient specifically for Seat Selection */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-cyan-900/10 blur-[120px] animate-ambient-glow"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-purple-900/20 blur-[120px] animate-ambient-glow" style={{ animationDelay: '2s' }}></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 
                 {/* Header Info */}
                 <div className="flex items-center justify-between mb-8 pb-6 border-b border-purple-900/30">
@@ -222,7 +234,7 @@ const SeatSelection = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

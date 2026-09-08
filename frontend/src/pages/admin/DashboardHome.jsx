@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const DashboardHome = () => {
   const [movies, setMovies] = useState([]);
@@ -40,6 +41,7 @@ const DashboardHome = () => {
 
   return (
     <div className="space-y-10 pb-10 font-sans">
+      <SEO title="Dashboard | HamroCinema Admin" />
       <motion.header 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

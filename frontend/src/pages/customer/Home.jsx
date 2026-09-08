@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const Home = () => {
     const [nowShowingMovies, setNowShowingMovies] = useState([]);
@@ -27,9 +29,15 @@ const Home = () => {
 
     return (
         <div className="w-full pb-20 animate-fade-in">
+            <SEO title="HamroCinema | Book Movie Tickets Online" />
             {/* Hero Banner */}
             {featuredMovie && (
-                <div className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden"
+                >
                     {/* Background Image & Overlay */}
                     <div className="absolute inset-0 z-0">
                         {featuredMovie.poster ? (
@@ -62,7 +70,7 @@ const Home = () => {
                             </Link>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             )}
 
             {/* Now Showing Grid */}
@@ -75,8 +83,15 @@ const Home = () => {
                     <div className="flex justify-center py-20"><div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div></div>
                 ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                        {nowShowingMovies.map(movie => (
-                            <Link key={movie.id} to={`/movie/${movie.id}`} className="group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#1a1225] border border-purple-900/30 hover:border-purple-500/50 transition-all hover:-translate-y-1 hover:md:-translate-y-2 hover:shadow-[0_10px_30px_rgba(147,51,234,0.2)]">
+                        {nowShowingMovies.map((movie, index) => (
+                            <motion.div
+                                key={movie.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.5, delay: index * 0.05 }}
+                            >
+                                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#1a1225] border border-purple-900/30 hover:border-purple-500/50 transition-all hover:-translate-y-1 hover:md:-translate-y-2 hover:shadow-[0_10px_30px_rgba(147,51,234,0.2)]">
                                 <div className="aspect-[2/3] w-full relative">
                                     {movie.poster ? (
                                         <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
@@ -95,6 +110,7 @@ const Home = () => {
                                     <p className="text-xs md:text-sm text-gray-400 truncate">{movie.genre}</p>
                                 </div>
                             </Link>
+                            </motion.div>
                         ))}
                     </div>
                 )}
@@ -108,8 +124,15 @@ const Home = () => {
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                        {comingSoonMovies.map(movie => (
-                            <Link key={movie.id} to={`/movie/${movie.id}`} className="group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#1a1225] border border-yellow-900/30 hover:border-yellow-500/50 transition-all hover:-translate-y-1 hover:md:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,179,8,0.2)]">
+                        {comingSoonMovies.map((movie, index) => (
+                            <motion.div
+                                key={movie.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.5, delay: index * 0.05 }}
+                            >
+                                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#1a1225] border border-yellow-900/30 hover:border-yellow-500/50 transition-all hover:-translate-y-1 hover:md:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,179,8,0.2)]">
                                 <div className="aspect-[2/3] w-full relative">
                                     {movie.poster ? (
                                         <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" />
@@ -132,6 +155,7 @@ const Home = () => {
                                     <p className="text-xs md:text-sm text-gray-400 truncate">{movie.genre}</p>
                                 </div>
                             </Link>
+                            </motion.div>
                         ))}
                     </div>
                 </div>

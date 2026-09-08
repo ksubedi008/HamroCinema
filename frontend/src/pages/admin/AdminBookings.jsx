@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import SEO from '../../components/SEO';
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -13,6 +14,7 @@ const AdminBookings = () => {
 
   return (
     <div className="animate-fade-in space-y-6">
+      <SEO title="Booking History | HamroCinema Admin" />
       <div className="flex justify-between items-center">
         <h2 className="text-2xl sm:text-3xl font-bold text-white">Recent Bookings</h2>
       </div>

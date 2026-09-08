@@ -25,8 +25,9 @@ const CustomerLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0914] text-white flex flex-col font-sans">
-      <header className="bg-[#1a1225]/80 backdrop-blur-md border-b border-purple-900/30 sticky top-0 z-50">
+    <div className="min-h-screen bg-[#07040a] text-white flex flex-col font-sans relative overflow-hidden">
+      <div className="bg-noise"></div>
+      <header className="bg-[#1a1225]/60 backdrop-blur-xl border-b border-purple-900/30 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -147,7 +148,7 @@ const CustomerLayout = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full bg-[#0d0914]">
+      <main className="flex-1 w-full bg-transparent relative z-10">
         <Outlet />
       </main>
 

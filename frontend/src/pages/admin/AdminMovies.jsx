@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import OpenGraphPreview from '../../components/OpenGraphPreview';
+import SEO from '../../components/SEO';
 
 const AdminMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -75,6 +76,7 @@ const AdminMovies = () => {
 
   return (
     <div className="animate-fade-in space-y-6">
+      <SEO title="Manage Movies | HamroCinema Admin" />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl sm:text-3xl font-bold text-white">Manage Movies</h2>
         <button onClick={handleAddNew} className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-500 transition-all">

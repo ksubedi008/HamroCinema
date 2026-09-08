@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const MovieDetails = () => {
     const { id } = useParams();
@@ -57,7 +59,17 @@ const MovieDetails = () => {
     if (!movie) return <div className="text-center py-40 text-red-400">Movie not found.</div>;
 
     return (
-        <div className="w-full pb-20 animate-fade-in">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full pb-20 font-sans"
+        >
+            <SEO 
+                title={movie.title} 
+                description={movie.description} 
+                image={movie.poster} 
+            />
             {/* Minimal Header */}
             <div className="relative w-full h-[40vh] flex items-end pb-12 overflow-hidden">
                 <div className="absolute inset-0 z-0">
@@ -182,7 +194,7 @@ const MovieDetails = () => {
                     </>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 };
 

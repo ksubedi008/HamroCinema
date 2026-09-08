@@ -152,7 +152,7 @@ const AdminShowtimes = () => {
                 <label className="text-sm font-medium text-gray-400">Movie</label>
                 <select required value={formData.movie} onChange={e => setFormData({...formData, movie: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500">
                   <option value="">Select a movie...</option>
-                  {movies.map(m => <option key={m.id} value={m.id}>{m.title}</option>)}
+                  {movies.filter(m => m.is_active).map(m => <option key={m.id} value={m.id}>{m.title}</option>)}
                 </select>
               </div>
               <div className="space-y-1">

@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsCustomAdminUser
 from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem
 from .serializers import (
     UserSerializer, MovieSerializer, TheaterScreenSerializer, ShowtimeSerializer, 
@@ -6,6 +8,8 @@ from .serializers import (
 )
 
 class UserViewSet(viewsets.ModelViewSet):
+    # FIX: Secure this admin endpoint using our custom role-based permission class
+    permission_classes = [IsCustomAdminUser]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

@@ -11,13 +11,20 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    const loginUser = async (username, password) => {
+    const loginUser = async (username, password, isPortalAdmin = false) => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login/`, {
                 username,
                 password
             });
             if (response.status === 200) {
+                const userRole = response.data.user.role;
+
+                // FIX: Block standard customers from using the secret Admin Login Portal
+                if (isPortalAdmin && userRole !== 'Admin' && userRole !== 'Manager') {
+                    return { success: false, error: "Access Denied. Administrator privileges required." };
+                }
+
                 setAuthTokens(response.data);
                 setUser(response.data.user);
                 localStorage.setItem('authTokens', JSON.stringify(response.data));
@@ -25,7 +32,7 @@ export const AuthProvider = ({ children }) => {
                 // Set default axios header
                 axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
 
-                if (response.data.user.role === 'Admin' || response.data.user.role === 'Manager') {
+                if (userRole === 'Admin' || userRole === 'Manager') {
                     navigate('/admin/dashboard');
                 } else {
                     navigate('/');

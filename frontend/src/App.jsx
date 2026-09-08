@@ -11,6 +11,7 @@ import AdminUsers from './pages/admin/AdminUsers'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/auth/Login'
+import AdminLogin from './pages/auth/AdminLogin'
 import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
@@ -45,6 +46,7 @@ function App() {
         </Route>
         
         {/* Auth Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

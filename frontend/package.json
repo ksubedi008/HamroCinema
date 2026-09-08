@@ -12,7 +12,9 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.16.1",
+    "cmdk": "^1.1.1",
     "framer-motion": "^13.2.0",
+    "lucide-react": "^1.43.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.15.1"

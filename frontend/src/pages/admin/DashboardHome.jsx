@@ -136,8 +136,16 @@ const DashboardHome = () => {
         </motion.div>
         
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-white/10 border-t-purple-500 rounded-full animate-spin"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden relative">
+                <div className="aspect-[2/3] w-full bg-gradient-to-tr from-purple-900/20 to-cyan-900/10 animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-[#0a0510]/80 backdrop-blur-md">
+                  <div className="h-4 bg-white/20 rounded-full w-3/4 mb-2 animate-pulse"></div>
+                  <div className="h-3 bg-white/10 rounded-full w-1/4 animate-pulse"></div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">

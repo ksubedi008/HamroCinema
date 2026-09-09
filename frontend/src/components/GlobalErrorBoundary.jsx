@@ -30,7 +30,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
         >
           <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
           <span className="relative z-10">
-            {window.location.pathname.startsWith('/admin') ? 'Return to Command Center' : 'Return to Home'}
+            {window.location.pathname.startsWith('/cinema-hq-99x') ? 'Return to Command Center' : 'Return to Home'}
           </span>
         </button>
       </div>
@@ -43,8 +43,8 @@ const GlobalErrorBoundary = ({ children }) => {
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
       onReset={() => {
-        if (window.location.pathname.startsWith('/admin')) {
-          window.location.href = '/admin/dashboard';
+        if (window.location.pathname.startsWith('/cinema-hq-99x')) {
+          window.location.href = '/cinema-hq-99x/dashboard';
         } else {
           window.location.href = '/';
         }

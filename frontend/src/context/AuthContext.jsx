@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
 
                 if (userRole === 'Admin' || userRole === 'Manager') {
-                    navigate('/admin/dashboard');
+                    navigate('/cinema-hq-99x/dashboard');
                 } else {
                     navigate('/');
                 }

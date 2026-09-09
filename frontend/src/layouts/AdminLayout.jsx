@@ -29,19 +29,19 @@ const AdminLayout = () => {
       </div>
       
       <nav className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
-        <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
           Dashboard
         </NavLink>
-        <NavLink to="/admin/movies" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/movies" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
           Movies
         </NavLink>
-        <NavLink to="/admin/showtimes" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/showtimes" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
           Showtimes
         </NavLink>
-        <NavLink to="/admin/bookings" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/bookings" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
           Booking History
         </NavLink>
-        <NavLink to="/admin/users" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/users" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
           Users
         </NavLink>
       </nav>
@@ -87,7 +87,7 @@ const AdminLayout = () => {
 
       {/* Mobile Top Bar */}
       <div className="md:hidden bg-[#0d0914]/70 backdrop-blur-2xl border-b border-purple-900/30 p-4 flex items-center justify-between sticky top-0 z-40">
-        <Link to="/admin/dashboard" className="flex items-center gap-3">
+        <Link to="/cinema-hq-99x/dashboard" className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-purple-600 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
           <h1 className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">HamroCinema</h1>
         </Link>

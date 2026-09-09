@@ -46,14 +46,14 @@ function App() {
         </Route>
         
         {/* Auth Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/cinema-hq-99x/auth-gate" element={<AdminLogin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected Admin Routes */}
-        <Route path="/admin" element={
+        <Route path="/cinema-hq-99x" element={
           <ProtectedRoute requiredRole="Admin">
             <AdminLayout />
           </ProtectedRoute>

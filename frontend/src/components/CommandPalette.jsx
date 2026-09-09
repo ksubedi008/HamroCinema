@@ -3,10 +3,13 @@ import { Command } from 'cmdk';
 import { useNavigate } from 'react-router-dom';
 import { Search, LayoutDashboard, Film, Clock, Users, CreditCard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AuthContext } from '../context/AuthContext';
+import { useContext } from 'react';
 
 const CommandPalette = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   // Toggle the menu when ⌘K or Ctrl+K is pressed
   useEffect(() => {
@@ -64,43 +67,45 @@ const CommandPalette = () => {
               <Command.List className="max-h-[300px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-purple-500/50 scrollbar-track-transparent">
                 <Command.Empty className="py-6 text-center text-sm text-gray-400">No results found.</Command.Empty>
 
-                <Command.Group heading={<span className="text-xs font-semibold tracking-wider text-gray-500 uppercase px-2 py-2 block">Quick Navigation</span>}>
-                  <Command.Item 
-                    onSelect={() => runCommand(() => navigate('/admin/dashboard'))}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    <span>Dashboard Overview</span>
-                  </Command.Item>
-                  <Command.Item 
-                    onSelect={() => runCommand(() => navigate('/admin/movies'))}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
-                  >
-                    <Film className="w-4 h-4" />
-                    <span>Manage Movies</span>
-                  </Command.Item>
-                  <Command.Item 
-                    onSelect={() => runCommand(() => navigate('/admin/showtimes'))}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
-                  >
-                    <Clock className="w-4 h-4" />
-                    <span>Schedule Showtimes</span>
-                  </Command.Item>
-                  <Command.Item 
-                    onSelect={() => runCommand(() => navigate('/admin/bookings'))}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span>Booking History</span>
-                  </Command.Item>
-                  <Command.Item 
-                    onSelect={() => runCommand(() => navigate('/admin/users'))}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>User Management</span>
-                  </Command.Item>
-                </Command.Group>
+                {user && user.role === 'Admin' && (
+                  <Command.Group heading={<span className="text-xs font-semibold tracking-wider text-gray-500 uppercase px-2 py-2 block">Quick Navigation</span>}>
+                    <Command.Item 
+                      onSelect={() => runCommand(() => navigate('/cinema-hq-99x/dashboard'))}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      <span>Dashboard Overview</span>
+                    </Command.Item>
+                    <Command.Item 
+                      onSelect={() => runCommand(() => navigate('/cinema-hq-99x/movies'))}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
+                    >
+                      <Film className="w-4 h-4" />
+                      <span>Manage Movies</span>
+                    </Command.Item>
+                    <Command.Item 
+                      onSelect={() => runCommand(() => navigate('/cinema-hq-99x/showtimes'))}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
+                    >
+                      <Clock className="w-4 h-4" />
+                      <span>Schedule Showtimes</span>
+                    </Command.Item>
+                    <Command.Item 
+                      onSelect={() => runCommand(() => navigate('/cinema-hq-99x/bookings'))}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      <span>Booking History</span>
+                    </Command.Item>
+                    <Command.Item 
+                      onSelect={() => runCommand(() => navigate('/cinema-hq-99x/users'))}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-white/5 aria-selected:bg-purple-600/20 aria-selected:text-purple-300 aria-selected:border aria-selected:border-purple-500/30 text-gray-300 border border-transparent transition-all"
+                    >
+                      <Users className="w-4 h-4" />
+                      <span>User Management</span>
+                    </Command.Item>
+                  </Command.Group>
+                )}
               </Command.List>
             </Command>
           </motion.div>

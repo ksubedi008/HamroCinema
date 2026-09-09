@@ -19,7 +19,7 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#050b14] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
+        <div className="min-h-screen bg-[#07040a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
             {/* Background Aesthetic */}
             <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-cyan-900/30 blur-[120px] pointer-events-none rounded-full"></div>
             <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] pointer-events-none rounded-full"></div>
@@ -48,14 +48,14 @@ const AdminLogin = () => {
                         <div>
                             <label className="block text-xs font-bold tracking-wider text-cyan-500 uppercase mb-2">Username / ID</label>
                             <div className="mt-1">
-                                <input value={username} onChange={e => setUsername(e.target.value)} required className="appearance-none block w-full px-4 py-3 border border-slate-700 rounded-xl shadow-sm bg-[#050b14] text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all" />
+                                <input value={username} onChange={e => setUsername(e.target.value)} required className="appearance-none block w-full px-4 py-3 border border-slate-700 rounded-xl shadow-sm bg-[#07040a] text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all" />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-xs font-bold tracking-wider text-cyan-500 uppercase mb-2">Secure Password</label>
                             <div className="mt-1 relative">
-                                <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-slate-700 rounded-xl shadow-sm bg-[#050b14] text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all" />
+                                <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-slate-700 rounded-xl shadow-sm bg-[#07040a] text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all" />
                                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-cyan-400 transition-colors">
                                     {showPassword ? (
                                         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

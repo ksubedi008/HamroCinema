@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Outlet, Link, useNavigate, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { Shield } from 'lucide-react';
 
 const CustomerLayout = () => {
   const { user, logoutUser } = useContext(AuthContext);
@@ -19,10 +20,8 @@ const CustomerLayout = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Redirect Admins/Managers to the Admin Dashboard if they hit the customer UI
-  if (user && (user.role === 'Admin' || user.role === 'Manager')) {
-      return <Navigate to="/cinema-hq-99x/dashboard" replace />;
-  }
+  // Redirect removed: Admins/Managers can now browse the public site normally.
+  // We provide a VIP "Command Center" link in their profile dropdown instead.
 
   return (
     <div className="min-h-screen bg-[#07040a] text-white flex flex-col font-sans relative overflow-hidden">
@@ -67,6 +66,13 @@ const CustomerLayout = () => {
                         <p className="text-sm font-bold text-white truncate">{user.username}</p>
                       </div>
                       <div className="py-2">
+                        {/* VIP Command Center Link */}
+                        {(user.role === 'Admin' || user.role === 'Manager') && (
+                          <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold bg-gradient-to-r from-cyan-900/40 to-purple-900/40 hover:from-cyan-800/60 hover:to-purple-800/60 text-cyan-300 transition-colors border-l-2 border-cyan-400">
+                            <Shield className="w-4 h-4" />
+                            Command Center
+                          </Link>
+                        )}
                         <Link to="/my-tickets" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-purple-600/20 transition-colors">
                           <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
                           My Tickets
@@ -124,6 +130,14 @@ const CustomerLayout = () => {
                       <p className="text-base font-bold text-white">{user.username}</p>
                     </div>
                   </div>
+                  
+                  {/* Mobile VIP Command Center Link */}
+                  {(user.role === 'Admin' || user.role === 'Manager') && (
+                    <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-base font-bold text-cyan-400 hover:text-cyan-300 py-2">
+                      <Shield className="w-5 h-5" /> Command Center
+                    </Link>
+                  )}
+                  
                   <Link to="/my-tickets" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-gray-300 hover:text-white py-2">My Tickets</Link>
                   <button onClick={() => { setIsMobileMenuOpen(false); logoutUser(); }} className="text-left text-base font-medium text-pink-500 hover:text-pink-400 py-2">Log Out</button>
                 </>

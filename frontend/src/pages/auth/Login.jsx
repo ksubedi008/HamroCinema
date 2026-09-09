@@ -1,18 +1,26 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
-    const { loginUser } = useContext(AuthContext);
+    const { loginUser, logoutUser } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const result = await loginUser(username, password);
-        if (!result.success) {
+        if (result.success) {
+            if (result.user.role === 'Admin' || result.user.role === 'Manager') {
+                logoutUser();
+                setError("Administrators must use the secure staff portal to authenticate");
+            } else {
+                navigate('/');
+            }
+        } else {
             setError(result.error);
         }
     };

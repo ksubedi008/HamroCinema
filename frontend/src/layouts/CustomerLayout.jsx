@@ -123,6 +123,7 @@ const CustomerLayout = () => {
                       <p className="text-sm text-gray-400">Signed in as</p>
                       <p className="text-base font-bold text-white">{user.username}</p>
                     </div>
+                  </div>
                   <Link to="/my-tickets" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-gray-300 hover:text-white py-2">My Tickets</Link>
                   <button onClick={() => { setIsMobileMenuOpen(false); logoutUser(); }} className="text-left text-base font-medium text-pink-500 hover:text-pink-400 py-2">Log Out</button>
                 </>

@@ -22,6 +22,9 @@ const CustomerLayout = () => {
 
   // Redirect removed: Admins/Managers can now browse the public site normally.
   // We provide a VIP "Command Center" link in their profile dropdown instead.
+  if (!user) {
+      return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-[#07040a] text-white flex flex-col font-sans relative overflow-hidden">
@@ -46,53 +49,46 @@ const CustomerLayout = () => {
 
             {/* Desktop Auth / Profile */}
             <div className="hidden md:flex items-center gap-4">
-              {user ? (
-                <div className="relative" ref={dropdownRef}>
-                  <button 
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full bg-[#1a1225] border border-purple-500/30 hover:border-purple-400 hover:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-sm shadow-inner text-white">
-                      {user.username[0].toUpperCase()}
-                    </div>
-                    <span className="text-sm font-bold text-gray-200">{user.username}</span>
-                    <svg className={`w-4 h-4 text-purple-400 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                  </button>
+              <div className="relative" ref={dropdownRef}>
+                <button 
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full bg-[#1a1225] border border-purple-500/30 hover:border-purple-400 hover:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-sm shadow-inner text-white">
+                    {user.username[0].toUpperCase()}
+                  </div>
+                  <span className="text-sm font-bold text-gray-200">{user.username}</span>
+                  <svg className={`w-4 h-4 text-purple-400 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
 
-                  {isProfileOpen && (
-                    <div className="absolute right-0 mt-4 w-56 bg-[#150f1d]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] animate-fade-in z-50 transform origin-top-right transition-all">
-                      <div className="px-4 py-3 border-b border-purple-900/40 bg-purple-900/10">
-                        <p className="text-sm text-gray-400">Signed in as</p>
-                        <p className="text-sm font-bold text-white truncate">{user.username}</p>
-                      </div>
-                      <div className="py-2">
-                        {/* VIP Command Center Link */}
-                        {(user.role === 'Admin' || user.role === 'Manager') && (
-                          <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold bg-gradient-to-r from-cyan-900/40 to-purple-900/40 hover:from-cyan-800/60 hover:to-purple-800/60 text-cyan-300 transition-colors border-l-2 border-cyan-400">
-                            <Shield className="w-4 h-4" />
-                            Command Center
-                          </Link>
-                        )}
-                        <Link to="/my-tickets" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-purple-600/20 transition-colors">
-                          <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
-                          My Tickets
-                        </Link>
-                      </div>
-                      <div className="py-2 border-t border-purple-900/40">
-                        <button onClick={() => { setIsProfileOpen(false); logoutUser(); }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-pink-500 hover:text-pink-400 hover:bg-pink-500/10 transition-colors">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                          Log Out
-                        </button>
-                      </div>
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-4 w-56 bg-[#150f1d]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] animate-fade-in z-50 transform origin-top-right transition-all">
+                    <div className="px-4 py-3 border-b border-purple-900/40 bg-purple-900/10">
+                      <p className="text-sm text-gray-400">Signed in as</p>
+                      <p className="text-sm font-bold text-white truncate">{user.username}</p>
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Link to="/login" className="px-5 py-2.5 text-sm font-bold text-white hover:text-purple-400 transition-colors">Log In</Link>
-                  <Link to="/register" className="px-6 py-2.5 text-sm font-bold text-white bg-purple-600 rounded-full hover:bg-purple-500 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] transition-all">Sign Up</Link>
-                </div>
-              )}
+                    <div className="py-2">
+                      {/* VIP Command Center Link */}
+                      {(user.role === 'Admin' || user.role === 'Manager') && (
+                        <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold bg-gradient-to-r from-cyan-900/40 to-purple-900/40 hover:from-cyan-800/60 hover:to-purple-800/60 text-cyan-300 transition-colors border-l-2 border-cyan-400">
+                          <Shield className="w-4 h-4" />
+                          Command Center
+                        </Link>
+                      )}
+                      <Link to="/my-tickets" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-purple-600/20 transition-colors">
+                        <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
+                        My Tickets
+                      </Link>
+                    </div>
+                    <div className="py-2 border-t border-purple-900/40">
+                      <button onClick={() => { setIsProfileOpen(false); logoutUser(); }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-pink-500 hover:text-pink-400 hover:bg-pink-500/10 transition-colors">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Log Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Mobile Hamburger Button */}
@@ -119,34 +115,25 @@ const CustomerLayout = () => {
               
               <div className="border-t border-purple-900/30 my-2"></div>
               
-              {user ? (
-                <>
-                  <div className="flex items-center gap-3 py-2">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-inner text-white">
-                      {user.username[0].toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Signed in as</p>
-                      <p className="text-base font-bold text-white">{user.username}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Mobile VIP Command Center Link */}
-                  {(user.role === 'Admin' || user.role === 'Manager') && (
-                    <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-base font-bold text-cyan-400 hover:text-cyan-300 py-2">
-                      <Shield className="w-5 h-5" /> Command Center
-                    </Link>
-                  )}
-                  
-                  <Link to="/my-tickets" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-gray-300 hover:text-white py-2">My Tickets</Link>
-                  <button onClick={() => { setIsMobileMenuOpen(false); logoutUser(); }} className="text-left text-base font-medium text-pink-500 hover:text-pink-400 py-2">Log Out</button>
-                </>
-              ) : (
-                <div className="flex flex-col gap-3 mt-2">
-                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-center px-5 py-3 text-sm font-bold text-white border border-purple-600 rounded-full hover:bg-purple-600/20 transition-colors">Log In</Link>
-                  <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="text-center px-6 py-3 text-sm font-bold text-white bg-purple-600 rounded-full hover:bg-purple-500 transition-colors">Sign Up</Link>
+              <div className="flex items-center gap-3 py-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-lg shadow-inner text-white">
+                  {user.username[0].toUpperCase()}
                 </div>
+                <div>
+                  <p className="text-sm text-gray-400">Signed in as</p>
+                  <p className="text-base font-bold text-white">{user.username}</p>
+                </div>
+              </div>
+              
+              {/* Mobile VIP Command Center Link */}
+              {(user.role === 'Admin' || user.role === 'Manager') && (
+                <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-base font-bold text-cyan-400 hover:text-cyan-300 py-2">
+                  <Shield className="w-5 h-5" /> Command Center
+                </Link>
               )}
+              
+              <Link to="/my-tickets" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-gray-300 hover:text-white py-2">My Tickets</Link>
+              <button onClick={() => { setIsMobileMenuOpen(false); logoutUser(); }} className="text-left text-base font-medium text-pink-500 hover:text-pink-400 py-2">Log Out</button>
             </div>
           </div>
         )}

@@ -21,6 +21,8 @@ import MovieDetails from './pages/customer/MovieDetails'
 import SeatSelection from './pages/customer/SeatSelection'
 import Checkout from './pages/customer/Checkout'
 import MyTickets from './pages/customer/MyTickets'
+import PrivacyPolicy from './pages/customer/PrivacyPolicy'
+import TermsOfService from './pages/customer/TermsOfService'
 
 function App() {
   return (
@@ -43,6 +45,9 @@ function App() {
               <MyTickets />
             </ProtectedRoute>
           } />
+          
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="terms" element={<TermsOfService />} />
         </Route>
         
         {/* Auth Routes */}

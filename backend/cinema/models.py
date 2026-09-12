@@ -16,6 +16,8 @@ class User(AbstractUser):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    director = models.CharField(max_length=255, blank=True, null=True)
+    cast = models.TextField(blank=True, null=True)
     duration = models.IntegerField(help_text="Duration in minutes")
     genre = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.DateField(blank=True, null=True)

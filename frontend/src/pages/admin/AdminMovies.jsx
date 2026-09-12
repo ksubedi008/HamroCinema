@@ -10,7 +10,7 @@ const AdminMovies = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingMovieId, setEditingMovieId] = useState(null);
   const [formData, setFormData] = useState({
-    title: '', description: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing'
+    title: '', description: '', director: '', cast: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing'
   });
 
   const fetchMovies = () => {
@@ -28,6 +28,8 @@ const AdminMovies = () => {
     const data = new FormData();
     data.append('title', formData.title);
     data.append('description', formData.description);
+    data.append('director', formData.director);
+    data.append('cast', formData.cast);
     data.append('duration', formData.duration);
     data.append('genre', formData.genre);
     data.append('release_date', formData.release_date);
@@ -47,7 +49,7 @@ const AdminMovies = () => {
         setShowModal(false);
         setEditingMovieId(null);
         fetchMovies();
-        setFormData({ title: '', description: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing' });
+        setFormData({ title: '', description: '', director: '', cast: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing' });
       })
       .catch(err => console.error(err))
       .finally(() => setIsSubmitting(false));
@@ -58,6 +60,8 @@ const AdminMovies = () => {
     setFormData({
       title: movie.title,
       description: movie.description,
+      director: movie.director || '',
+      cast: movie.cast || '',
       duration: movie.duration,
       genre: movie.genre || '',
       release_date: movie.release_date || '',
@@ -70,7 +74,7 @@ const AdminMovies = () => {
 
   const handleAddNew = () => {
     setEditingMovieId(null);
-    setFormData({ title: '', description: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing' });
+    setFormData({ title: '', description: '', director: '', cast: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing' });
     setShowModal(true);
   };
 
@@ -150,6 +154,16 @@ const AdminMovies = () => {
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-400">Description</label>
                 <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors" rows="3" placeholder="Movie synopsis..."></textarea>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-400">Director</label>
+                  <input type="text" value={formData.director} onChange={e => setFormData({...formData, director: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors" placeholder="e.g. Christopher Nolan" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-400">Cast</label>
+                  <input type="text" value={formData.cast} onChange={e => setFormData({...formData, cast: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 transition-colors" placeholder="e.g. Leonardo DiCaprio, Cillian Murphy..." />
+                </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">

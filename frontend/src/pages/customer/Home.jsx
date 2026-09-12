@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO';
+import MovieSkeleton from '../../components/MovieSkeleton';
 
 const Home = () => {
     const [nowShowingMovies, setNowShowingMovies] = useState([]);
@@ -80,7 +81,11 @@ const Home = () => {
                 </div>
 
                 {loading ? (
-                    <div className="flex justify-center py-20"><div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div></div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                        {[...Array(6)].map((_, i) => (
+                            <MovieSkeleton key={i} />
+                        ))}
+                    </div>
                 ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                         {nowShowingMovies.map((movie, index) => (

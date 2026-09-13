@@ -26,7 +26,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0d0914] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+        <div className="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-purple-600"></div>
@@ -36,7 +36,7 @@ const Login = () => {
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-[#1a1225] py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-purple-900/30">
+                <div className="bg-zinc-950 py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-zinc-800">
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
                             <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-xl text-sm text-center">
@@ -46,14 +46,14 @@ const Login = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-400">Username</label>
                             <div className="mt-1">
-                                <input value={username} onChange={e => setUsername(e.target.value)} required className="appearance-none block w-full px-4 py-3 border border-purple-900/30 rounded-xl shadow-sm bg-[#0d0914] text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500" />
+                                <input value={username} onChange={e => setUsername(e.target.value)} required className="appearance-none block w-full px-4 py-3 border border-zinc-800 rounded-xl shadow-sm bg-zinc-950 text-white focus:outline-none focus:ring-rose-500 focus:border-rose-500" />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-400">Password</label>
                             <div className="mt-1 relative">
-                                <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-purple-900/30 rounded-xl shadow-sm bg-[#0d0914] text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500" />
+                                <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-zinc-800 rounded-xl shadow-sm bg-zinc-950 text-white focus:outline-none focus:ring-rose-500 focus:border-rose-500" />
                                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white">
                                     {showPassword ? (
                                         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,19 +71,19 @@ const Login = () => {
 
                         <div className="flex items-center justify-between">
                             <div className="text-sm">
-                                <Link to="/forgot-password" className="font-medium text-purple-400 hover:text-purple-300">Forgot your password?</Link>
+                                <Link to="/forgot-password" className="font-medium text-rose-500 hover:text-rose-500">Forgot your password?</Link>
                             </div>
                         </div>
 
                         <div>
-                            <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:ring-offset-[#0d0914] transition-colors">
+                            <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 focus:ring-offset-[#0d0914] transition-colors">
                                 Sign in
                             </button>
                         </div>
                     </form>
                     
                     <div className="mt-6 text-center text-sm text-gray-400">
-                        Don't have an account? <Link to="/register" className="font-medium text-purple-400 hover:text-purple-300">Register here</Link>
+                        Don't have an account? <Link to="/register" className="font-medium text-rose-500 hover:text-rose-500">Register here</Link>
                     </div>
                 </div>
             </div>

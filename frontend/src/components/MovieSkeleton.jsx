@@ -2,7 +2,7 @@ import React from 'react';
 
 const MovieSkeleton = () => {
     return (
-        <div className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#1a1225] border border-purple-900/30">
+        <div className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-zinc-950 border border-zinc-800">
             {/* Poster Skeleton */}
             <div className="aspect-[2/3] w-full relative bg-purple-900/20 animate-pulse overflow-hidden">
                 {/* Subtle Anti-Gravity Glow */}

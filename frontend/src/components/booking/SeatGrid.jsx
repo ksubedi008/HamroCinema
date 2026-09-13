@@ -60,28 +60,28 @@ const SeatGrid = () => {
         
         if (isSelected) {
             // "Anti-Gravity" Selected State
-            return `${baseClasses} bg-cyan-500 text-slate-900 -translate-y-2 shadow-[0_10px_20px_rgba(6,182,212,0.6)]`;
+            return `${baseClasses} bg-cyan-500 text-slate-900 -translate-y-2 shadow-lg`;
         }
         
         switch (seat.status) {
             case 'Available':
                 // Hover anti-gravity effect
-                return `${baseClasses} bg-slate-700 text-slate-400 hover:bg-slate-600 hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(255,255,255,0.15)] hover:text-white`;
+                return `${baseClasses} bg-slate-700 text-slate-400 hover:bg-slate-600 hover:-translate-y-1 hover:shadow-xl hover:text-white`;
             case 'Booked':
                 // Disabled, darkened out state
                 return `${baseClasses} bg-slate-800/60 text-transparent opacity-40 cursor-not-allowed`;
             case 'Locked':
                 // Warning locked state
-                return `${baseClasses} bg-orange-600/60 text-orange-300 animate-pulse cursor-not-allowed border border-orange-500/50 shadow-[0_0_15px_rgba(234,88,12,0.3)]`;
+                return `${baseClasses} bg-orange-600/60 text-orange-300 animate-pulse cursor-not-allowed border border-orange-500/50 shadow-lg`;
             default:
                 return baseClasses;
         }
     };
 
     return (
-        <div className="min-h-screen bg-[#0f172a] text-white p-4 md:p-8 flex flex-col items-center justify-center font-sans overflow-x-hidden">
+        <div className="min-h-screen bg-zinc-950 text-white p-4 md:p-8 flex flex-col items-center justify-center font-sans overflow-x-hidden">
             {/* Glassmorphism Container */}
-            <div className="w-full max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
+            <div className="w-full max-w-6xl bg-zinc-800  border border-zinc-800 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
                 
                 {/* Subtle background glow for extra cinema vibe */}
                 <div className="absolute top-[-10%] left-[20%] w-[60%] h-[30%] bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none"></div>
@@ -89,12 +89,12 @@ const SeatGrid = () => {
                 {/* Curved Neon Cinema Screen */}
                 <div className="w-full flex flex-col items-center mb-20 relative">
                     {/* The Curve */}
-                    <div className="w-full md:w-3/4 h-8 border-t-4 border-cyan-400 rounded-t-[50%] blur-[2px] absolute top-0 shadow-[0_-10px_40px_rgba(34,211,238,0.5)]"></div>
-                    <div className="w-full md:w-3/4 h-8 border-t-[3px] border-cyan-300 rounded-t-[50%] absolute top-0"></div>
+                    <div className="w-full md:w-3/4 h-8 border-t-4 border-rose-500 rounded-t-[50%] blur-[2px] absolute top-0 shadow-lg"></div>
+                    <div className="w-full md:w-3/4 h-8 border-t-[3px] border-rose-500 rounded-t-[50%] absolute top-0"></div>
                     {/* Screen reflection glow */}
                     <div className="w-3/4 h-24 bg-gradient-to-b from-cyan-500/20 to-transparent absolute top-0 blur-xl"></div>
                     
-                    <p className="mt-12 text-cyan-400/80 uppercase tracking-[0.3em] text-sm font-semibold glow-text">
+                    <p className="mt-12 text-rose-500/80 uppercase tracking-[0.3em] text-sm font-semibold glow-text">
                         Screen This Way
                     </p>
                 </div>
@@ -108,7 +108,7 @@ const SeatGrid = () => {
                         return (
                             <div key={rowIndex} className="flex items-center gap-2 md:gap-3 group">
                                 {/* Left Row Label */}
-                                <div className="w-8 flex items-center justify-center text-slate-500 font-bold mr-2 group-hover:text-cyan-400 transition-colors">
+                                <div className="w-8 flex items-center justify-center text-slate-500 font-bold mr-2 group-hover:text-rose-500 transition-colors">
                                     {rowLabel}
                                 </div>
                                 
@@ -128,7 +128,7 @@ const SeatGrid = () => {
                                 ))}
 
                                 {/* Right Row Label */}
-                                <div className="w-8 flex items-center justify-center text-slate-500 font-bold ml-2 group-hover:text-cyan-400 transition-colors">
+                                <div className="w-8 flex items-center justify-center text-slate-500 font-bold ml-2 group-hover:text-rose-500 transition-colors">
                                     {rowLabel}
                                 </div>
                             </div>
@@ -137,13 +137,13 @@ const SeatGrid = () => {
                 </div>
 
                 {/* Legend */}
-                <div className="flex flex-wrap items-center justify-center gap-8 mb-10 border-t border-white/5 pt-8">
+                <div className="flex flex-wrap items-center justify-center gap-8 mb-10 border-t border-zinc-800 pt-8">
                     <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-slate-700 rounded-t-md shadow-[0_2px_5px_rgba(255,255,255,0.05)]"></div>
+                        <div className="w-6 h-6 bg-slate-700 rounded-t-md shadow-lg"></div>
                         <span className="text-slate-400 text-sm uppercase tracking-wider font-semibold">Available</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-cyan-500 rounded-t-md shadow-[0_0_15px_rgba(6,182,212,0.6)]"></div>
+                        <div className="w-6 h-6 bg-cyan-500 rounded-t-md shadow-lg"></div>
                         <span className="text-slate-400 text-sm uppercase tracking-wider font-semibold">Selected</span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -157,10 +157,10 @@ const SeatGrid = () => {
                 </div>
 
                 {/* Checkout Summary Footer */}
-                <div className="flex flex-col md:flex-row items-center justify-between bg-slate-900/80 p-6 md:p-8 rounded-3xl border border-white/5 backdrop-blur-md">
+                <div className="flex flex-col md:flex-row items-center justify-between bg-zinc-900 p-6 md:p-8 rounded-3xl border border-zinc-800 ">
                     <div className="mb-6 md:mb-0 text-center md:text-left">
                         <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
-                            Tickets Selected: <span className="text-cyan-400">{selectedSeats.length}</span>
+                            Tickets Selected: <span className="text-rose-500">{selectedSeats.length}</span>
                         </h3>
                         <p className="text-slate-400 text-sm">
                             {selectedSeats.length > 0 
@@ -174,7 +174,7 @@ const SeatGrid = () => {
                         className={`px-10 py-4 rounded-full font-bold uppercase tracking-[0.15em] transition-all duration-300 ${
                             selectedSeats.length === 0 
                                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                                : 'bg-cyan-500 text-slate-900 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:bg-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.8)] hover:-translate-y-1'
+                                : 'bg-cyan-500 text-slate-900 shadow-lg hover:bg-cyan-400 hover:shadow-xl hover:-translate-y-1'
                         }`}
                     >
                         Checkout

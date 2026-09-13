@@ -19,7 +19,7 @@ const AdminBookings = () => {
         <h2 className="text-2xl sm:text-3xl font-bold text-white">Recent Bookings</h2>
       </div>
 
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-x-auto w-full shadow-xl">
+      <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-x-auto w-full shadow-xl">
         <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
           <thead className="bg-purple-900/20 text-gray-400 font-medium">
             <tr>
@@ -32,8 +32,8 @@ const AdminBookings = () => {
           </thead>
           <tbody className="divide-y divide-purple-900/20">
             {bookings.map(b => (
-              <tr key={b.id} className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-mono text-purple-400">#{b.id.toString().padStart(6, '0')}</td>
+              <tr key={b.id} className="hover:bg-zinc-800 transition-colors">
+                <td className="px-6 py-4 font-mono text-rose-500">#{b.id.toString().padStart(6, '0')}</td>
                 <td className="px-6 py-4 font-medium text-white">{b.username || `User ${b.user}`}</td>
                 <td className="px-6 py-4 font-bold text-green-400">Rs. {b.total_amount}</td>
                 <td className="px-6 py-4">

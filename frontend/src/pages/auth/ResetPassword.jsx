@@ -41,15 +41,15 @@ const ResetPassword = () => {
 
     if (!uid || !token) {
         return (
-            <div className="min-h-screen bg-[#0d0914] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans items-center">
+            <div className="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans items-center">
                 <div className="text-red-400 mb-4 text-center">Invalid password reset link. The URL is missing required parameters.</div>
-                <Link to="/forgot-password" className="text-purple-400 hover:text-purple-300">Request a new link</Link>
+                <Link to="/forgot-password" className="text-rose-500 hover:text-rose-500">Request a new link</Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#0d0914] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+        <div className="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-purple-600"></div>
@@ -59,7 +59,7 @@ const ResetPassword = () => {
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-[#1a1225] py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-purple-900/30">
+                <div className="bg-zinc-950 py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-zinc-800">
                     {success ? (
                         <div className="text-center space-y-4">
                             <div className="bg-green-500/10 border border-green-500/50 text-green-400 p-4 rounded-xl text-sm">
@@ -78,7 +78,7 @@ const ResetPassword = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-400">New Password</label>
                                 <div className="mt-1 relative">
-                                    <input type={showPassword ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-purple-900/30 rounded-xl shadow-sm bg-[#0d0914] text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500" />
+                                    <input type={showPassword ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-zinc-800 rounded-xl shadow-sm bg-zinc-950 text-white focus:outline-none focus:ring-rose-500 focus:border-rose-500" />
                                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white">
                                         {showPassword ? (
                                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,7 +97,7 @@ const ResetPassword = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-400">Confirm New Password</label>
                                 <div className="mt-1 relative">
-                                    <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-purple-900/30 rounded-xl shadow-sm bg-[#0d0914] text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500" />
+                                    <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="appearance-none block w-full px-4 py-3 pr-12 border border-zinc-800 rounded-xl shadow-sm bg-zinc-950 text-white focus:outline-none focus:ring-rose-500 focus:border-rose-500" />
                                     <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white">
                                         {showConfirmPassword ? (
                                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,7 +114,7 @@ const ResetPassword = () => {
                             </div>
 
                             <div>
-                                <button type="submit" disabled={loading} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:ring-offset-[#0d0914] transition-colors disabled:opacity-50">
+                                <button type="submit" disabled={loading} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 focus:ring-offset-[#0d0914] transition-colors disabled:opacity-50">
                                     {loading ? 'Resetting...' : 'Reset Password'}
                                 </button>
                             </div>

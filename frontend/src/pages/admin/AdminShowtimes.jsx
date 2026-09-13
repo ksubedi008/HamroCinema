@@ -132,22 +132,22 @@ const AdminShowtimes = () => {
             <h2 className="text-3xl font-bold text-white tracking-wider">Manage Showtimes</h2>
             <p className="text-gray-400 mt-1">Schedule and monitor all theater activity.</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold tracking-wider hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all transform hover:-translate-y-0.5">
+        <button onClick={() => setShowModal(true)} className="w-full sm:w-auto px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-700 transition-colors text-white font-bold tracking-wider hover:shadow-xl transition-all transform hover:-translate-y-0.5">
           + Schedule Movie
         </button>
       </div>
 
       {/* Tabbed UI */}
-      <div className="flex items-center gap-4 border-b border-purple-900/30 pb-4">
+      <div className="flex items-center gap-4 border-b border-zinc-800 pb-4">
         <button 
           onClick={() => { setActiveTab('upcoming'); setSearchQuery(''); }}
-          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'upcoming' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'bg-white/5 text-gray-400 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'upcoming' ? 'bg-cyan-500/20 text-rose-500 border border-zinc-800 shadow-lg' : 'bg-zinc-800 text-gray-400 border border-zinc-800 hover:bg-white/10 hover:text-white'}`}
         >
           Upcoming Showtimes ({upcomingShowtimes.length})
         </button>
         <button 
           onClick={() => setActiveTab('history')}
-          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'history' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'bg-white/5 text-gray-400 border border-white/5 hover:bg-white/10 hover:text-white'}`}
+          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'history' ? 'bg-cyan-500/20 text-rose-500 border border-zinc-800 shadow-lg' : 'bg-zinc-800 text-gray-400 border border-zinc-800 hover:bg-white/10 hover:text-white'}`}
         >
           History ({historyShowtimes.length})
         </button>
@@ -167,16 +167,16 @@ const AdminShowtimes = () => {
               placeholder="Search historical movies..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1a1225] border border-purple-900/30 rounded-xl pl-10 pr-4 py-2.5 text-white focus:outline-none focus:border-cyan-500/50 focus:shadow-[0_0_15px_rgba(34,211,238,0.15)] transition-all placeholder-gray-500"
+              className="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-white focus:outline-none focus:border-zinc-800 focus:shadow-lg transition-all placeholder-gray-500"
             />
           </div>
         </div>
       )}
 
       {/* Table Container - Fixed Height with Sticky Header */}
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl w-full max-h-[600px] overflow-y-auto relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+      <div className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-h-[600px] overflow-y-auto relative shadow-lg">
         <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
-          <thead className="bg-[#241836] text-gray-400 font-semibold uppercase tracking-wider text-xs sticky top-0 z-10 shadow-md">
+          <thead className="bg-zinc-950 text-gray-400 font-semibold uppercase tracking-wider text-xs sticky top-0 z-10 shadow-md">
             <tr>
               <th className="px-6 py-5">Movie</th>
               <th className="px-6 py-5">Screen</th>
@@ -194,13 +194,13 @@ const AdminShowtimes = () => {
               
               let statusBadge;
               if (now > stEnd) statusBadge = <span className="bg-gray-500/20 text-gray-400 px-3 py-1 rounded-md text-xs font-bold border border-gray-500/30 uppercase tracking-widest">Ended</span>;
-              else if (now >= stStart && now <= stEnd) statusBadge = <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-md text-xs font-bold border border-green-500/30 uppercase tracking-widest shadow-[0_0_10px_rgba(34,197,94,0.3)]">Playing</span>;
-              else statusBadge = <span className="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-md text-xs font-bold border border-cyan-500/30 uppercase tracking-widest shadow-[0_0_10px_rgba(34,211,238,0.2)]">Upcoming</span>;
+              else if (now >= stStart && now <= stEnd) statusBadge = <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-md text-xs font-bold border border-green-500/30 uppercase tracking-widest shadow-lg">Playing</span>;
+              else statusBadge = <span className="bg-cyan-500/20 text-rose-500 px-3 py-1 rounded-md text-xs font-bold border border-zinc-800 uppercase tracking-widest shadow-lg">Upcoming</span>;
 
               return (
-              <tr key={st.id} className="hover:bg-white/5 transition-colors">
+              <tr key={st.id} className="hover:bg-zinc-800 transition-colors">
                 <td className="px-6 py-4 font-bold text-white">{st.movie_title || `Movie ID: ${st.movie}`}</td>
-                <td className="px-6 py-4 font-medium text-purple-300">{st.screen_name || `Screen ID: ${st.screen}`}</td>
+                <td className="px-6 py-4 font-medium text-rose-500">{st.screen_name || `Screen ID: ${st.screen}`}</td>
                 <td className="px-6 py-4 text-gray-300 font-medium">
                     {stStart.toLocaleDateString()} <span className="text-gray-500 mx-1">•</span> {stStart.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </td>
@@ -233,9 +233,9 @@ const AdminShowtimes = () => {
               </td></tr>
             )}
             {loading && (
-              <tr><td colSpan="6" className="px-6 py-16 text-center text-purple-400">
+              <tr><td colSpan="6" className="px-6 py-16 text-center text-rose-500">
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-4 border-zinc-800 border-t-purple-500 rounded-full animate-spin"></div>
                     <p>Loading records...</p>
                   </div>
               </td></tr>
@@ -245,30 +245,30 @@ const AdminShowtimes = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#1a1225] border border-purple-900/50 rounded-2xl w-full max-w-lg overflow-hidden shadow-lg">
-            <div className="p-6 border-b border-purple-900/30 flex justify-between items-center">
+        <div className="fixed inset-0 bg-zinc-950/80  flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-lg">
+            <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
               <h3 className="text-xl font-bold text-white">Schedule Showtime</h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white transition-colors">✕</button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-400">Movie</label>
-                <select required value={formData.movie} onChange={e => setFormData({...formData, movie: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500">
+                <select required value={formData.movie} onChange={e => setFormData({...formData, movie: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
                   <option value="">Select a movie...</option>
                   {movies.filter(m => m.is_active).map(m => <option key={m.id} value={m.id}>{m.title}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-400">Theater Screen</label>
-                <select required value={formData.screen} onChange={e => setFormData({...formData, screen: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500">
+                <select required value={formData.screen} onChange={e => setFormData({...formData, screen: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
                   <option value="">Select a screen...</option>
                   {screens.map(s => <option key={s.id} value={s.id}>{s.screen_name}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-400">Show Date</label>
-                <input required type="date" value={formData.show_date} onChange={e => setFormData({...formData, show_date: e.target.value})} className="w-full bg-[#0d0914] border border-purple-900/30 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 [color-scheme:dark]" />
+                <input required type="date" value={formData.show_date} onChange={e => setFormData({...formData, show_date: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500 [color-scheme:dark]" />
                 <p className="text-xs text-gray-500 mt-2 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-purple-500 inline-block flex-shrink-0"></span>
                   Morning, Day, and Night showtimes will be dynamically generated based on the selected screen's schedule.

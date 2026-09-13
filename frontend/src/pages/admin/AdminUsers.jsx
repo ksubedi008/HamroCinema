@@ -25,7 +25,7 @@ const AdminUsers = () => {
         <h2 className="text-2xl sm:text-3xl font-bold text-white">Registered Users</h2>
       </div>
 
-      <div className="bg-[#1a1225] border border-purple-900/30 rounded-2xl overflow-x-auto w-full shadow-lg">
+      <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-x-auto w-full shadow-lg">
         <table className="w-full text-left text-sm text-gray-300 whitespace-nowrap">
           <thead className="bg-purple-900/20 text-gray-400 font-medium">
             <tr>
@@ -39,12 +39,12 @@ const AdminUsers = () => {
           </thead>
           <tbody className="divide-y divide-purple-900/20">
             {users.map(user => (
-              <tr key={user.id} className="hover:bg-white/5 transition-colors">
+              <tr key={user.id} className="hover:bg-zinc-800 transition-colors">
                 <td className="px-6 py-4">{user.id}</td>
                 <td className="px-6 py-4 font-bold text-white">{user.username}</td>
                 <td className="px-6 py-4">{user.email || 'N/A'}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${user.role === 'Admin' ? 'bg-pink-500/10 text-pink-400 border-pink-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${user.role === 'Admin' ? 'bg-pink-500/10 text-rose-500 border-zinc-800' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
                     {user.role}
                   </span>
                 </td>

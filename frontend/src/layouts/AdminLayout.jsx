@@ -18,10 +18,10 @@ const AdminLayout = () => {
 
   const sidebarContent = (
     <>
-      <div className="p-6 flex items-center justify-between border-b border-purple-900/30 md:justify-start">
+      <div className="p-6 flex items-center justify-between border-b border-zinc-800 md:justify-start">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-600 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
-          <h1 className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">HamroCinema</h1>
+          <div className="w-8 h-8 rounded-full bg-purple-600 shadow-lg"></div>
+          <h1 className="text-xl font-bold tracking-wider text-zinc-100">HamroCinema</h1>
         </div>
         <button className="md:hidden text-gray-400 hover:text-white transition-colors" onClick={() => setIsSidebarOpen(false)}>
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
@@ -29,37 +29,37 @@ const AdminLayout = () => {
       </div>
       
       <nav className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
-        <NavLink to="/cinema-hq-99x/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
           Dashboard
         </NavLink>
-        <NavLink to="/cinema-hq-99x/movies" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/movies" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
           Movies
         </NavLink>
-        <NavLink to="/cinema-hq-99x/showtimes" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/showtimes" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
           Showtimes
         </NavLink>
-        <NavLink to="/cinema-hq-99x/bookings" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/bookings" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
           Booking History
         </NavLink>
-        <NavLink to="/cinema-hq-99x/users" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"}>
+        <NavLink to="/cinema-hq-99x/users" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
           Users
         </NavLink>
       </nav>
       
-      <div className="p-4 border-t border-purple-900/30 relative mt-auto">
+      <div className="p-4 border-t border-zinc-800 relative mt-auto">
         {isProfileOpen && (
-          <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#2a1d3a] border border-purple-900/50 rounded-xl overflow-hidden shadow-xl animate-fade-in z-50">
-            <button onClick={() => navigate('/forgot-password')} className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+          <div className="absolute bottom-full left-4 right-4 mb-2 bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden shadow-xl animate-fade-in z-50">
+            <button onClick={() => navigate('/forgot-password')} className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-zinc-800 transition-colors">
               Change Password
             </button>
-            <button onClick={logoutUser} className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors border-t border-purple-900/30">
+            <button onClick={logoutUser} className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors border-t border-zinc-800">
               Log Out
             </button>
           </div>
         )}
         <button 
           onClick={() => setIsProfileOpen(!isProfileOpen)}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-left"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer text-left"
         >
           <div className="w-10 h-10 rounded-full bg-gray-800 border border-gray-600 flex-shrink-0 flex items-center justify-center text-gray-400 font-bold uppercase">{user?.username?.[0] || 'A'}</div>
           <div className="flex-1 overflow-hidden">
@@ -75,7 +75,7 @@ const AdminLayout = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#07040a] text-white flex flex-col md:flex-row font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col md:flex-row font-sans relative overflow-hidden">
       <CommandPalette />
 
       {/* Background Effects */}
@@ -86,15 +86,15 @@ const AdminLayout = () => {
       </div>
 
       {/* Mobile Top Bar */}
-      <div className="md:hidden bg-[#0d0914]/70 backdrop-blur-2xl border-b border-purple-900/30 p-4 flex items-center justify-between sticky top-0 z-40">
+      <div className="md:hidden bg-zinc-900  border-b border-zinc-800 p-4 flex items-center justify-between sticky top-0 z-40">
         <Link to="/cinema-hq-99x/dashboard" className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-600 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
-          <h1 className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">HamroCinema</h1>
+          <div className="w-8 h-8 rounded-full bg-purple-600 shadow-lg"></div>
+          <h1 className="text-xl font-bold tracking-wider text-zinc-100">HamroCinema</h1>
         </Link>
         <div className="flex items-center gap-2">
           <button onClick={() => {
             document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
-          }} className="p-2 text-gray-300 focus:outline-none hover:text-white transition-colors bg-white/5 rounded-lg border border-white/10">
+          }} className="p-2 text-gray-300 focus:outline-none hover:text-white transition-colors bg-zinc-800 rounded-lg border border-zinc-800">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </button>
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-gray-300 focus:outline-none hover:text-white transition-colors">
@@ -118,7 +118,7 @@ const AdminLayout = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" 
+              className="fixed inset-0 bg-zinc-900/90  z-40 md:hidden" 
               onClick={() => setIsSidebarOpen(false)}
             />
             <motion.aside 
@@ -126,7 +126,7 @@ const AdminLayout = () => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-              className="fixed inset-y-0 left-0 z-50 w-64 bg-[#0d0914]/80 backdrop-blur-3xl border-r border-purple-900/30 flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)] md:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-zinc-900  border-r border-zinc-800 flex flex-col shadow-2xl md:hidden"
             >
               {sidebarContent}
             </motion.aside>
@@ -135,7 +135,7 @@ const AdminLayout = () => {
       </AnimatePresence>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex static inset-y-0 left-0 z-50 w-64 bg-[#0d0914]/60 backdrop-blur-2xl border-r border-purple-900/30 flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)]">
+      <aside className="hidden md:flex static inset-y-0 left-0 z-50 w-64 bg-zinc-900  border-r border-zinc-800 flex-col shadow-2xl">
         {sidebarContent}
       </aside>
 

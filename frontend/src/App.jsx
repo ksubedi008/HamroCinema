@@ -23,6 +23,7 @@ import Checkout from './pages/customer/Checkout'
 import MyTickets from './pages/customer/MyTickets'
 import PrivacyPolicy from './pages/customer/PrivacyPolicy'
 import TermsOfService from './pages/customer/TermsOfService'
+import CookieBanner from './components/CookieBanner'
 
 function App() {
   return (

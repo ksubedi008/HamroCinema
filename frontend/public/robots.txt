@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /cinema-hq-99x/
+Disallow: /my-tickets/
+Disallow: /checkout/
+
+Sitemap: https://hamrocinema.com/sitemap.xml

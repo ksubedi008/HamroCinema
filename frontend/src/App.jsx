@@ -23,6 +23,7 @@ import Checkout from './pages/customer/Checkout'
 import MyTickets from './pages/customer/MyTickets'
 import PrivacyPolicy from './pages/customer/PrivacyPolicy'
 import TermsOfService from './pages/customer/TermsOfService'
+import NotFound from './pages/customer/NotFound'
 import PreferencesWidget from './components/PreferencesWidget'
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
           
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<TermsOfService />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
         
         {/* Auth Routes */}

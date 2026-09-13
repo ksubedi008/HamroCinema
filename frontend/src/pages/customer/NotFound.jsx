@@ -1,0 +1,53 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
+
+const NotFound = () => {
+    return (
+        <div className="min-h-[70vh] w-full flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 relative z-10 font-sans">
+            <SEO title="404 - Not Found | HamroCinema" description="The page you are looking for does not exist." />
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+                className="max-w-2xl w-full bg-[#1a1225]/60 backdrop-blur-2xl border border-purple-500/30 rounded-3xl p-10 md:p-16 shadow-[0_0_50px_rgba(147,51,234,0.15)] flex flex-col items-center text-center relative overflow-hidden"
+            >
+                {/* Decorative Elements */}
+                <div className="absolute top-[-50%] left-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-900/20 blur-[100px] pointer-events-none"></div>
+                <div className="absolute bottom-[-50%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-900/20 blur-[100px] pointer-events-none"></div>
+
+                <motion.h1 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.8 }}
+                    className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 tracking-tighter mb-4"
+                >
+                    404
+                </motion.h1>
+                
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 uppercase tracking-widest">
+                    Transmission Lost
+                </h2>
+                
+                <p className="text-gray-400 text-lg mb-10 max-w-md leading-relaxed">
+                    It looks like this screening does not exist. The page you are looking for has been moved, deleted, or was a glitch in the matrix.
+                </p>
+
+                <Link 
+                    to="/"
+                    className="group relative px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold tracking-wider overflow-hidden shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:shadow-[0_0_35px_rgba(34,211,238,0.5)] transition-all duration-300"
+                >
+                    <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <span className="relative z-10 flex items-center gap-2">
+                        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        Return to Home
+                    </span>
+                </Link>
+            </motion.div>
+        </div>
+    );
+};
+
+export default NotFound;

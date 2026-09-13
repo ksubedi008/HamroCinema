@@ -30,7 +30,10 @@ const Home = () => {
 
     return (
         <div className="w-full pb-20 animate-fade-in">
-            <SEO title="HamroCinema | Book Movie Tickets Online" />
+            <SEO 
+                title="Now Showing | HamroCinema" 
+                description="Book premium movie tickets online at HamroCinema. Browse showtimes, select your favorite seats, and experience the magic of cinema."
+            />
             {/* Hero Banner */}
             {featuredMovie && (
                 <motion.div 

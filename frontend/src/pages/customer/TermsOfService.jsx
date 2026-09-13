@@ -9,7 +9,10 @@ const TermsOfService = () => {
 
     return (
         <div className="w-full pb-20 pt-12 animate-fade-in relative z-10 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-            <SEO title="Terms of Service | HamroCinema" />
+            <SEO 
+                title="Terms of Service | HamroCinema" 
+                description="Read the Terms of Service for HamroCinema. Learn about our ticketing policies, refunds, and user conduct."
+            />
             
             <div className="text-center mb-12">
                 <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 tracking-tight mb-4">

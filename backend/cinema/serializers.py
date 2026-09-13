@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django.db.models import Q
+from django.db import transaction
 from rest_framework import serializers
 from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem
 
@@ -86,3 +87,25 @@ class TicketItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketItem
         fields = '__all__'
+
+    def validate(self, data):
+        seat = data.get('seat')
+        showtime = data.get('showtime')
+
+        if seat and showtime:
+            with transaction.atomic():
+                # Pessimistic Locking: Lock the specific Seat row.
+                # Any concurrent request trying to book this exact seat will wait here 
+                # until this transaction completes, preventing double-bookings.
+                try:
+                    locked_seat = Seat.objects.select_for_update(nowait=False).get(id=seat.id)
+                except Seat.DoesNotExist:
+                    raise serializers.ValidationError("Seat does not exist.")
+
+                # With the row exclusively locked, we can safely check for existing tickets
+                if TicketItem.objects.filter(seat=locked_seat, showtime=showtime).exists():
+                    raise serializers.ValidationError({
+                        "seat": "CRITICAL: This seat has already been booked by another user."
+                    })
+        
+        return data

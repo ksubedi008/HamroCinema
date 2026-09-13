@@ -2,24 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const CookieBanner = () => {
+const PreferencesWidget = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        // Check localStorage on mount
-        const consent = localStorage.getItem('cookieConsent');
-        if (!consent) {
-            setIsVisible(true);
+        try {
+            const consent = localStorage.getItem('sitePreferencesConsent');
+            if (!consent) {
+                setIsVisible(true);
+            }
+        } catch (e) {
+            console.warn("Storage access restricted by browser.");
         }
     }, []);
 
     const handleAccept = () => {
-        localStorage.setItem('cookieConsent', 'true');
+        try {
+            localStorage.setItem('sitePreferencesConsent', 'true');
+        } catch (e) {}
         setIsVisible(false);
     };
 
     const handleDecline = () => {
-        localStorage.setItem('cookieConsent', 'false');
+        try {
+            localStorage.setItem('sitePreferencesConsent', 'false');
+        } catch (e) {}
         setIsVisible(false);
     };
 
@@ -36,10 +43,10 @@ const CookieBanner = () => {
                     <div className="flex flex-col gap-4">
                         <div>
                             <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
-                                🍪 Cookie Preferences
+                                🛡️ Site Preferences
                             </h3>
                             <p className="text-gray-300 text-sm leading-relaxed">
-                                HamroCinema uses cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. Read more in our <Link to="/privacy-policy" className="text-cyan-400 hover:text-cyan-300 transition-colors underline underline-offset-4">Privacy Policy</Link>.
+                                HamroCinema uses basic diagnostic data to enhance your browsing experience and serve personalized content. Read more in our <Link to="/privacy-policy" className="text-cyan-400 hover:text-cyan-300 transition-colors underline underline-offset-4">Privacy Policy</Link>.
                             </p>
                         </div>
                         <div className="flex items-center gap-3 mt-1">
@@ -63,4 +70,4 @@ const CookieBanner = () => {
     );
 };
 
-export default CookieBanner;
+export default PreferencesWidget;

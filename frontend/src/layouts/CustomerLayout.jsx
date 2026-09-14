@@ -34,7 +34,10 @@ const CustomerLayout = () => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity z-50">
-              <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto" />
+              <div className="flex items-center gap-3">
+                <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto invert" />
+                <span className="text-xl font-bold tracking-widest text-zinc-100 uppercase">HamroCinema</span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -151,7 +154,8 @@ const CustomerLayout = () => {
             {/* Brand Column */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto" />
+                <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto invert" />
+                <span className="text-xl font-bold tracking-widest text-zinc-100 uppercase">HamroCinema</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-sm mb-8">
                 Your premium destination for the ultimate cinematic experience. Book tickets, choose your favorite seats, and enjoy the show in stunning quality.

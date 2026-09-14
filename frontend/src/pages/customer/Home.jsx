@@ -47,9 +47,9 @@ const Home = () => {
                         {featuredMovie.poster ? (
                             <img src={featuredMovie.poster} alt={featuredMovie.title} className="w-full h-full object-cover opacity-30 md:opacity-40 blur-[4px] md:blur-[2px]" />
                         ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-purple-900 to-[#0d0914] opacity-50"></div>
+                            <div className="w-full h-full bg-gradient-to-b from-stone-800/50 to-stone-950 opacity-50"></div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0914] via-[#0d0914]/80 to-[#0d0914]/20 md:to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-stone-950/20 md:to-transparent"></div>
                     </div>
 
                     {/* Content */}
@@ -58,7 +58,7 @@ const Home = () => {
                             <img src={featuredMovie.poster} alt={featuredMovie.title} className="hidden md:block w-48 lg:w-64 rounded-2xl shadow-lg border border-zinc-800" />
                         )}
                         <div className="max-w-2xl text-center md:text-left mt-8 md:mt-0">
-                            <span className="px-3 py-1 bg-purple-600 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider rounded-full mb-3 md:mb-4 inline-block">Now Showing</span>
+                            <span className="px-3 py-1 bg-amber-700 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider rounded-full mb-3 md:mb-4 inline-block">Now Showing</span>
                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight mb-3 md:mb-4 drop-shadow-lg">{featuredMovie.title}</h1>
                             <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-gray-300 font-medium mb-4 md:mb-6">
                                 <span>{featuredMovie.duration} mins</span>
@@ -67,8 +67,8 @@ const Home = () => {
                                 <span className="hidden sm:inline">•</span>
                                 <span>{new Date(featuredMovie.release_date).getFullYear()}</span>
                             </div>
-                            <p className="text-gray-400 text-sm md:text-lg mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 px-4 md:px-0">{featuredMovie.description}</p>
-                            <Link to={`/movie/${featuredMovie.id}`} className="px-6 py-3 md:px-8 md:py-4 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-500 hover:shadow-xl transition-all inline-flex items-center gap-2 text-sm md:text-lg">
+                            <p className="text-stone-300 text-sm md:text-lg mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 px-4 md:px-0">{featuredMovie.description}</p>
+                            <Link to={`/movie/${featuredMovie.id}`} className="px-6 py-3 md:px-8 md:py-4 bg-amber-700 text-white font-bold rounded-full hover:bg-amber-800 hover:shadow-xl transition-all inline-flex items-center gap-2 text-sm md:text-lg">
                                 Book Tickets
                                 <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                             </Link>
@@ -104,18 +104,18 @@ const Home = () => {
                                     {movie.poster ? (
                                         <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-purple-900/50 to-[#0d0914] flex items-center justify-center text-gray-600 text-xs md:text-base">No Poster</div>
+                                        <div className="w-full h-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
                                     )}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
                                     
                                     {/* Hover Overlay Button */}
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
-                                        <span className="px-4 py-2 md:px-6 md:py-2 bg-purple-600 text-white font-bold rounded-full shadow-lg text-xs md:text-base">Book Now</span>
+                                        <span className="px-4 py-2 md:px-6 md:py-2 bg-amber-700 text-white font-bold rounded-full shadow-lg text-xs md:text-base">Book Now</span>
                                     </div>
                                 </div>
-                                <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-[#1a1225] to-[#1a1225]/90">
+                                <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
                                     <h3 className="font-bold text-white text-base md:text-lg truncate mb-1">{movie.title}</h3>
-                                    <p className="text-xs md:text-sm text-gray-400 truncate">{movie.genre}</p>
+                                    <p className="text-xs md:text-sm text-stone-400 truncate">{movie.genre}</p>
                                 </div>
                             </Link>
                             </motion.div>
@@ -145,7 +145,7 @@ const Home = () => {
                                     {movie.poster ? (
                                         <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" />
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-yellow-900/30 to-[#0d0914] flex items-center justify-center text-gray-600 text-xs md:text-base">No Poster</div>
+                                        <div className="w-full h-full bg-gradient-to-br from-amber-900/30 to-stone-950 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
                                     )}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
                                     
@@ -155,9 +155,9 @@ const Home = () => {
                                         <span className="text-white font-bold text-xs md:text-sm bg-black/50 px-3 py-1 md:px-4 md:py-1 rounded-full">View Info</span>
                                     </div>
                                 </div>
-                                <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-[#1a1225] to-[#1a1225]/90">
+                                <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
                                     <h3 className="font-bold text-white text-base md:text-lg truncate mb-1">{movie.title}</h3>
-                                    <p className="text-[10px] md:text-sm text-yellow-500 font-medium truncate mb-1">
+                                    <p className="text-[10px] md:text-sm text-amber-500 font-medium truncate mb-1">
                                         Releases: {new Date(movie.release_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                     </p>
                                     <p className="text-xs md:text-sm text-gray-400 truncate">{movie.genre}</p>

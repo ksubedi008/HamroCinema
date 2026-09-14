@@ -41,15 +41,8 @@ const SeatSelection = () => {
         fetchDetails();
     }, [id]);
 
-    const getPrice = (tier, startTimeStr) => {
-        const hour = new Date(startTimeStr).getHours();
-        let shift = 'Night';
-        if (hour < 12) shift = 'Morning';
-        else if (hour < 17) shift = 'Day';
-
-        if (shift === 'Morning') return tier === 'Gold' ? 150 : 120;
-        if (shift === 'Day') return tier === 'Gold' ? 220 : 150;
-        return tier === 'Gold' ? 300 : 220; // Night
+    const getPrice = (tier, showtime) => {
+        return showtime.price ? parseFloat(showtime.price) : 250;
     };
 
     const handleSeatClick = (seat) => {
@@ -76,7 +69,7 @@ const SeatSelection = () => {
     if (loading) return <div className="flex justify-center py-40"><div className="w-12 h-12 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div></div>;
     if (!showtime) return <div className="text-center py-40 text-red-400">Showtime not found.</div>;
 
-    const totalPrice = selectedSeats.reduce((sum, seat) => sum + getPrice(seat.tier, showtime.start_time), 0);
+    const totalPrice = selectedSeats.reduce((sum, seat) => sum + getPrice(seat.tier, showtime), 0);
 
     // Group seats by Row (assuming seat_label is like A1, A2, B1)
     const rowMap = {};
@@ -159,7 +152,7 @@ const SeatSelection = () => {
                                                         key={seat.id} 
                                                         className={seatClass}
                                                         onClick={() => handleSeatClick(seat)}
-                                                        title={`${seat.seat_label} - Rs. ${getPrice(seat.tier, showtime.start_time)}`}
+                                                        title={`${seat.seat_label} - Rs. ${getPrice(seat.tier, showtime)}`}
                                                     >
                                                         {seat.seat_label}
                                                     </div>
@@ -202,7 +195,7 @@ const SeatSelection = () => {
                                                     <p className="text-white font-bold">{seat.seat_label}</p>
                                                     <p className="text-xs text-rose-500">{seat.tier}</p>
                                                 </div>
-                                                <p className="text-white font-medium">Rs. {getPrice(seat.tier, showtime.start_time)}</p>
+                                                <p className="text-white font-medium">Rs. {getPrice(seat.tier, showtime)}</p>
                                             </div>
                                         ))}
                                     </div>

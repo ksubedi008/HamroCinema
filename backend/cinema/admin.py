@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem
+from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
@@ -15,3 +15,8 @@ admin.site.register(Showtime)
 admin.site.register(Seat)
 admin.site.register(Booking)
 admin.site.register(TicketItem)
+
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'is_read', 'created_at')
+
+admin.site.register(ContactMessage, ContactMessageAdmin)

@@ -40,13 +40,84 @@ class TheaterScreen(models.Model):
         return self.screen_name
 
 class Showtime(models.Model):
+    SHIFT_CHOICES = (
+        ('Morning', 'Morning'),
+        ('Day', 'Day'),
+        ('Night', 'Night'),
+    )
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='showtimes')
     screen = models.ForeignKey(TheaterScreen, on_delete=models.CASCADE, related_name='showtimes')
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    date = models.DateField(null=True)
+    shift = models.CharField(max_length=20, choices=SHIFT_CHOICES, null=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not self.date or not self.shift:
+            raise ValidationError("Date and shift are required.")
+            
+        overlapping = Showtime.objects.filter(screen=self.screen, date=self.date, shift=self.shift)
+        if self.pk:
+            overlapping = overlapping.exclude(pk=self.pk)
+            
+        if overlapping.exists():
+            raise ValidationError(f"A {self.shift} showtime already exists for {self.screen.screen_name} on {self.date}.")
+
+    def save(self, *args, **kwargs):
+        from datetime import datetime, timedelta
+        
+        # Infer legacy data if missing
+        if not self.date and self.start_time:
+            self.date = self.start_time.date()
+        if not self.shift and self.start_time:
+            hour = self.start_time.hour
+            if hour < 12:
+                self.shift = 'Morning'
+            elif hour < 17:
+                self.shift = 'Day'
+            else:
+                self.shift = 'Night'
+        
+        time_str = '00:00:00'
+        if self.shift == 'Morning':
+            time_str = '09:00:00'
+            self.price = 150
+        elif self.shift == 'Day':
+            time_str = '13:00:00'
+            self.price = 250
+        elif self.shift == 'Night':
+            time_str = '18:00:00'
+            self.price = 250
+            
+        if self.date and self.shift:
+            dt_str = f"{self.date} {time_str}"
+            self.start_time = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+            
+            if self.movie and self.movie.duration:
+                self.end_time = self.start_time + timedelta(minutes=self.movie.duration)
+                
+        self.full_clean()
+        super().save(*args, **kwargs)
+        
+        # Ensure 100-seat grid exists for the screen
+        if self.screen.seats.count() < 100:
+            rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+            for row in rows:
+                for num in range(1, 11):
+                    seat_label = f"{row}{num}"
+                    tier = 'Gold' if row in ['I', 'J'] else 'Silver' if row in ['E', 'F', 'G', 'H'] else 'Platinum' if row in ['A', 'B'] else 'Gold'
+                    Seat.objects.get_or_create(
+                        screen=self.screen,
+                        seat_label=seat_label,
+                        defaults={'tier': tier}
+                    )
 
     def __str__(self):
-        return f"{self.movie.title} - {self.screen.screen_name} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
+        if self.start_time:
+            return f"{self.movie.title} - {self.screen.screen_name} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
+        return f"{self.movie.title} - {self.screen.screen_name} ({self.date} {self.shift})"
 
 class Seat(models.Model):
     TIER_CHOICES = (
@@ -97,3 +168,13 @@ class TicketItem(models.Model):
 
     def __str__(self):
         return f"{self.showtime} - {self.seat.seat_label} ({self.lock_status})"
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Message from {self.name} ({self.email})"

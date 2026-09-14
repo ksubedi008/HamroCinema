@@ -3,13 +3,27 @@ import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
-const MyTickets = () => {
+const UserBookingHistory = () => {
     const { user } = useContext(AuthContext);
     const location = useLocation();
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const successMessage = location.state?.successMessage;
+    const queryParams = new URLSearchParams(location.search);
+    const paymentStatus = queryParams.get('payment');
+
+    let successMessage = location.state?.successMessage;
+    let errorMessage = null;
+
+    if (paymentStatus === 'success') {
+        successMessage = "Payment successful! Your tickets are confirmed and you've earned Loyalty Points.";
+    } else if (paymentStatus === 'failed') {
+        errorMessage = "Payment failed or was cancelled. Your booking remains pending.";
+    } else if (paymentStatus === 'signature_failed') {
+        errorMessage = "Payment verification failed due to invalid signature.";
+    } else if (paymentStatus === 'error') {
+        errorMessage = "An error occurred while verifying your payment.";
+    }
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -48,7 +62,6 @@ const MyTickets = () => {
             fetchBookings();
         }
     }, [user]);
-
     if (loading) return <div className="flex justify-center py-40"><div className="w-12 h-12 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
     return (
@@ -62,8 +75,17 @@ const MyTickets = () => {
                         </div>
                     </div>
                 )}
+                
+                {errorMessage && (
+                    <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl mb-8 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span className="font-medium">{errorMessage}</span>
+                        </div>
+                    </div>
+                )}
 
-                <h1 className="text-3xl font-black text-white mb-8 border-l-4 border-rose-500 pl-4">My Tickets</h1>
+                <h1 className="text-3xl font-black text-white mb-8 border-l-4 border-amber-500 pl-4">Booking History</h1>
 
                 {bookings.length === 0 ? (
                     <div className="bg-zinc-950 border border-zinc-800 p-12 rounded-3xl text-center">
@@ -107,7 +129,7 @@ const MyTickets = () => {
                                             <p className="text-gray-400 text-sm mb-3">Seats ({booking.tickets.length})</p>
                                             <div className="flex flex-wrap gap-2 mb-6">
                                                 {booking.tickets.map(t => (
-                                                    <span key={t.id} className="px-3 py-1 bg-zinc-950 border border-zinc-800 text-rose-500 rounded-lg text-sm font-bold">
+                                                    <span key={t.id} className="px-3 py-1 bg-zinc-950 border border-zinc-800 text-amber-500 rounded-lg text-sm font-bold">
                                                         {t.seat_label}
                                                     </span>
                                                 ))}
@@ -154,4 +176,4 @@ const MyTickets = () => {
     );
 };
 
-export default MyTickets;
+export default UserBookingHistory;

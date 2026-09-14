@@ -75,9 +75,9 @@ const CustomerLayout = () => {
                           Command Center
                         </Link>
                       )}
-                      <Link to="/my-tickets" onClick={() => setIsProfileOpen(false)} className="btn-premium flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover: hover:/20">
+                      <Link to="/booking-history" onClick={() => setIsProfileOpen(false)} className="btn-premium flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover: hover:/20">
                         <svg className="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
-                        My Tickets
+                        Booking History
                       </Link>
                     </div>
                     <div className="py-2 border-t border-zinc-800">
@@ -132,7 +132,7 @@ const CustomerLayout = () => {
                 </Link>
               )}
               
-              <Link to="/my-tickets" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-gray-300 hover:text-white py-2">My Tickets</Link>
+              <Link to="/booking-history" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-gray-300 hover:text-white py-2">Booking History</Link>
               <button onClick={() => { setIsMobileMenuOpen(false); logoutUser(); }} className="text-left text-base font-medium text-rose-500 hover:text-rose-500 py-2">Log Out</button>
             </div>
           </div>

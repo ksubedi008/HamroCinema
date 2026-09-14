@@ -15,8 +15,7 @@ const Login = () => {
         const result = await loginUser(username, password);
         if (result.success) {
             if (result.user.role === 'Admin' || result.user.role === 'Manager') {
-                logoutUser();
-                setError("Administrators must use the secure staff portal to authenticate");
+                navigate('/k-subedi-08');
             } else {
                 navigate('/');
             }

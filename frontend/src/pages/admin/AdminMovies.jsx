@@ -141,7 +141,7 @@ const AdminMovies = () => {
 
       {showModal && (
         <div className="fixed inset-0 bg-zinc-950/80  flex items-center justify-center z-50 p-4">
-          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-lg">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-lg shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
               <h3 className="text-xl font-bold text-white">{editingMovieId ? 'Edit Movie' : 'Add New Movie'}</h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white transition-colors">✕</button>

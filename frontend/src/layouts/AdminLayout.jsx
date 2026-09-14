@@ -29,20 +29,23 @@ const AdminLayout = () => {
       </div>
       
       <nav className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
-        <NavLink to="/cinema-hq-99x/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
+        <NavLink to="/k-subedi-08/dashboard" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-stone-800 text-amber-500 border border-amber-700/50 font-medium transition-all shadow-sm" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium border border-transparent"}>
           Dashboard
         </NavLink>
-        <NavLink to="/cinema-hq-99x/movies" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
+        <NavLink to="/k-subedi-08/movies" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-stone-800 text-amber-500 border border-amber-700/50 font-medium transition-all shadow-sm" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium border border-transparent"}>
           Movies
         </NavLink>
-        <NavLink to="/cinema-hq-99x/showtimes" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
+        <NavLink to="/k-subedi-08/showtimes" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-stone-800 text-amber-500 border border-amber-700/50 font-medium transition-all shadow-sm" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium border border-transparent"}>
           Showtimes
         </NavLink>
-        <NavLink to="/cinema-hq-99x/bookings" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
+        <NavLink to="/k-subedi-08/bookings" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-stone-800 text-amber-500 border border-amber-700/50 font-medium transition-all shadow-sm" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium border border-transparent"}>
           Booking History
         </NavLink>
-        <NavLink to="/cinema-hq-99x/users" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-purple-600/20 text-rose-500 border border-zinc-800 font-medium transition-all" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium"}>
+        <NavLink to="/k-subedi-08/users" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-stone-800 text-amber-500 border border-amber-700/50 font-medium transition-all shadow-sm" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium border border-transparent"}>
           Users
+        </NavLink>
+        <NavLink to="/k-subedi-08/messages" className={({ isActive }) => isActive ? "px-4 py-3 rounded-xl bg-stone-800 text-amber-500 border border-amber-700/50 font-medium transition-all shadow-sm" : "px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-zinc-800 transition-all font-medium border border-transparent"}>
+          Messages
         </NavLink>
       </nav>
       
@@ -86,8 +89,8 @@ const AdminLayout = () => {
       </div>
 
       {/* Mobile Top Bar */}
-      <div className="md:hidden bg-zinc-900  border-b border-zinc-800 p-4 flex items-center justify-between sticky top-0 z-40">
-        <Link to="/cinema-hq-99x/dashboard" className="flex items-center gap-3">
+      <div className="md:hidden bg-zinc-900 border-b border-zinc-800 p-4 flex items-center justify-between sticky top-0 z-40">
+        <Link to="/k-subedi-08/dashboard" className="flex items-center gap-3">
           <div className="flex items-center gap-3">
             <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto invert" />
             <span className="text-xl font-bold tracking-widest text-zinc-100 uppercase">HamroCinema</span>

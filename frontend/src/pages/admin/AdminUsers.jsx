@@ -4,25 +4,63 @@ import axios from 'axios';
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/`);
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/`);
-        setUsers(res.data);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-      setLoading(false);
-    };
-
     fetchUsers();
   }, []);
 
+  const toggleUserStatus = async (id, currentStatus) => {
+    try {
+      const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null;
+      await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${id}/`, 
+        { is_active: !currentStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchUsers();
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
+    }
+  };
+
+  const filteredUsers = users.filter(user => {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    const emailMatch = user.email ? user.email.toLowerCase().includes(searchLower) : false;
+    const userMatch = user.username ? user.username.toLowerCase().includes(searchLower) : false;
+    return emailMatch || userMatch;
+  });
+
   return (
     <div className="animate-fade-in space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white">Registered Users</h2>
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h1 className="text-3xl font-bold text-white border-l-4 border-amber-500 pl-4 tracking-wider">User Management</h1>
+            <p className="text-gray-400 mt-1 pl-4">Manage and monitor customer accounts.</p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <div className="relative">
+                <input 
+                    type="text" 
+                    placeholder="Search by username or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full sm:w-64 bg-zinc-900 border border-zinc-800 text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 transition-colors"
+                />
+            </div>
+        </div>
       </div>
 
       <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-x-auto w-full shadow-lg">
@@ -34,11 +72,12 @@ const AdminUsers = () => {
               <th className="px-6 py-4">Email</th>
               <th className="px-6 py-4">Role</th>
               <th className="px-6 py-4">Joined Date</th>
-              <th className="px-6 py-4 text-right">Status</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-purple-900/20">
-            {users.map(user => (
+            {filteredUsers.map(user => (
               <tr key={user.id} className="hover:bg-zinc-800 transition-colors">
                 <td className="px-6 py-4">{user.id}</td>
                 <td className="px-6 py-4 font-bold text-white">{user.username}</td>
@@ -49,17 +88,25 @@ const AdminUsers = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4">{new Date(user.date_joined).toLocaleDateString()}</td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-4">
                   {user.is_active ? (
-                     <span className="text-green-400 font-medium">Active</span>
+                     <span className="text-green-400 font-medium bg-green-500/10 px-2 py-1 rounded text-xs border border-green-500/20">Active</span>
                   ) : (
-                     <span className="text-red-400 font-medium">Inactive</span>
+                     <span className="text-red-400 font-medium bg-red-500/10 px-2 py-1 rounded text-xs border border-red-500/20">Suspended</span>
                   )}
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <button 
+                        onClick={() => toggleUserStatus(user.id, user.is_active)}
+                        className={`text-xs px-3 py-1.5 rounded-lg transition-colors font-bold uppercase tracking-wider ${user.is_active ? 'bg-zinc-900 text-rose-500 hover:bg-rose-500/20 border border-zinc-800' : 'bg-amber-700 text-white hover:bg-amber-800 border border-amber-700/50'}`}
+                    >
+                        {user.is_active ? 'Suspend' : 'Activate'}
+                    </button>
                 </td>
               </tr>
             ))}
-            {users.length === 0 && !loading && (
-              <tr><td colSpan="6" className="px-6 py-8 text-center text-gray-500">No users registered yet.</td></tr>
+            {filteredUsers.length === 0 && !loading && (
+              <tr><td colSpan="7" className="px-6 py-8 text-center text-gray-500">No users found.</td></tr>
             )}
           </tbody>
         </table>

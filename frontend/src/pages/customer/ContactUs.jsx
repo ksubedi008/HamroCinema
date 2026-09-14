@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import SEO from '../../components/SEO';
 import { motion } from 'framer-motion';
 
 const ContactUs = () => {
     const [status, setStatus] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setStatus('Message sent successfully! We will get back to you soon.');
-        e.target.reset();
-        setTimeout(() => setStatus(''), 5000);
+        try {
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/contact-messages/`, {
+                name: e.target.name.value,
+                email: e.target.email.value,
+                message: e.target.message.value
+            });
+            setStatus('Message sent successfully! We will get back to you soon.');
+            e.target.reset();
+            setTimeout(() => setStatus(''), 5000);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            setStatus('Failed to send message. Please try again later.');
+        }
     };
 
     return (

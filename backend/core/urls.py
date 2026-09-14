@@ -26,7 +26,7 @@ def api_root(request):
 
 urlpatterns = [
     path('', api_root, name='api-root'),
-    path('django-hq-secure-99x/', admin.site.urls),
+    path('k-subedi-08-backend/', admin.site.urls),
     path('api/', include('cinema.urls')),
 ]
 

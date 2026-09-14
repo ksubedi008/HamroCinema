@@ -9,7 +9,12 @@ const MovieDetails = () => {
     const [movie, setMovie] = useState(null);
     const [showtimes, setShowtimes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [expandedDates, setExpandedDates] = useState({});
     const [expandedScreens, setExpandedScreens] = useState({});
+
+    const toggleDate = (dateStr) => {
+        setExpandedDates(prev => ({ ...prev, [dateStr]: !prev[dateStr] }));
+    };
 
     const toggleScreen = (dateStr, screenName) => {
         const key = `${dateStr}-${screenName}`;
@@ -28,15 +33,14 @@ const MovieDetails = () => {
                 // Filter showtimes for this movie that haven't ended yet
                 const now = new Date();
                 const validShowtimes = showRes.data.filter(st => {
-                    // We still keep showtimes if they haven't ended, 
-                    // but we will disable them if they start in less than 15 mins.
+                    if (!st.date || !st.shift) return false;
                     const stEnd = new Date(st.end_time);
                     return st.movie.toString() === id.toString() && stEnd > now;
                 });
                 
                 // Group by date, then by screen
                 const grouped = validShowtimes.reduce((acc, st) => {
-                    const dateStr = new Date(st.start_time).toLocaleDateString();
+                    const dateStr = st.date; // Use the strict string from backend
                     if (!acc[dateStr]) acc[dateStr] = {};
                     
                     const screenName = st.screen_name;
@@ -100,6 +104,8 @@ const MovieDetails = () => {
                         <span className="px-3 py-1 bg-zinc-800 border border-zinc-800 rounded-full text-sm text-gray-300">{movie.genre}</span>
                         <span className="px-3 py-1 bg-zinc-800 border border-zinc-800 rounded-full text-sm text-gray-300">{new Date(movie.release_date).toLocaleDateString()}</span>
                     </div>
+                    {movie.director && <p className="text-gray-300 font-medium mb-1">Director: <span className="text-amber-500">{movie.director}</span></p>}
+                    {movie.cast && <p className="text-gray-300 font-medium mb-6">Cast: <span className="text-gray-400">{movie.cast}</span></p>}
                     <p className="text-gray-400 text-lg leading-relaxed mb-12">{movie.description}</p>
                 </div>
             </div>
@@ -125,19 +131,33 @@ const MovieDetails = () => {
                         <p className="text-sm text-gray-500 mt-2">Check back later or browse other movies.</p>
                     </div>
                 ) : (
-                    <div className="space-y-8">
-                        {Object.entries(showtimes).sort((a,b) => new Date(a[0]) - new Date(b[0])).map(([date, screens]) => (
-                            <div key={date} className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 md:p-8">
-                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-zinc-800 pb-4">
-                                    <svg className="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    {new Date(date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-                                </h3>
+                    <div className="space-y-4">
+                        {Object.entries(showtimes).sort((a,b) => new Date(a[0]) - new Date(b[0])).map(([date, screens], index) => {
+                            // Expand the first date by default
+                            const isDateExpanded = expandedDates[date] !== undefined ? expandedDates[date] : index === 0;
+                            // Format the YYYY-MM-DD to a nice string
+                            const dateObj = new Date(date);
+                            const formattedDate = !isNaN(dateObj) ? dateObj.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }) : date;
+                            
+                            return (
+                            <div key={date} className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg">
+                                <button 
+                                    onClick={() => toggleDate(date)}
+                                    className="w-full px-6 py-5 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-900 transition-colors"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <svg className="w-6 h-6 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                        <span className="font-bold text-white text-xl">{formattedDate}</span>
+                                    </div>
+                                    <svg className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${isDateExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </button>
                                 
-                                <div className="space-y-4">
+                                {isDateExpanded && (
+                                <div className="p-4 md:p-6 space-y-4 bg-zinc-950">
                                     {Object.entries(screens).map(([screenName, times]) => {
                                         const isExpanded = expandedScreens[`${date}-${screenName}`];
                                         return (
-                                            <div key={screenName} className="border border-zinc-800 rounded-2xl overflow-hidden bg-zinc-950">
+                                            <div key={screenName} className="border border-zinc-800 rounded-2xl overflow-hidden bg-zinc-950 shadow-md">
                                                 <button 
                                                     onClick={() => toggleScreen(date, screenName)}
                                                     className="w-full px-6 py-4 flex items-center justify-between bg-zinc-950 hover:bg-stone-900 transition-colors"
@@ -152,32 +172,37 @@ const MovieDetails = () => {
                                                 </button>
 
                                                 {isExpanded && (
-                                                    <div className="p-6 border-t border-zinc-800 flex flex-wrap gap-4 animate-fade-in">
+                                                    <div className="p-6 border-t border-zinc-800 flex flex-wrap gap-4 animate-fade-in bg-[#0a0a0a]">
                                                         {times.sort((a,b) => new Date(a.start_time) - new Date(b.start_time)).map(st => {
-                                                            const startTime = new Date(st.start_time);
-                                                            const shift = startTime.getHours() < 12 ? 'Morning' : startTime.getHours() < 17 ? 'Day' : 'Night';
+                                                            const shift = st.shift;
+                                                            let formattedTime = "00:00";
+                                                            if (shift === 'Morning') formattedTime = "09:00 AM";
+                                                            else if (shift === 'Day') formattedTime = "01:00 PM";
+                                                            else if (shift === 'Night') formattedTime = "06:00 PM";
                                                             
-                                                            // Calculate if it's within 15 minutes of starting
+                                                            // Calculate if it's within 15 minutes of starting based on absolute Date parsing (backend provides reliable ISO string now)
+                                                            const startTime = new Date(st.start_time);
                                                             const cutoffTime = startTime.getTime() - (15 * 60 * 1000);
                                                             const isClosed = Date.now() >= cutoffTime;
                                                             
                                                             if (isClosed) {
                                                                 return (
-                                                                    <div key={st.id} className="flex flex-col items-center justify-center bg-gray-900 border border-gray-800 rounded-xl p-4 min-w-[120px] opacity-60 cursor-not-allowed">
-                                                                        <span className="text-lg font-bold text-gray-500 mb-1 line-through">
-                                                                            {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                    <div key={st.id} className="flex flex-col items-center justify-center bg-gray-900 border border-gray-800 rounded-xl p-4 min-w-[140px] opacity-60 cursor-not-allowed">
+                                                                        <span className="text-lg font-black text-gray-500 mb-1 line-through tracking-wider">
+                                                                            {formattedTime}
                                                                         </span>
-                                                                        <span className="text-xs text-red-400 font-medium">Booking Closed</span>
+                                                                        <span className="text-xs text-red-400 font-bold uppercase">Booking Closed</span>
                                                                     </div>
                                                                 );
                                                             }
 
                                                             return (
-                                                                <Link key={st.id} to={`/book/${st.id}`} className="group flex flex-col items-center justify-center bg-zinc-950 border border-zinc-800 hover:border-amber-700 hover:bg-stone-900 rounded-xl p-4 min-w-[120px] transition-all hover:-translate-y-1 hover:shadow-xl">
-                                                                    <span className="text-lg font-bold text-white mb-1 group-hover:text-amber-500 transition-colors">
-                                                                        {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                <Link key={st.id} to={`/book/${st.id}`} className="group flex flex-col items-center justify-center bg-zinc-950 border border-zinc-800 hover:border-amber-700 hover:bg-stone-900 rounded-xl p-4 min-w-[140px] transition-all hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(217,119,6,0.15)] relative overflow-hidden">
+                                                                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                                    <span className="text-lg font-black text-white mb-1 group-hover:text-amber-500 transition-colors tracking-wider relative z-10">
+                                                                        {formattedTime}
                                                                     </span>
-                                                                    <span className="text-xs text-amber-500/70 group-hover:text-amber-500">{shift}</span>
+                                                                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest group-hover:text-amber-600 transition-colors relative z-10">{shift}</span>
                                                                 </Link>
                                                             );
                                                         })}
@@ -187,8 +212,9 @@ const MovieDetails = () => {
                                         );
                                     })}
                                 </div>
+                                )}
                             </div>
-                        ))}
+                        )})}
                     </div>
                 )}
                     </>

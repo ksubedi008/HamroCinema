@@ -34,13 +34,12 @@ const Checkout = () => {
         setError('');
         
         try {
-            // 1. Create the booking
+            // 1. Create the booking as Pending
             const bookingRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`, {
                 user: user.id,
                 showtime: showtime.id,
                 total_amount: finalPrice,
-                payment_status: 'Completed', // Simulating successful eSewa payment
-                esewa_ref_id: 'SIMULATED_TEST'
+                payment_status: 'Pending',
             });
 
             const bookingId = bookingRes.data.id;
@@ -57,19 +56,39 @@ const Checkout = () => {
 
             await Promise.all(ticketPromises);
 
-            // 3. Update Loyalty Points
-            const pointsEarned = selectedSeats.length * 10;
-            const newPointBalance = (user.loyalty_points || 0) - pointsToUse + pointsEarned;
-            
-            await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user.id}/`, {
-                loyalty_points: newPointBalance
-            });
-            
-            // Sync context
-            updateUserPoints(newPointBalance);
+            // 3. Handle Loyalty Points subtraction on client
+            if (pointsToUse > 0) {
+                const newPointBalance = (user.loyalty_points || 0) - pointsToUse;
+                await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user.id}/`, {
+                    loyalty_points: newPointBalance
+                });
+                updateUserPoints(newPointBalance);
+            }
 
-            // 4. Navigate to success/dashboard
-            navigate('/my-tickets', { state: { successMessage: `Tickets booked! You earned ${pointsEarned} Loyalty Points.` } });
+            // 4. Request eSewa payload from backend
+            const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null;
+            const payloadRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payments/initiate/`, 
+                { booking_id: bookingId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const payload = payloadRes.data;
+
+            // 5. Dynamically build and submit the eSewa form
+            const form = document.createElement("form");
+            form.setAttribute("method", "POST");
+            form.setAttribute("action", "https://rc-epay.esewa.com.np/api/epay/main/v2/form");
+
+            for (const key in payload) {
+                const hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", payload[key]);
+                form.appendChild(hiddenField);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
 
         } catch (err) {
             console.error("Booking failed:", err);
@@ -78,16 +97,8 @@ const Checkout = () => {
         }
     };
 
-    // Helper for price (duplicated from SeatSelection to ensure accuracy if needed, or pass it via state)
-    const getPrice = (tier, startTimeStr) => {
-        const hour = new Date(startTimeStr).getHours();
-        let shift = 'Night';
-        if (hour < 12) shift = 'Morning';
-        else if (hour < 17) shift = 'Day';
-
-        if (shift === 'Morning') return tier === 'Gold' ? 150 : 120;
-        if (shift === 'Day') return tier === 'Gold' ? 220 : 150;
-        return tier === 'Gold' ? 300 : 220; // Night
+    const getPrice = (tier, showtime) => {
+        return showtime.price ? parseFloat(showtime.price) : 250;
     };
 
     return (
@@ -123,7 +134,7 @@ const Checkout = () => {
                                         <span className="text-white font-bold block">{seat.seat_label}</span>
                                         <span className="text-xs text-gray-500">{seat.tier}</span>
                                     </div>
-                                    <span className="text-rose-500 font-medium">Rs. {getPrice(seat.tier, showtime.start_time)}</span>
+                                    <span className="text-rose-500 font-medium">Rs. {getPrice(seat.tier, showtime)}</span>
                                 </div>
                             ))}
                         </div>
@@ -178,7 +189,7 @@ const Checkout = () => {
                             {loading ? (
                                 <>
                                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                    Processing Payment...
+                                    Redirecting to eSewa...
                                 </>
                             ) : (
                                 <>
@@ -187,7 +198,6 @@ const Checkout = () => {
                                 </>
                             )}
                         </button>
-                        <p className="text-xs text-gray-500 mt-4">(This is a simulated test checkout. Clicking will instantly confirm the booking.)</p>
                     </div>
                 </div>
             </div>

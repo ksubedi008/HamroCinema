@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [authTokens, setAuthTokens] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null);
-    // FIX: Initialize user synchronously from localStorage to prevent ProtectedRoute from kicking the user to /login on first render
-    const [user, setUser] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')).user : null);
+    const [authTokens, setAuthTokens] = useState(() => sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')) : null);
+    // FIX: Initialize user synchronously from sessionStorage to prevent ProtectedRoute from kicking the user to /login on first render
+    const [user, setUser] = useState(() => sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).user : null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
             if (response.status === 200) {
                 setAuthTokens(response.data);
                 setUser(response.data.user);
-                localStorage.setItem('authTokens', JSON.stringify(response.data));
+                sessionStorage.setItem('authTokens', JSON.stringify(response.data));
 
                 // Set default axios header
                 axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     const logoutUser = () => {
         setAuthTokens(null);
         setUser(null);
-        localStorage.removeItem('authTokens');
+        sessionStorage.removeItem('authTokens');
         delete axios.defaults.headers.common['Authorization'];
         navigate('/login');
     };
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
             if (response.status === 200) {
                 const newTokens = { ...authTokens, access: response.data.access };
                 setAuthTokens(newTokens);
-                localStorage.setItem('authTokens', JSON.stringify(newTokens));
+                sessionStorage.setItem('authTokens', JSON.stringify(newTokens));
                 axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
             } else {
                 logoutUser();
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
             if (authTokens) {
                 const updatedTokens = { ...authTokens, user: updatedUser };
                 setAuthTokens(updatedTokens);
-                localStorage.setItem('authTokens', JSON.stringify(updatedTokens));
+                sessionStorage.setItem('authTokens', JSON.stringify(updatedTokens));
             }
         }
     };

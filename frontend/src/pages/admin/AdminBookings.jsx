@@ -5,6 +5,7 @@ import SEO from '../../components/SEO';
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`)
@@ -12,11 +13,34 @@ const AdminBookings = () => {
       .catch(err => { console.error(err); setLoading(false); });
   }, []);
 
+  const filteredBookings = bookings.filter(b => {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    const userStr = b.username ? b.username.toLowerCase() : `user ${b.user}`;
+    return userStr.includes(searchLower);
+  });
+
   return (
     <div className="animate-fade-in space-y-6">
       <SEO title="Booking History | HamroCinema Admin" />
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white">Recent Bookings</h2>
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h1 className="text-3xl font-bold text-white border-l-4 border-amber-500 pl-4 tracking-wider">Recent Bookings</h1>
+            <p className="text-gray-400 mt-1 pl-4">Monitor customer ticket purchases.</p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <div className="relative">
+                <input 
+                    type="text" 
+                    placeholder="Search by username..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full sm:w-64 bg-zinc-900 border border-zinc-800 text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 transition-colors"
+                />
+            </div>
+        </div>
       </div>
 
       <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-x-auto w-full shadow-xl">
@@ -31,7 +55,7 @@ const AdminBookings = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-purple-900/20">
-            {bookings.map(b => (
+            {filteredBookings.map(b => (
               <tr key={b.id} className="hover:bg-zinc-800 transition-colors">
                 <td className="px-6 py-4 font-mono text-rose-500">#{b.id.toString().padStart(6, '0')}</td>
                 <td className="px-6 py-4 font-medium text-white">{b.username || `User ${b.user}`}</td>
@@ -44,8 +68,8 @@ const AdminBookings = () => {
                 <td className="px-6 py-4 text-right">{new Date(b.created_at).toLocaleString()}</td>
               </tr>
             ))}
-            {bookings.length === 0 && !loading && (
-              <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">No bookings yet.</td></tr>
+            {filteredBookings.length === 0 && !loading && (
+              <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">No bookings found.</td></tr>
             )}
           </tbody>
         </table>

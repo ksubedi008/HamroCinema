@@ -11,7 +11,7 @@ const AdminShowtimes = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
-    movie: '', screen: '', show_date: ''
+    movie: '', screen: '', date: '', shift: ''
   });
 
   const fetchData = async () => {
@@ -55,61 +55,28 @@ const AdminShowtimes = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.movie || !formData.screen || !formData.show_date) return;
+    if (!formData.movie || !formData.screen || !formData.date || !formData.shift) return;
     
-    const selectedMovie = movies.find(m => m.id.toString() === formData.movie.toString());
-    if (!selectedMovie) return;
-
-    // Find the actual screen object to get its name (e.g., "Screen 1")
-    const selectedScreen = screens.find(s => s.id.toString() === formData.screen.toString());
-    if (!selectedScreen) return;
-
-    // Define a dictionary mapping screen names to their specific shift schedules
-    const screenSchedules = {
-        "Screen 1": [
-            { name: 'Morning', hours: 6, mins: 45 }, // 06:45 AM
-            { name: 'Day', hours: 12, mins: 15 },    // 12:15 PM
-            { name: 'Night', hours: 19, mins: 45 }   // 07:45 PM
-        ],
-        "Screen 2": [
-            { name: 'Morning', hours: 7, mins: 15 }, // 07:15 AM
-            { name: 'Day', hours: 13, mins: 15 },    // 01:15 PM
-            { name: 'Night', hours: 18, mins: 15 }   // 06:15 PM
-        ]
-    };
-
-    // Use the specific schedule for the selected screen, or fallback to Screen 1
-    const shifts = screenSchedules[selectedScreen.screen_name] || screenSchedules["Screen 1"];
-
-    const totalMinutes = selectedMovie.duration + 15;
-
     try {
-        const promises = shifts.map(shift => {
-            const dateObj = new Date(formData.show_date);
-            dateObj.setHours(shift.hours, shift.mins, 0);
-            
-            const endDate = new Date(dateObj.getTime() + totalMinutes * 60000);
-            
-            const tzOffset = dateObj.getTimezoneOffset() * 60000;
-            const localStart = (new Date(dateObj.getTime() - tzOffset)).toISOString().slice(0, 16);
-            const localEnd = (new Date(endDate.getTime() - tzOffset)).toISOString().slice(0, 16);
-            
-            return axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`, {
-                movie: formData.movie,
-                screen: formData.screen,
-                start_time: localStart,
-                end_time: localEnd,
-                price_multiplier: 1.0
-            });
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`, {
+            movie: formData.movie,
+            screen: formData.screen,
+            date: formData.date,
+            shift: formData.shift
         });
 
-        await Promise.all(promises);
         setShowModal(false);
         fetchData();
-        setFormData({ movie: '', screen: '', show_date: '' });
+        setFormData({ movie: '', screen: '', date: '', shift: '' });
         setActiveTab('upcoming'); // Jump to upcoming to see the newly scheduled movies
     } catch (err) {
-        console.error("Error scheduling showtimes:", err);
+        console.error("Error scheduling showtime:", err);
+        if (err.response && err.response.data) {
+             const errorMsg = Object.values(err.response.data)[0];
+             alert(errorMsg);
+        } else {
+             alert("Failed to schedule showtime. Please check for collisions.");
+        }
     }
   };
 
@@ -127,51 +94,47 @@ const AdminShowtimes = () => {
   return (
     <div className="animate-fade-in space-y-6">
       <SEO title="Manage Showtimes | HamroCinema Admin" />
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-            <h2 className="text-3xl font-bold text-white tracking-wider">Manage Showtimes</h2>
-            <p className="text-gray-400 mt-1">Schedule and monitor all theater activity.</p>
+            <h1 className="text-3xl font-bold text-white border-l-4 border-amber-500 pl-4 tracking-wider">Manage Showtimes</h1>
+            <p className="text-gray-400 mt-1 pl-4">Schedule and monitor all theater activity.</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="btn-premium w-full sm:w-auto px-6 py-3 rounded-full tracking-wider">
-          + Schedule Movie
-        </button>
-      </div>
-
-      {/* Tabbed UI */}
-      <div className="flex items-center gap-4 border-b border-zinc-800 pb-4">
-        <button 
-          onClick={() => { setActiveTab('upcoming'); setSearchQuery(''); }}
-          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'upcoming' ? 'bg-cyan-500/20 text-rose-500 border border-zinc-800 shadow-lg' : 'bg-zinc-800 text-gray-400 border border-zinc-800 hover:bg-white/10 hover:text-white'}`}
-        >
-          Upcoming Showtimes ({upcomingShowtimes.length})
-        </button>
-        <button 
-          onClick={() => setActiveTab('history')}
-          className={`px-6 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 ${activeTab === 'history' ? 'bg-cyan-500/20 text-rose-500 border border-zinc-800 shadow-lg' : 'bg-zinc-800 text-gray-400 border border-zinc-800 hover:bg-white/10 hover:text-white'}`}
-        >
-          History ({historyShowtimes.length})
-        </button>
-      </div>
-
-      {/* Search Bar (Only visible in History tab) */}
-      {activeTab === 'history' && (
-        <div className="flex justify-end animate-fade-in">
-          <div className="relative w-full sm:w-80">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <button onClick={() => setShowModal(true)} className="btn-premium w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-bold tracking-wider">
+              + Schedule Movie
+            </button>
+            
+            {/* Search Bar */}
+            {activeTab === 'history' && (
+                <div className="relative">
+                    <input 
+                        type="text" 
+                        placeholder="Search historical movies..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full sm:w-64 bg-zinc-900 border border-zinc-800 text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                </div>
+            )}
+            
+            {/* Tabs */}
+            <div className="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+                <button
+                    onClick={() => { setActiveTab('upcoming'); setSearchQuery(''); }}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${activeTab === 'upcoming' ? 'bg-stone-800 text-zinc-100 border-transparent hover:border-amber-500 hover:text-amber-500 shadow-sm' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}
+                >
+                    Upcoming ({upcomingShowtimes.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab('history')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${activeTab === 'history' ? 'bg-stone-800 text-zinc-100 border-transparent hover:border-amber-500 hover:text-amber-500 shadow-sm' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}
+                >
+                    History ({historyShowtimes.length})
+                </button>
             </div>
-            <input 
-              type="text" 
-              placeholder="Search historical movies..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-white focus:outline-none focus:border-zinc-800 focus:shadow-lg transition-all placeholder-gray-500"
-            />
-          </div>
         </div>
-      )}
+      </div>
 
       {/* Table Container - Fixed Height with Sticky Header */}
       <div className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-h-[600px] overflow-y-auto relative shadow-lg">
@@ -205,7 +168,7 @@ const AdminShowtimes = () => {
                     {stStart.toLocaleDateString()} <span className="text-gray-500 mx-1">•</span> {stStart.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </td>
                 <td className="px-6 py-4">
-                  {stStart.getHours() < 12 ? 'Morning' : stStart.getHours() < 17 ? 'Day' : 'Night'}
+                  {st.shift || (stStart.getHours() < 12 ? 'Morning' : stStart.getHours() < 17 ? 'Day' : 'Night')}
                 </td>
                 <td className="px-6 py-4">{statusBadge}</td>
                 <td className="px-6 py-4 text-right">
@@ -268,10 +231,19 @@ const AdminShowtimes = () => {
               </div>
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-400">Show Date</label>
-                <input required type="date" value={formData.show_date} onChange={e => setFormData({...formData, show_date: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500 [color-scheme:dark]" />
+                <input required type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500 [color-scheme:dark]" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-400">Shift</label>
+                <select required value={formData.shift} onChange={e => setFormData({...formData, shift: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
+                  <option value="">Select a shift...</option>
+                  <option value="Morning">Morning (09:00 AM)</option>
+                  <option value="Day">Day (01:00 PM)</option>
+                  <option value="Night">Night (06:00 PM)</option>
+                </select>
                 <p className="text-xs text-gray-500 mt-2 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-purple-500 inline-block flex-shrink-0"></span>
-                  Morning, Day, and Night showtimes will be dynamically generated based on the selected screen's schedule.
+                  Start times, end times, and ticket prices will be automatically assigned based on the shift selected.
                 </p>
               </div>
               <div className="pt-4 flex justify-end gap-3">

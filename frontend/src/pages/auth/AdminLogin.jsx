@@ -18,7 +18,7 @@ const AdminLogin = () => {
                 logoutUser();
                 setError("Access Denied: Authorized Personnel Only");
             } else {
-                navigate('/cinema-hq-99x/dashboard');
+                navigate('/k-subedi-08');
             }
         } else {
             setError(result.error);

@@ -30,7 +30,7 @@ const Register = () => {
         <div className="min-h-screen bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-purple-600"></div>
+                    <div className="btn-premium w-10 h-10 rounded-full"></div>
                     <h2 className="text-3xl font-extrabold text-white tracking-wider">HamroCinema</h2>
                 </div>
                 <h2 className="text-center text-xl font-medium text-gray-300">Create a new account</h2>
@@ -97,7 +97,7 @@ const Register = () => {
                         </div>
 
                         <div>
-                            <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 focus:ring-offset-[#0d0914] transition-colors">
+                            <button type="submit" className="btn-premium w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 focus:ring-offset-[#0d0914]">
                                 Register
                             </button>
                         </div>

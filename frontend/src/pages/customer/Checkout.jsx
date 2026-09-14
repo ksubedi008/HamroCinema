@@ -17,7 +17,7 @@ const Checkout = () => {
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
                 <div className="bg-zinc-950 border border-zinc-800 p-8 rounded-3xl text-center max-w-md">
                     <p className="text-white mb-4">No booking session found.</p>
-                    <button onClick={() => navigate('/')} className="px-6 py-2 bg-purple-600 text-white rounded-full">Go Home</button>
+                    <button onClick={() => navigate('/')} className="btn-premium px-6 py-2 rounded-full">Go Home</button>
                 </div>
             </div>
         );

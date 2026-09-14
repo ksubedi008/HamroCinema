@@ -72,7 +72,7 @@ const MyTickets = () => {
                         </div>
                         <h2 className="text-xl font-bold text-white mb-2">No tickets yet</h2>
                         <p className="text-gray-400 mb-6">Looks like you haven't booked any movies yet.</p>
-                        <Link to="/" className="px-6 py-3 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-500 transition-colors inline-block">
+                        <Link to="/" className="btn-premium px-6 py-3 rounded-full inline-block">
                             Browse Movies
                         </Link>
                     </div>

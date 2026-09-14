@@ -26,7 +26,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 
         <button 
           onClick={resetErrorBoundary}
-          className="w-full relative group overflow-hidden px-8 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 transition-colors text-white font-bold tracking-wider shadow-lg hover:shadow-xl transition-all duration-300"
+          className="btn-premium w-full relative group overflow-hidden px-8 py-3.5 rounded-xl tracking-wider"
         >
           <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full "></div>
           <span className="relative z-10">

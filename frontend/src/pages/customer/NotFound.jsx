@@ -37,7 +37,7 @@ const NotFound = () => {
 
                 <Link 
                     to="/"
-                    className="group relative px-8 py-4 rounded-xl bg-rose-600 hover:bg-rose-700 transition-colors text-white font-bold tracking-wider overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="btn-premium group relative px-8 py-4 rounded-xl tracking-wider overflow-hidden"
                 >
                     <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full "></div>
                     <span className="relative z-10 flex items-center gap-2">

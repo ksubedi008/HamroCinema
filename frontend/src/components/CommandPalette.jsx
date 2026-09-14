@@ -71,35 +71,35 @@ const CommandPalette = () => {
                   <Command.Group heading={<span className="text-xs font-semibold tracking-wider text-gray-500 uppercase px-2 py-2 block">Quick Navigation</span>}>
                     <Command.Item 
                       onSelect={() => runCommand(() => navigate('/cinema-hq-99x/dashboard'))}
-                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:bg-purple-600/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent transition-all"
+                      className="btn-premium flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent"
                     >
                       <LayoutDashboard className="w-4 h-4" />
                       <span>Dashboard Overview</span>
                     </Command.Item>
                     <Command.Item 
                       onSelect={() => runCommand(() => navigate('/cinema-hq-99x/movies'))}
-                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:bg-purple-600/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent transition-all"
+                      className="btn-premium flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent"
                     >
                       <Film className="w-4 h-4" />
                       <span>Manage Movies</span>
                     </Command.Item>
                     <Command.Item 
                       onSelect={() => runCommand(() => navigate('/cinema-hq-99x/showtimes'))}
-                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:bg-purple-600/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent transition-all"
+                      className="btn-premium flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent"
                     >
                       <Clock className="w-4 h-4" />
                       <span>Schedule Showtimes</span>
                     </Command.Item>
                     <Command.Item 
                       onSelect={() => runCommand(() => navigate('/cinema-hq-99x/bookings'))}
-                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:bg-purple-600/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent transition-all"
+                      className="btn-premium flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent"
                     >
                       <CreditCard className="w-4 h-4" />
                       <span>Booking History</span>
                     </Command.Item>
                     <Command.Item 
                       onSelect={() => runCommand(() => navigate('/cinema-hq-99x/users'))}
-                      className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:bg-purple-600/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent transition-all"
+                      className="btn-premium flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer hover:bg-zinc-800 aria-selected:/20 aria-selected:text-rose-500 aria-selected:border aria-selected:border-zinc-800 text-gray-300 border border-transparent"
                     >
                       <Users className="w-4 h-4" />
                       <span>User Management</span>

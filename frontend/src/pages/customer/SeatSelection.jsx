@@ -223,7 +223,7 @@ const SeatSelection = () => {
 
                                     <button 
                                         onClick={handleProceed}
-                                        className="w-full py-4 rounded-xl font-bold text-white bg-purple-600 hover:bg-purple-500 hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                                        className="btn-premium w-full py-4 rounded-xl flex items-center justify-center gap-2"
                                     >
                                         {user ? 'Proceed to Checkout' : 'Log in to Checkout'}
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>

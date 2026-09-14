@@ -52,7 +52,7 @@ const PreferencesWidget = () => {
                         <div className="flex items-center gap-3 mt-1">
                             <button
                                 onClick={handleAccept}
-                                className="flex-1 py-2.5 px-4 bg-rose-600 hover:bg-rose-700 transition-colors  text-white text-sm font-bold rounded-xl shadow-lg transition-all hover:scale-[1.02]"
+                                className="btn-premium flex-1 py-2.5 px-4 text-sm rounded-xl"
                             >
                                 Accept All
                             </button>

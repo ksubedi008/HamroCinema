@@ -58,7 +58,7 @@ const Home = () => {
                             <img src={featuredMovie.poster} alt={featuredMovie.title} className="hidden md:block w-48 lg:w-64 rounded-2xl shadow-lg border border-zinc-800" />
                         )}
                         <div className="max-w-2xl text-center md:text-left mt-8 md:mt-0">
-                            <span className="px-3 py-1 bg-amber-700 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider rounded-full mb-3 md:mb-4 inline-block">Now Showing</span>
+                            <span className="btn-premium px-3 py-1 text-[10px] md:text-xs uppercase tracking-wider rounded-full mb-3 md:mb-4 inline-block">Now Showing</span>
                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight mb-3 md:mb-4 drop-shadow-lg">{featuredMovie.title}</h1>
                             <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-gray-300 font-medium mb-4 md:mb-6">
                                 <span>{featuredMovie.duration} mins</span>
@@ -68,7 +68,7 @@ const Home = () => {
                                 <span>{new Date(featuredMovie.release_date).getFullYear()}</span>
                             </div>
                             <p className="text-stone-300 text-sm md:text-lg mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 px-4 md:px-0">{featuredMovie.description}</p>
-                            <Link to={`/movie/${featuredMovie.id}`} className="px-6 py-3 md:px-8 md:py-4 bg-amber-700 text-white font-bold rounded-full hover:bg-amber-800 hover:shadow-xl transition-all inline-flex items-center gap-2 text-sm md:text-lg">
+                            <Link to={`/movie/${featuredMovie.id}`} className="btn-premium px-6 py-3 md:px-8 md:py-4 rounded-full inline-flex items-center gap-2 text-sm md:text-lg">
                                 Book Tickets
                                 <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                             </Link>
@@ -110,7 +110,7 @@ const Home = () => {
                                     
                                     {/* Hover Overlay Button */}
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
-                                        <span className="px-4 py-2 md:px-6 md:py-2 bg-amber-700 text-white font-bold rounded-full shadow-lg text-xs md:text-base">Book Now</span>
+                                        <span className="btn-premium px-4 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-base">Book Now</span>
                                     </div>
                                 </div>
                                 <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">

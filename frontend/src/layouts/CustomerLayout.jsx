@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Outlet, Link, useNavigate, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Shield } from 'lucide-react';
-
+import logo from '../assets/logo.png';
 const CustomerLayout = () => {
   const { user, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -34,10 +34,7 @@ const CustomerLayout = () => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity z-50">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-600 shadow-lg"></div>
-              <h1 className="text-xl md:text-2xl font-black tracking-wider text-white">
-                HAMRO<span className="text-rose-500">CINEMA</span>
-              </h1>
+              <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -154,10 +151,7 @@ const CustomerLayout = () => {
             {/* Brand Column */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 rounded-full bg-purple-600 shadow-lg"></div>
-                <h2 className="text-2xl font-black tracking-wider text-white">
-                  HAMRO<span className="text-rose-500">CINEMA</span>
-                </h2>
+                <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto" />
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-sm mb-8">
                 Your premium destination for the ultimate cinematic experience. Book tickets, choose your favorite seats, and enjoy the show in stunning quality.

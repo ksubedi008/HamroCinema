@@ -3,7 +3,7 @@ import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-do
 import { AuthContext } from '../context/AuthContext';
 import CommandPalette from '../components/CommandPalette';
 import { motion, AnimatePresence } from 'framer-motion';
-
+import logo from '../assets/logo.png';
 const AdminLayout = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,8 +20,7 @@ const AdminLayout = () => {
     <>
       <div className="p-6 flex items-center justify-between border-b border-zinc-800 md:justify-start">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-600 shadow-lg"></div>
-          <h1 className="text-xl font-bold tracking-wider text-zinc-100">HamroCinema</h1>
+          <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto" />
         </div>
         <button className="md:hidden text-gray-400 hover:text-white transition-colors" onClick={() => setIsSidebarOpen(false)}>
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
@@ -88,8 +87,7 @@ const AdminLayout = () => {
       {/* Mobile Top Bar */}
       <div className="md:hidden bg-zinc-900  border-b border-zinc-800 p-4 flex items-center justify-between sticky top-0 z-40">
         <Link to="/cinema-hq-99x/dashboard" className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-600 shadow-lg"></div>
-          <h1 className="text-xl font-bold tracking-wider text-zinc-100">HamroCinema</h1>
+          <img src={logo} alt="HamroCinema Logo" className="h-10 w-auto" />
         </Link>
         <div className="flex items-center gap-2">
           <button onClick={() => {

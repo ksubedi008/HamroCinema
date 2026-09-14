@@ -102,8 +102,6 @@ const SeatSelection = () => {
         >
             {/* Ambient Mesh Gradient specifically for Seat Selection */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-cyan-900/10 blur-[120px] animate-ambient-glow"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-purple-900/20 blur-[120px] animate-ambient-glow" style={{ animationDelay: '2s' }}></div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -128,8 +126,7 @@ const SeatSelection = () => {
                     <div className="flex-1 bg-zinc-950 rounded-3xl p-8 border border-zinc-800 shadow-lg">
                         {/* The Screen */}
                         <div className="mb-16 relative">
-                            <div className="h-2 w-3/4 mx-auto bg-purple-500 rounded-full shadow-lg"></div>
-                            <div className="h-16 w-3/4 mx-auto bg-gradient-to-b from-purple-500/20 to-transparent blur-md"></div>
+                            <div className="h-2 w-3/4 mx-auto bg-stone-800 rounded-full"></div>
                             <p className="text-center text-gray-500 text-xs font-bold uppercase tracking-widest mt-2">Screen</p>
                         </div>
 
@@ -150,9 +147,9 @@ const SeatSelection = () => {
                                                 if (isBooked) {
                                                     seatClass += "bg-gray-800 text-gray-600 cursor-not-allowed";
                                                 } else if (isSelected) {
-                                                    seatClass += "bg-green-500 text-white shadow-lg scale-110";
+                                                    seatClass += "bg-amber-600 border border-amber-500 text-white shadow-lg scale-110";
                                                 } else if (isVIP) {
-                                                    seatClass += "bg-zinc-950 border border-zinc-800 text-rose-500 hover:bg-purple-600/30";
+                                                    seatClass += "bg-zinc-950 border border-zinc-800 text-rose-500 hover:bg-stone-800";
                                                 } else {
                                                     seatClass += "bg-zinc-950 border border-gray-600 text-gray-400 hover:bg-gray-700";
                                                 }
@@ -179,7 +176,7 @@ const SeatSelection = () => {
                         <div className="flex justify-center gap-8 mt-16 pt-8 border-t border-zinc-800">
                             <div className="flex items-center gap-2"><div className="w-5 h-5 bg-zinc-950 border border-zinc-800 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">VIP / Gold</span></div>
                             <div className="flex items-center gap-2"><div className="w-5 h-5 bg-zinc-950 border border-gray-600 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Standard</span></div>
-                            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-green-500 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Selected</span></div>
+                            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-amber-600 border border-amber-500 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Selected</span></div>
                             <div className="flex items-center gap-2"><div className="w-5 h-5 bg-gray-800 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Booked</span></div>
                         </div>
                     </div>
@@ -191,8 +188,8 @@ const SeatSelection = () => {
                             
                             {selectedSeats.length === 0 ? (
                                 <div className="text-center py-10">
-                                    <div className="w-16 h-16 mx-auto bg-purple-900/20 rounded-full flex items-center justify-center mb-4">
-                                        <svg className="w-8 h-8 text-rose-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
+                                    <div className="w-16 h-16 mx-auto bg-stone-800 rounded-full flex items-center justify-center mb-4">
+                                        <svg className="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
                                     </div>
                                     <p className="text-gray-400 text-sm">Please select your seats to see the summary.</p>
                                 </div>

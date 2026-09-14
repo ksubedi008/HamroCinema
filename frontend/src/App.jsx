@@ -25,6 +25,8 @@ import PrivacyPolicy from './pages/customer/PrivacyPolicy'
 import TermsOfService from './pages/customer/TermsOfService'
 import NotFound from './pages/customer/NotFound'
 import PreferencesWidget from './components/PreferencesWidget'
+import RefundPolicy from './pages/customer/RefundPolicy'
+import ContactUs from './pages/customer/ContactUs'
 
 function App() {
   return (
@@ -50,6 +52,8 @@ function App() {
           
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<TermsOfService />} />
+          <Route path="refund-policy" element={<RefundPolicy />} />
+          <Route path="contact" element={<ContactUs />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         

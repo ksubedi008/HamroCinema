@@ -186,8 +186,8 @@ const CustomerLayout = () => {
               <ul className="flex flex-col gap-4 text-sm text-zinc-400">
                 <li><Link to="/terms" className="hover:text-rose-500 transition-colors">Terms of Service</Link></li>
                 <li><Link to="/privacy-policy" className="hover:text-rose-500 transition-colors">Privacy Policy</Link></li>
-                <li><a href="#" className="hover:text-rose-500 transition-colors">Refund Policy</a></li>
-                <li><a href="#" className="hover:text-rose-500 transition-colors">Contact Us</a></li>
+                <li><Link to="/refund-policy" className="hover:text-rose-500 transition-colors">Refund Policy</Link></li>
+                <li><Link to="/contact" className="hover:text-rose-500 transition-colors">Contact Us</Link></li>
               </ul>
             </div>
           </div>

@@ -68,7 +68,7 @@ class PasswordResetRequestView(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         
         # In production, this URL would point to your deployed React frontend
-        reset_link = f"http://localhost:5173/reset-password?uid={uid}&token={token}"
+        reset_link = f"https://l2l1wx8c-5173.inc1.devtunnels.ms/reset-password?uid={uid}&token={token}"
         
         send_mail(
             subject='HamroCinema - Password Reset Request',

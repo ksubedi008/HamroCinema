@@ -3,8 +3,6 @@ import { Outlet, Link, useNavigate, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Shield } from 'lucide-react';
 import logo from '../assets/logo.png';
-import ThemeToggle from '../components/ThemeToggle';
-
 const CustomerLayout = () => {
   const { user, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -51,7 +49,6 @@ const CustomerLayout = () => {
 
             {/* Desktop Auth / Profile */}
             <div className="hidden md:flex items-center gap-4">
-              <ThemeToggle />
               <div className="relative" ref={dropdownRef}>
                 <button 
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -96,7 +93,6 @@ const CustomerLayout = () => {
 
             {/* Mobile Hamburger Button */}
             <div className="md:hidden flex items-center gap-3 z-50">
-              <ThemeToggle />
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-gray-300 hover:text-white p-2 focus:outline-none">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {isMobileMenuOpen ? (

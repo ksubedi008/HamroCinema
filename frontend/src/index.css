@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 .bg-noise {
   position: fixed;
   inset: 0;

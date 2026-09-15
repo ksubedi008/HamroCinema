@@ -97,8 +97,10 @@ const Checkout = () => {
         }
     };
 
-    const getPrice = (tier, showtime) => {
-        return showtime.price ? parseFloat(showtime.price) : 250;
+    const getPrice = (seat) => {
+        if (!seat) return 0;
+        if (seat.tier === 'Gold') return 500;
+        return 300;
     };
 
     return (
@@ -134,7 +136,7 @@ const Checkout = () => {
                                         <span className="text-white font-bold block">{seat.seat_label}</span>
                                         <span className="text-xs text-gray-500">{seat.tier}</span>
                                     </div>
-                                    <span className="text-rose-500 font-medium">Rs. {getPrice(seat.tier, showtime)}</span>
+                                    <span className="text-rose-500 font-medium">Rs. {getPrice(seat)}</span>
                                 </div>
                             ))}
                         </div>

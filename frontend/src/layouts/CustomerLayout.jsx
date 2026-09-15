@@ -3,6 +3,8 @@ import { Outlet, Link, useNavigate, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Shield } from 'lucide-react';
 import logo from '../assets/logo.png';
+import ThemeToggle from '../components/ThemeToggle';
+
 const CustomerLayout = () => {
   const { user, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -27,8 +29,8 @@ const CustomerLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-sans relative overflow-hidden">
-      <div className="bg-noise"></div>
+    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-[#121212] dark:text-white flex flex-col font-sans relative overflow-hidden transition-colors duration-300">
+      <div className="bg-noise opacity-50 dark:opacity-100"></div>
       <header className="bg-zinc-900  border-b border-zinc-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -49,6 +51,7 @@ const CustomerLayout = () => {
 
             {/* Desktop Auth / Profile */}
             <div className="hidden md:flex items-center gap-4">
+              <ThemeToggle />
               <div className="relative" ref={dropdownRef}>
                 <button 
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -92,7 +95,8 @@ const CustomerLayout = () => {
             </div>
 
             {/* Mobile Hamburger Button */}
-            <div className="md:hidden flex items-center z-50">
+            <div className="md:hidden flex items-center gap-3 z-50">
+              <ThemeToggle />
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-gray-300 hover:text-white p-2 focus:outline-none">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {isMobileMenuOpen ? (

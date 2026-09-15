@@ -109,13 +109,13 @@ class InitiatePaymentView(APIView):
             
             payload = {
                 "amount": total_amount,
-                "failure_url": "https://l2l1wx8c-5173.inc1.devtunnels.ms/checkout?failed=true",
+                "failure_url": "http://localhost:5173/checkout?failed=true",
                 "product_delivery_charge": "0",
                 "product_service_charge": "0",
                 "product_code": product_code,
                 "signature": signature,
                 "signed_field_names": "total_amount,transaction_uuid,product_code",
-                "success_url": "https://l2l1wx8c-8000.inc1.devtunnels.ms/api/payments/verify/",
+                "success_url": "http://localhost:8000/api/payments/verify/",
                 "tax_amount": "0",
                 "total_amount": total_amount,
                 "transaction_uuid": transaction_uuid,
@@ -132,7 +132,7 @@ class VerifyPaymentView(APIView):
     def get(self, request):
         encoded_data = request.GET.get('data')
         if not encoded_data:
-            return redirect('https://l2l1wx8c-5173.inc1.devtunnels.ms/booking-history?payment=failed')
+            return redirect('http://localhost:5173/booking-history?payment=failed')
             
         try:
             decoded_data = base64.b64decode(encoded_data).decode('utf-8')
@@ -161,7 +161,7 @@ class VerifyPaymentView(APIView):
             ).decode('utf-8')
             
             if expected_signature != provided_signature:
-                return redirect('https://l2l1wx8c-5173.inc1.devtunnels.ms/booking-history?payment=signature_failed')
+                return redirect('http://localhost:5173/booking-history?payment=signature_failed')
                 
             amount_float = float(str(total_amount).replace(',', ''))
             
@@ -175,9 +175,9 @@ class VerifyPaymentView(APIView):
                 booking.user.loyalty_points += points_earned
                 booking.user.save()
                 
-                return redirect('https://l2l1wx8c-5173.inc1.devtunnels.ms/booking-history?payment=success')
+                return redirect('http://localhost:5173/booking-history?payment=success')
                 
-            return redirect('https://l2l1wx8c-5173.inc1.devtunnels.ms/booking-history?payment=failed')
+            return redirect('http://localhost:5173/booking-history?payment=failed')
             
         except Exception as e:
-            return redirect('https://l2l1wx8c-5173.inc1.devtunnels.ms/booking-history?payment=error')
+            return redirect('http://localhost:5173/booking-history?payment=error')

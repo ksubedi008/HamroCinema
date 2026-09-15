@@ -101,18 +101,26 @@ class Showtime(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
         
-        # Ensure 100-seat grid exists for the screen
+        # Ensure U-Shaped grid exists for the screen (100 seats: L=20, M=60, R=20)
+        # We'll use rows 1-10. Left: L1-L2, Middle: M1-M6, Right: R1-R2
         if self.screen.seats.count() < 100:
-            rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-            for row in rows:
-                for num in range(1, 11):
-                    seat_label = f"{row}{num}"
-                    tier = 'Gold' if row in ['I', 'J'] else 'Silver' if row in ['E', 'F', 'G', 'H'] else 'Platinum' if row in ['A', 'B'] else 'Gold'
-                    Seat.objects.get_or_create(
-                        screen=self.screen,
-                        seat_label=seat_label,
-                        defaults={'tier': tier}
-                    )
+            for num in range(1, 11):
+                # Left Block (2 columns)
+                for col in range(1, 3):
+                    seat_label = f"L{num}-{col}"
+                    Seat.objects.get_or_create(screen=self.screen, seat_label=seat_label, defaults={'tier': 'Silver'})
+                
+                # Middle Block (6 columns)
+                for col in range(1, 7):
+                    # For a U-Shape cavity, omit the middle block for the first 2 rows (num 1 and 2)
+                    if num > 2:
+                        seat_label = f"M{num}-{col}"
+                        Seat.objects.get_or_create(screen=self.screen, seat_label=seat_label, defaults={'tier': 'Gold'})
+                
+                # Right Block (2 columns)
+                for col in range(1, 3):
+                    seat_label = f"R{num}-{col}"
+                    Seat.objects.get_or_create(screen=self.screen, seat_label=seat_label, defaults={'tier': 'Silver'})
 
     def __str__(self):
         if self.start_time:

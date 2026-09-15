@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
+import CinemaSeatMap from './CinemaSeatMap';
 
 const SeatSelection = () => {
     const { id } = useParams(); // showtime id
@@ -41,8 +42,10 @@ const SeatSelection = () => {
         fetchDetails();
     }, [id]);
 
-    const getPrice = (tier, showtime) => {
-        return showtime.price ? parseFloat(showtime.price) : 250;
+    const getPrice = (seat) => {
+        if (!seat) return 0;
+        if (seat.tier === 'Gold') return 500; // Middle block (M)
+        return 300; // Left/Right block (L/R)
     };
 
     const handleSeatClick = (seat) => {
@@ -69,22 +72,7 @@ const SeatSelection = () => {
     if (loading) return <div className="flex justify-center py-40"><div className="w-12 h-12 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div></div>;
     if (!showtime) return <div className="text-center py-40 text-red-400">Showtime not found.</div>;
 
-    const totalPrice = selectedSeats.reduce((sum, seat) => sum + getPrice(seat.tier, showtime), 0);
-
-    // Group seats by Row (assuming seat_label is like A1, A2, B1)
-    const rowMap = {};
-    seats.forEach(seat => {
-        const row = seat.seat_label.charAt(0);
-        if (!rowMap[row]) rowMap[row] = [];
-        rowMap[row].push(seat);
-    });
-    
-    // Sort rows (A, B, C...)
-    const sortedRows = Object.keys(rowMap).sort();
-    // Sort seats in rows (1, 2, 3...)
-    sortedRows.forEach(row => {
-        rowMap[row].sort((a,b) => parseInt(a.seat_label.substring(1)) - parseInt(b.seat_label.substring(1)));
-    });
+    const totalPrice = selectedSeats.reduce((sum, seat) => sum + getPrice(seat), 0);
 
     return (
         <motion.div 
@@ -116,62 +104,15 @@ const SeatSelection = () => {
 
                 <div className="flex flex-col lg:flex-row gap-12">
                     {/* Cinema Room Canvas */}
-                    <div className="flex-1 bg-zinc-950 rounded-3xl p-8 border border-zinc-800 shadow-lg">
-                        {/* The Screen */}
-                        <div className="mb-16 relative">
-                            <div className="h-2 w-3/4 mx-auto bg-stone-800 rounded-full"></div>
-                            <p className="text-center text-gray-500 text-xs font-bold uppercase tracking-widest mt-2">Screen</p>
-                        </div>
-
-                        {/* Seat Grid */}
-                        <div className="overflow-x-auto w-full pb-6 custom-scrollbar">
-                            <div className="flex flex-col gap-4 items-center min-w-max mx-auto px-4">
-                                {sortedRows.map(row => (
-                                    <div key={row} className="flex items-center gap-4">
-                                        <span className="text-gray-500 font-bold w-4 text-center">{row}</span>
-                                        <div className="flex gap-2">
-                                            {rowMap[row].map(seat => {
-                                                const isBooked = bookedTickets.some(t => t.seat.toString() === seat.id.toString());
-                                                const isSelected = selectedSeats.some(s => s.id === seat.id);
-                                                const isVIP = seat.tier === 'Gold';
-
-                                                let seatClass = "w-8 h-8 rounded-t-lg rounded-b-sm cursor-pointer transition-all flex items-center justify-center text-[10px] font-bold ";
-                                                
-                                                if (isBooked) {
-                                                    seatClass += "bg-gray-800 text-gray-600 cursor-not-allowed";
-                                                } else if (isSelected) {
-                                                    seatClass += "bg-amber-600 border border-amber-500 text-white shadow-lg scale-110";
-                                                } else if (isVIP) {
-                                                    seatClass += "bg-zinc-950 border border-zinc-800 text-rose-500 hover:bg-stone-800";
-                                                } else {
-                                                    seatClass += "bg-zinc-950 border border-gray-600 text-gray-400 hover:bg-gray-700";
-                                                }
-
-                                                return (
-                                                    <div 
-                                                        key={seat.id} 
-                                                        className={seatClass}
-                                                        onClick={() => handleSeatClick(seat)}
-                                                        title={`${seat.seat_label} - Rs. ${getPrice(seat.tier, showtime)}`}
-                                                    >
-                                                        {seat.seat_label}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                        <span className="text-gray-500 font-bold w-4 text-center">{row}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Legend */}
-                        <div className="flex justify-center gap-8 mt-16 pt-8 border-t border-zinc-800">
-                            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-zinc-950 border border-zinc-800 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">VIP / Gold</span></div>
-                            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-zinc-950 border border-gray-600 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Standard</span></div>
-                            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-amber-600 border border-amber-500 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Selected</span></div>
-                            <div className="flex items-center gap-2"><div className="w-5 h-5 bg-gray-800 rounded-t"></div><span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Booked</span></div>
-                        </div>
+                    <div className="flex-1 bg-zinc-950 rounded-3xl p-4 md:p-8 border border-zinc-800 shadow-lg">
+                        <CinemaSeatMap 
+                            seats={seats}
+                            bookedTickets={bookedTickets}
+                            selectedSeats={selectedSeats}
+                            onSeatClick={handleSeatClick}
+                            getPrice={getPrice}
+                            showtime={showtime}
+                        />
                     </div>
 
                     {/* Summary Sidebar */}
@@ -195,7 +136,7 @@ const SeatSelection = () => {
                                                     <p className="text-white font-bold">{seat.seat_label}</p>
                                                     <p className="text-xs text-rose-500">{seat.tier}</p>
                                                 </div>
-                                                <p className="text-white font-medium">Rs. {getPrice(seat.tier, showtime)}</p>
+                                                <p className="text-white font-medium">Rs. {getPrice(seat)}</p>
                                             </div>
                                         ))}
                                     </div>

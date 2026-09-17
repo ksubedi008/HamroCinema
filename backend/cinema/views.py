@@ -66,6 +66,24 @@ class BookingViewSet(viewsets.ModelViewSet):
             return Booking.objects.all()
         return Booking.objects.filter(user=user)
 
+    def create(self, request, *args, **kwargs):
+        from django.utils import timezone
+        showtime_id = request.data.get('showtime')
+        if showtime_id:
+            try:
+                from .models import Showtime
+                showtime = Showtime.objects.get(id=showtime_id)
+                if showtime.start_time:
+                    time_diff = showtime.start_time - timezone.now()
+                    if time_diff.total_seconds() < 15 * 60:
+                        return Response(
+                            {'error': 'Bookings close 15 minutes before the show starts.'},
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+            except Showtime.DoesNotExist:
+                pass
+        return super().create(request, *args, **kwargs)
+
 class TicketItemViewSet(viewsets.ModelViewSet):
     serializer_class = TicketItemSerializer
 

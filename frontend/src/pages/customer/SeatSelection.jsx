@@ -152,13 +152,22 @@ const SeatSelection = () => {
                                         </div>
                                     </div>
 
-                                    <button 
-                                        onClick={handleProceed}
-                                        className="btn-premium w-full py-4 rounded-xl flex items-center justify-center gap-2"
-                                    >
-                                        {user ? 'Proceed to Checkout' : 'Log in to Checkout'}
-                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                                    </button>
+                                    {showtime && (new Date(showtime.start_time).getTime() - (15 * 60 * 1000) <= Date.now()) ? (
+                                        <button 
+                                            disabled
+                                            className="w-full py-4 rounded-xl flex items-center justify-center gap-2 bg-zinc-900 text-gray-500 font-bold border border-zinc-800 cursor-not-allowed uppercase tracking-widest text-sm"
+                                        >
+                                            Booking Closed
+                                        </button>
+                                    ) : (
+                                        <button 
+                                            onClick={handleProceed}
+                                            className="btn-premium w-full py-4 rounded-xl flex items-center justify-center gap-2"
+                                        >
+                                            {user ? 'Proceed to Checkout' : 'Log in to Checkout'}
+                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                        </button>
+                                    )}
                                 </>
                             )}
                         </div>

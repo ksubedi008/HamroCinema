@@ -78,6 +78,21 @@ const AdminMovies = () => {
     setShowModal(true);
   };
 
+  const handleDelete = (movieId) => {
+    if (window.confirm('Are you sure you want to delete this movie? This action cannot be undone.')) {
+      axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/movies/${movieId}/`)
+        .then(res => {
+          if (res.status === 204) {
+            setMovies(prevMovies => prevMovies.filter(m => m.id !== movieId));
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Failed to delete movie.');
+        });
+    }
+  };
+
   return (
     <div className="animate-fade-in space-y-6">
       <SEO title="Manage Movies | HamroCinema Admin" />
@@ -125,7 +140,8 @@ const AdminMovies = () => {
                   )}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button onClick={() => openEditModal(movie)} className="text-rose-500 hover:text-rose-500 font-medium px-3 py-1 rounded hover:bg-pink-400/10 transition-colors">Edit</button>
+                  <button onClick={() => openEditModal(movie)} className="text-rose-500 hover:text-rose-500 font-medium px-3 py-1 rounded hover:bg-pink-400/10 transition-colors mr-2">Edit</button>
+                  <button onClick={() => handleDelete(movie.id)} className="text-red-500 hover:text-red-400 font-medium px-3 py-1 rounded hover:bg-red-500/10 transition-colors">Delete</button>
                 </td>
               </tr>
             ))}

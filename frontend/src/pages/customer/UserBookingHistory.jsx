@@ -68,9 +68,9 @@ const UserBookingHistory = () => {
         <div className="min-h-screen bg-zinc-950 pt-12 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
             <div className="max-w-5xl mx-auto">
                 {successMessage && (
-                    <div className="bg-green-500/10 border border-green-500/50 text-green-400 p-4 rounded-xl mb-8 flex items-center justify-between">
+                    <div className="bg-zinc-900 border border-zinc-800 text-gray-300 p-4 rounded-xl mb-8 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             <span className="font-medium">{successMessage}</span>
                         </div>
                     </div>
@@ -101,12 +101,12 @@ const UserBookingHistory = () => {
                 ) : (
                     <div className="space-y-6">
                         {bookings.map(booking => (
-                            <div key={booking.id} className="bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-lg">
+                            <div key={booking.id} className="bg-[#1A1A1A] border border-zinc-800 rounded-xl overflow-hidden flex flex-col md:flex-row shadow-md mb-6">
                                 {/* Left Side: Movie Info */}
-                                <div className="p-6 md:p-8 flex-1 border-b md:border-b-0 md:border-r border-zinc-800">
+                                <div className="p-6 md:p-8 flex-1 border-b border-dashed md:border-b-0 md:border-r border-gray-600">
                                     <div className="flex justify-between items-start mb-4">
-                                        <h3 className="text-2xl font-black text-white">{booking.showtime.movie_title}</h3>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${booking.payment_status === 'Completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                                        <h3 className="text-2xl font-semibold text-white">{booking.showtime.movie_title}</h3>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${booking.payment_status === 'Completed' ? 'bg-zinc-800 text-green-400' : 'bg-zinc-800 text-yellow-400'}`}>
                                             {booking.payment_status}
                                         </span>
                                     </div>
@@ -123,13 +123,13 @@ const UserBookingHistory = () => {
                                 </div>
 
                                 {/* Right Side: Ticket Details & QR */}
-                                <div className="p-6 md:p-8 w-full md:w-auto bg-zinc-950 flex flex-col md:flex-row gap-6 md:gap-8 justify-between">
+                                <div className="p-6 md:p-8 w-full md:w-auto bg-[#1A1A1A] flex flex-col md:flex-row gap-6 md:gap-8 justify-between">
                                     <div className="flex flex-col justify-between min-w-[200px]">
                                         <div>
                                             <p className="text-gray-400 text-sm mb-3">Seats ({booking.tickets.length})</p>
                                             <div className="flex flex-wrap gap-2 mb-6">
                                                 {booking.tickets.map(t => (
-                                                    <span key={t.id} className="px-3 py-1 bg-zinc-950 border border-zinc-800 text-amber-500 rounded-lg text-sm font-bold">
+                                                    <span key={t.id} className="px-3 py-1 bg-zinc-800 text-gray-300 rounded text-sm font-medium">
                                                         {t.seat_label}
                                                     </span>
                                                 ))}
@@ -141,14 +141,14 @@ const UserBookingHistory = () => {
                                                 <p>{new Date(booking.created_at).toLocaleDateString()}</p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xl font-black text-white">Rs. {booking.total_amount}</p>
+                                                <p className="text-xl font-medium text-white">Rs. {booking.total_amount}</p>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     {/* QR Code */}
-                                    <div className="flex-shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-zinc-800 pt-6 md:pt-0 md:pl-8">
-                                        <div className="bg-white p-2 rounded-xl shadow-lg">
+                                    <div className="flex-shrink-0 flex flex-col items-center justify-center border-t border-dashed md:border-t-0 md:border-l border-gray-600 pt-6 md:pt-0 md:pl-8">
+                                        <div className="bg-white p-2 rounded-md">
                                             <img 
                                                 src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
                                                     `HamroCinema Ticket\n` +

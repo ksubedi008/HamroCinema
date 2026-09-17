@@ -6,22 +6,28 @@ const AdminLogin = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const { loginUser, logoutUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await loginUser(username, password);
-        if (result.success) {
-            if (result.user.role !== 'Admin' && result.user.role !== 'Manager') {
-                logoutUser();
-                setError("Unauthorized access. Please use the public customer login.");
+        setIsSubmitting(true);
+        try {
+            const result = await loginUser(username, password);
+            if (result.success) {
+                if (result.user.role !== 'Admin' && result.user.role !== 'Manager') {
+                    logoutUser();
+                    setError("Unauthorized access. Please use the public customer login.");
+                } else {
+                    navigate('/k-subedi-08');
+                }
             } else {
-                navigate('/k-subedi-08');
+                setError(result.error);
             }
-        } else {
-            setError(result.error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -79,8 +85,15 @@ const AdminLogin = () => {
                         </div>
 
                         <div className="pt-2">
-                            <button type="submit" className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold uppercase tracking-widest text-[#050b14] bg-cyan-500 hover:bg-cyan-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                                Authenticate
+                            <button type="submit" disabled={isSubmitting} className={`w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold uppercase tracking-widest text-[#050b14] bg-cyan-500 hover:bg-cyan-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                                {isSubmitting ? (
+                                    <>
+                                        <svg className="animate-spin h-5 w-5 text-[#050b14]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        Authenticating...
+                                    </>
+                                ) : (
+                                    "Authenticate"
+                                )}
                             </button>
                         </div>
                     </form>

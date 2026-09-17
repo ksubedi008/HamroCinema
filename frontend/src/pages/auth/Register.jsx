@@ -6,6 +6,7 @@ const Register = () => {
     const [formData, setFormData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -14,6 +15,7 @@ const Register = () => {
         if (formData.password !== formData.confirmPassword) {
             return setError("Passwords do not match");
         }
+        setIsSubmitting(true);
         try {
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/register/`, {
                 username: formData.username,
@@ -23,6 +25,8 @@ const Register = () => {
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.error || "Registration failed");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -97,8 +101,15 @@ const Register = () => {
                         </div>
 
                         <div>
-                            <button type="submit" className="btn-premium w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 focus:ring-offset-[#0d0914]">
-                                Register
+                            <button type="submit" disabled={isSubmitting} className={`btn-premium w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 focus:ring-offset-[#0d0914] ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                                {isSubmitting ? (
+                                    <>
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        Registering...
+                                    </>
+                                ) : (
+                                    "Register"
+                                )}
                             </button>
                         </div>
                     </form>

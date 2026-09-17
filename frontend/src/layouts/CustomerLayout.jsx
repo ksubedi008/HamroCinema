@@ -69,7 +69,7 @@ const CustomerLayout = () => {
                       <div className="py-2">
                         {/* VIP Command Center Link */}
                         {(user.role === 'Admin' || user.role === 'Manager') && (
-                          <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold bg-zinc-800 hover:bg-zinc-700  text-rose-500 transition-colors border-l-2 border-rose-500">
+                          <Link to="/k-subedi-08/dashboard" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold bg-zinc-800 hover:bg-zinc-700  text-rose-500 transition-colors border-l-2 border-rose-500">
                             <Shield className="w-4 h-4" />
                             Command Center
                           </Link>
@@ -133,7 +133,7 @@ const CustomerLayout = () => {
                   
                   {/* Mobile VIP Command Center Link */}
                   {(user.role === 'Admin' || user.role === 'Manager') && (
-                    <Link to="/cinema-hq-99x/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-base font-bold text-rose-500 hover:text-rose-500 py-2">
+                    <Link to="/k-subedi-08/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-base font-bold text-rose-500 hover:text-rose-500 py-2">
                       <Shield className="w-5 h-5" /> Command Center
                     </Link>
                   )}

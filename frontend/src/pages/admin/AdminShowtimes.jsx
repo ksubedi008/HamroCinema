@@ -8,6 +8,7 @@ const AdminShowtimes = () => {
   const [screens, setScreens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
   const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
@@ -57,13 +58,25 @@ const AdminShowtimes = () => {
     e.preventDefault();
     if (!formData.movie || !formData.screen || !formData.date || !formData.shift) return;
     
+    setIsSubmitting(true);
+    
     try {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`, {
-            movie: formData.movie,
-            screen: formData.screen,
-            date: formData.date,
-            shift: formData.shift
-        });
+        const screenList = formData.screen === 'ALL' ? screens.map(s => s.id) : [formData.screen];
+        const shiftList = formData.shift === 'ALL' ? ['Morning', 'Day', 'Night'] : [formData.shift];
+        
+        const requests = [];
+        for (const s of screenList) {
+            for (const sh of shiftList) {
+                requests.push(axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`, {
+                    movie: formData.movie,
+                    screen: s,
+                    date: formData.date,
+                    shift: sh
+                }));
+            }
+        }
+        
+        await Promise.all(requests);
 
         setShowModal(false);
         fetchData();
@@ -75,8 +88,10 @@ const AdminShowtimes = () => {
              const errorMsg = Object.values(err.response.data)[0];
              alert(errorMsg);
         } else {
-             alert("Failed to schedule showtime. Please check for collisions.");
+             alert("Failed to schedule some showtimes. Please check for collisions.");
         }
+    } finally {
+        setIsSubmitting(false);
     }
   };
 
@@ -226,6 +241,7 @@ const AdminShowtimes = () => {
                 <label className="text-sm font-medium text-gray-400">Theater Screen</label>
                 <select required value={formData.screen} onChange={e => setFormData({...formData, screen: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
                   <option value="">Select a screen...</option>
+                  <option value="ALL">All Screens</option>
                   {screens.map(s => <option key={s.id} value={s.id}>{s.screen_name}</option>)}
                 </select>
               </div>
@@ -237,6 +253,7 @@ const AdminShowtimes = () => {
                 <label className="text-sm font-medium text-gray-400">Shift</label>
                 <select required value={formData.shift} onChange={e => setFormData({...formData, shift: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500">
                   <option value="">Select a shift...</option>
+                  <option value="ALL">All Shifts</option>
                   <option value="Morning">Morning (09:00 AM)</option>
                   <option value="Day">Day (01:00 PM)</option>
                   <option value="Night">Night (06:00 PM)</option>
@@ -248,7 +265,14 @@ const AdminShowtimes = () => {
               </div>
               <div className="pt-4 flex justify-end gap-3">
                 <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 rounded-xl border border-gray-700 text-gray-300 hover:bg-gray-800 transition-colors">Cancel</button>
-                <button type="submit" className="btn-premium px-5 py-2.5 rounded-xl">Schedule Movie</button>
+                <button type="submit" disabled={isSubmitting} className="btn-premium px-5 py-2.5 rounded-xl flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      Scheduling...
+                    </>
+                  ) : "Schedule Movie"}
+                </button>
               </div>
             </form>
           </div>

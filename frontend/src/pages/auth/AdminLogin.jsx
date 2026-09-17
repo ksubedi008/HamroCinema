@@ -16,7 +16,7 @@ const AdminLogin = () => {
         if (result.success) {
             if (result.user.role !== 'Admin' && result.user.role !== 'Manager') {
                 logoutUser();
-                setError("Access Denied: Authorized Personnel Only");
+                setError("Unauthorized access. Please use the public customer login.");
             } else {
                 navigate('/k-subedi-08');
             }

@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -20,6 +21,19 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsCustomAdminUser]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    @action(detail=True, methods=['patch'], url_path='loyalty-points')
+    def update_loyalty_points(self, request, pk=None):
+        user = self.get_object()
+        points = request.data.get('loyalty_points')
+        if points is not None:
+            try:
+                user.loyalty_points = int(points)
+                user.save(update_fields=['loyalty_points'])
+                return Response({'status': 'success', 'loyalty_points': user.loyalty_points})
+            except ValueError:
+                return Response({'error': 'Invalid points value'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'loyalty_points not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()

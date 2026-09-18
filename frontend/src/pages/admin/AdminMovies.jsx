@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import OpenGraphPreview from '../../components/OpenGraphPreview';
-import SEO from '../../components/SEO';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import OpenGraphPreview from "../../components/OpenGraphPreview";
+import SEO from "../../components/SEO";
 
 const AdminMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -9,77 +9,141 @@ const AdminMovies = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingMovieId, setEditingMovieId] = useState(null);
-  
+
   const [formData, setFormData] = useState({
-    title: '', description: '', director: '', cast: '',
-    duration: '', genre: '', release_date: '', poster: null,
-    is_active: true, status: 'Now Showing'
+    title: "",
+    description: "",
+    director: "",
+    cast: "",
+    duration: "",
+    genre: "",
+    release_date: "",
+    poster: null,
+    is_active: true,
+    status: "Now Showing",
   });
 
   const fetchMovies = () => {
     setLoading(true);
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`)
-      .then(res => { setMovies(res.data); setLoading(false); })
-      .catch(err => { console.error(err); setLoading(false); });
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`)
+      .then((res) => {
+        setMovies(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   };
 
-  useEffect(() => { fetchMovies(); }, []);
+  useEffect(() => {
+    fetchMovies();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const data = new FormData();
-    data.append('title', formData.title);
-    data.append('description', formData.description);
-    data.append('director', formData.director);
-    data.append('cast', formData.cast);
-    data.append('duration', formData.duration);
-    data.append('genre', formData.genre);
-    data.append('release_date', formData.release_date);
-    data.append('is_active', formData.is_active);
-    data.append('status', formData.status);
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("director", formData.director);
+    data.append("cast", formData.cast);
+    data.append("duration", formData.duration);
+    data.append("genre", formData.genre);
+    data.append("release_date", formData.release_date);
+    data.append("is_active", formData.is_active);
+    data.append("status", formData.status);
     if (formData.poster instanceof File) {
-      data.append('poster', formData.poster);
+      data.append("poster", formData.poster);
     }
 
-    const request = editingMovieId 
-      ? axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/movies/${editingMovieId}/`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
-      : axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+    const request = editingMovieId
+      ? axios.patch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/movies/${editingMovieId}/`,
+          data,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        )
+      : axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`, data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
     request
-      .then(res => {
+      .then((res) => {
         setShowModal(false);
         setEditingMovieId(null);
         fetchMovies();
-        setFormData({ title: '', description: '', director: '', cast: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing' });
+        setFormData({
+          title: "",
+          description: "",
+          director: "",
+          cast: "",
+          duration: "",
+          genre: "",
+          release_date: "",
+          poster: null,
+          is_active: true,
+          status: "Now Showing",
+        });
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
       .finally(() => setIsSubmitting(false));
   };
 
   const openEditModal = (movie) => {
     setEditingMovieId(movie.id);
     setFormData({
-      title: movie.title, description: movie.description, director: movie.director || '', cast: movie.cast || '',
-      duration: movie.duration, genre: movie.genre || '', release_date: movie.release_date || '',
-      poster: movie.poster, /* will be a URL string, handled in submit */
-      is_active: movie.is_active, status: movie.status || 'Now Showing'
+      title: movie.title,
+      description: movie.description,
+      director: movie.director || "",
+      cast: movie.cast || "",
+      duration: movie.duration,
+      genre: movie.genre || "",
+      release_date: movie.release_date || "",
+      poster: movie.poster /* will be a URL string, handled in submit */,
+      is_active: movie.is_active,
+      status: movie.status || "Now Showing",
     });
     setShowModal(true);
   };
 
   const handleAddNew = () => {
     setEditingMovieId(null);
-    setFormData({ title: '', description: '', director: '', cast: '', duration: '', genre: '', release_date: '', poster: null, is_active: true, status: 'Now Showing' });
+    setFormData({
+      title: "",
+      description: "",
+      director: "",
+      cast: "",
+      duration: "",
+      genre: "",
+      release_date: "",
+      poster: null,
+      is_active: true,
+      status: "Now Showing",
+    });
     setShowModal(true);
   };
 
   const handleDelete = (movieId) => {
-    if (window.confirm('Are you sure you want to delete this movie? This action cannot be undone.')) {
-      axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/movies/${movieId}/`)
-        .then(res => { if (res.status === 204) { setMovies(prevMovies => prevMovies.filter(m => m.id !== movieId)); } })
-        .catch(err => { console.error(err); alert('Failed to delete movie.'); });
+    if (
+      window.confirm(
+        "Confirm deletion of movie record? This action cannot be undone.",
+      )
+    ) {
+      axios
+        .delete(`${import.meta.env.VITE_API_BASE_URL}/api/movies/${movieId}/`)
+        .then((res) => {
+          if (res.status === 204) {
+            setMovies((prevMovies) =>
+              prevMovies.filter((m) => m.id !== movieId),
+            );
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Failed to delete movie record. Please try again.");
+        });
     }
   };
 
@@ -87,13 +151,21 @@ const AdminMovies = () => {
     <div className="animate-fade-in space-y-6">
       <SEO title="Manage Movies | HamroCinema Admin" />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-neutral-100">Manage Movies</h2>
-        <button onClick={handleAddNew} className="btn-premium w-full sm:w-auto px-6 py-2.5 rounded-full"> + Add Movie </button>
+        <h2 className="text-2xl sm:text-3xl font-bold text-neutral-100">
+          Manage Movies
+        </h2>
+        <button
+          onClick={handleAddNew}
+          className="btn-premium w-full sm:w-auto px-6 py-2.5 rounded-full"
+        >
+          {" "}
+          + Add Movie{" "}
+        </button>
       </div>
-      
+
       <div className="bg-[#121212] border border-neutral-800 rounded-2xl overflow-x-auto w-full">
         <table className="w-full text-left text-sm text-neutral-300 whitespace-nowrap">
-          <thead className="bg-purple-900/20 text-neutral-400 font-medium">
+          <thead className="bg-[#1A1A1A] text-neutral-400 font-medium">
             <tr>
               <th className="px-6 py-4">Title</th>
               <th className="px-6 py-4">Genre</th>
@@ -103,41 +175,83 @@ const AdminMovies = () => {
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-purple-900/20">
-            {movies.map(movie => (
-              <tr key={movie.id} className="hover:bg-[#1A1A1A] transition-colors duration-200 ease-in-out">
+          <tbody className="divide-y divide-neutral-800">
+            {movies.map((movie) => (
+              <tr
+                key={movie.id}
+                className="hover:bg-neutral-800 transition-colors duration-200 ease-in-out"
+              >
                 <td className="px-6 py-4 font-bold text-neutral-100 flex items-center gap-3">
-                  {movie.poster ? <img src={movie.poster} className="w-10 h-10 rounded object-cover border border-neutral-800" /> : <div className="w-10 h-10 rounded bg-gray-800 border border-neutral-800"></div>}
+                  {movie.poster ? (
+                    <img
+                      src={movie.poster}
+                      className="w-10 h-10 rounded object-cover border border-neutral-800"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded bg-gray-800 border border-neutral-800"></div>
+                  )}
                   {movie.title}
                 </td>
-                <td className="px-6 py-4">{movie.genre || '-'}</td>
+                <td className="px-6 py-4">{movie.genre || "-"}</td>
                 <td className="px-6 py-4">{movie.duration} min</td>
-                <td className="px-6 py-4">{movie.release_date || '-'}</td>
+                <td className="px-6 py-4">{movie.release_date || "-"}</td>
                 <td className="px-6 py-4">
-                  {movie.status === 'Coming Soon' ? (
-                    <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full font-medium">Coming Soon</span>
+                  {movie.status === "Coming Soon" ? (
+                    <span className="px-2 py-1 bg-[#1A1A1A] text-yellow-400 text-xs rounded-full font-medium">
+                      Coming Soon
+                    </span>
                   ) : (
-                    <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium">Now Showing</span>
+                    <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium">
+                      Now Showing
+                    </span>
                   )}
                 </td>
                 <td className="px-6 py-4">
                   {movie.is_active ? (
-                    <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-medium">Active</span>
+                    <span className="px-2 py-1 bg-[#1A1A1A] text-green-400 text-xs rounded-full font-medium">
+                      Active
+                    </span>
                   ) : (
-                    <span className="px-2 py-1 bg-gray-500/20 text-neutral-400 text-xs rounded-full font-medium">Hidden</span>
+                    <span className="px-2 py-1 bg-[#1A1A1A] text-neutral-400 text-xs rounded-full font-medium">
+                      Hidden
+                    </span>
                   )}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button onClick={() => openEditModal(movie)} className="text-neutral-400 hover:text-neutral-100 font-medium px-3 py-1 rounded hover:bg-pink-400/10 transition-colors duration-200 ease-in-out mr-2">Edit</button>
-                  <button onClick={() => handleDelete(movie.id)} className="text-red-500 hover:text-red-400 font-medium px-3 py-1 rounded hover:bg-red-500/10 transition-colors duration-200 ease-in-out">Delete</button>
+                  <button
+                    onClick={() => openEditModal(movie)}
+                    className="text-neutral-400 hover:text-neutral-100 font-medium px-3 py-1 rounded hover:bg-neutral-800 transition-colors duration-200 ease-in-out mr-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(movie.id)}
+                    className="text-red-500 hover:text-red-400 font-medium px-3 py-1 rounded hover:bg-neutral-800 transition-colors duration-200 ease-in-out"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
             {movies.length === 0 && !loading && (
-              <tr><td colSpan="6" className="px-6 py-8 text-center text-neutral-400">No movies found.</td></tr>
+              <tr>
+                <td
+                  colSpan="6"
+                  className="px-6 py-8 text-center text-neutral-400"
+                >
+                  No movies found.
+                </td>
+              </tr>
             )}
             {loading && (
-              <tr><td colSpan="6" className="px-6 py-8 text-center text-neutral-400 hover:text-neutral-100">Loading movies...</td></tr>
+              <tr>
+                <td
+                  colSpan="6"
+                  className="px-6 py-8 text-center text-neutral-400 hover:text-neutral-100"
+                >
+                  Loading movies...
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -147,74 +261,220 @@ const AdminMovies = () => {
         <div className="fixed inset-0 bg-[#121212]/80 flex items-center justify-center z-50 p-4">
           <div className="bg-[#121212] border border-neutral-800 rounded-2xl w-full max-w-lg shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-neutral-800 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-neutral-100">{editingMovieId ? 'Edit Movie' : 'Add New Movie'}</h3>
-              <button onClick={() => setShowModal(false)} className="text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">✕</button>
+              <h3 className="text-xl font-bold text-neutral-100">
+                {editingMovieId ? "Edit Movie" : "Add New Movie"}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out"
+              >
+                ✕
+              </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="text-sm font-medium text-neutral-400">Title</label>
-                <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out" placeholder="e.g. Inception" />
+                <label className="text-sm font-medium text-neutral-400">
+                  Title
+                </label>
+                <input
+                  required
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                  placeholder="e.g. Inception"
+                />
               </div>
               <div className="space-y-1">
-                <label className="text-sm font-medium text-neutral-400">Description</label>
-                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out" rows="3" placeholder="Movie synopsis..."></textarea>
+                <label className="text-sm font-medium text-neutral-400">
+                  Description
+                </label>
+                <textarea
+                  required
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                  rows="3"
+                  placeholder="Movie synopsis..."
+                ></textarea>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-neutral-400">Director</label>
-                  <input type="text" value={formData.director} onChange={e => setFormData({...formData, director: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out" placeholder="e.g. Christopher Nolan" />
+                  <label className="text-sm font-medium text-neutral-400">
+                    Director
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.director}
+                    onChange={(e) =>
+                      setFormData({ ...formData, director: e.target.value })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                    placeholder="e.g. Christopher Nolan"
+                  />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-neutral-400">Cast</label>
-                  <input type="text" value={formData.cast} onChange={e => setFormData({...formData, cast: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out" placeholder="e.g. Leonardo DiCaprio, Cillian Murphy..." />
+                  <label className="text-sm font-medium text-neutral-400">
+                    Cast
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.cast}
+                    onChange={(e) =>
+                      setFormData({ ...formData, cast: e.target.value })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                    placeholder="e.g. Leonardo DiCaprio, Cillian Murphy..."
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-neutral-400">Duration (min)</label>
-                  <input required type="number" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out" placeholder="120" />
+                  <label className="text-sm font-medium text-neutral-400">
+                    Duration (min)
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    value={formData.duration}
+                    onChange={(e) =>
+                      setFormData({ ...formData, duration: e.target.value })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                    placeholder="120"
+                  />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-neutral-400">Genre</label>
-                  <input type="text" value={formData.genre} onChange={e => setFormData({...formData, genre: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out" placeholder="Sci-Fi" />
+                  <label className="text-sm font-medium text-neutral-400">
+                    Genre
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.genre}
+                    onChange={(e) =>
+                      setFormData({ ...formData, genre: e.target.value })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                    placeholder="Sci-Fi"
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-neutral-400">Release Date</label>
-                  <input type="date" value={formData.release_date} onChange={e => setFormData({...formData, release_date: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out [color-scheme:dark]" />
+                  <label className="text-sm font-medium text-neutral-400">
+                    Release Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.release_date}
+                    onChange={(e) =>
+                      setFormData({ ...formData, release_date: e.target.value })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out [color-scheme:dark]"
+                  />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-neutral-400">Poster Image</label>
-                  <input type="file" accept="image/*" onChange={e => setFormData({...formData, poster: e.target.files[0]})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-900/50 file:text-neutral-400 hover:text-neutral-100 hover:file:bg-purple-900/70" />
-                  {editingMovieId && typeof formData.poster === 'string' && (
-                    <p className="text-xs text-neutral-400 mt-1">Current poster is kept unless you select a new one.</p>
+                  <label className="text-sm font-medium text-neutral-400">
+                    Poster Image
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setFormData({ ...formData, poster: e.target.files[0] })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-900/50 file:text-neutral-400 hover:text-neutral-100 hover:file:bg-purple-900/70"
+                  />
+                  {editingMovieId && typeof formData.poster === "string" && (
+                    <p className="text-xs text-neutral-400 mt-1">
+                      Current poster is kept unless you select a new one.
+                    </p>
                   )}
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 pb-2 gap-4">
                 <div className="space-y-1 w-full sm:w-1/2 sm:pr-2">
-                  <label className="text-sm font-medium text-neutral-400">Release Status</label>
-                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out">
+                  <label className="text-sm font-medium text-neutral-400">
+                    Release Status
+                  </label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) =>
+                      setFormData({ ...formData, status: e.target.value })
+                    }
+                    className="w-full bg-[#121212] border border-neutral-800 rounded-xl px-4 py-2.5 text-neutral-100 focus:outline-none focus:border-neutral-600 transition-colors duration-200 ease-in-out"
+                  >
                     <option value="Now Showing">Now Showing</option>
                     <option value="Coming Soon">Coming Soon</option>
                   </select>
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-1/2 sm:pl-2">
-                  <input type="checkbox" id="isActive" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} className="w-4 h-4 text-neutral-400 hover:text-neutral-100 bg-[#121212] border-neutral-800 rounded focus:ring-white/20 focus:ring-2 mt-6" />
-                  <label htmlFor="isActive" className="text-sm font-medium text-neutral-300 cursor-pointer mt-6"> Active (Visible publicly) </label>
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    checked={formData.is_active}
+                    onChange={(e) =>
+                      setFormData({ ...formData, is_active: e.target.checked })
+                    }
+                    className="w-4 h-4 text-neutral-400 hover:text-neutral-100 bg-[#121212] border-neutral-800 rounded focus:ring-white/20 focus:ring-2 mt-6"
+                  />
+                  <label
+                    htmlFor="isActive"
+                    className="text-sm font-medium text-neutral-300 cursor-pointer mt-6"
+                  >
+                    {" "}
+                    Active (Visible publicly){" "}
+                  </label>
                 </div>
               </div>
-              
+
               {/* Real-time Social Share Preview */}
-              <OpenGraphPreview title={formData.title} genre={formData.genre} description={formData.description} poster={formData.poster} />
-              
+              <OpenGraphPreview
+                title={formData.title}
+                genre={formData.genre}
+                description={formData.description}
+                poster={formData.poster}
+              />
+
               <div className="pt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 rounded-xl border border-gray-700 text-neutral-300 hover:bg-gray-800 transition-colors duration-200 ease-in-out">Cancel</button>
-                <button type="submit" disabled={isSubmitting} className="btn-premium flex items-center gap-2 px-5 py-2.5 rounded-xl disabled:opacity-70 disabled:cursor-not-allowed">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 rounded-xl border border-gray-700 text-neutral-300 hover:bg-gray-800 transition-colors duration-200 ease-in-out"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-premium flex items-center gap-2 px-5 py-2.5 rounded-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                >
                   {isSubmitting ? (
                     <>
-                      <svg className="animate-spin h-5 w-5 text-neutral-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      <svg
+                        className="animate-spin h-5 w-5 text-neutral-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
                       Saving...
                     </>
                   ) : (

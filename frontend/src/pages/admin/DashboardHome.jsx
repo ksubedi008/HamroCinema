@@ -54,7 +54,7 @@ const DashboardHome = () => {
         {" "}
         <div>
           {" "}
-          <h2 className="text-4xl font-extrabold text-zinc-100 mb-2 tracking-tight">
+          <h2 className="text-4xl font-extrabold text-neutral-100 mb-2 tracking-tight">
             System Overview
           </h2>{" "}
           <p className="text-neutral-400 text-sm tracking-widest uppercase font-semibold">
@@ -135,7 +135,7 @@ const DashboardHome = () => {
           className="group bg-[#1A1A1A] border border-neutral-800 rounded-3xl p-6 transition-all duration-200 ease-in-out hover:shadow-xl hover:border-neutral-800 flex items-center justify-between overflow-hidden relative"
         >
           {" "}
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-cyan-500/20 blur-2xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-200 ease-in-out"></div>{" "}
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-[#1A1A1A] blur-2xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-200 ease-in-out"></div>{" "}
           <div className="relative z-10">
             {" "}
             <p className="text-neutral-400 text-xs tracking-widest font-bold uppercase mb-2">

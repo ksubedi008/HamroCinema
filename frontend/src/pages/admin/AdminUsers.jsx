@@ -1,3 +1,182 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; const AdminUsers = () => { const [users, setUsers] = useState([]); const [loading, setLoading] = useState(true); const [searchTerm, setSearchTerm] = useState(''); const fetchUsers = async () => { try { const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/`); setUsers(res.data); } catch (err) { console.error("Error fetching users:", err); } setLoading(false); }; useEffect(() => { fetchUsers(); }, []); const toggleUserStatus = async (id, currentStatus) => { try { const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null; await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${id}/`, { is_active: !currentStatus }, { headers: { Authorization: `Bearer ${token}` } } ); fetchUsers(); } catch (err) { console.error("Failed to toggle status:", err); } }; const filteredUsers = users.filter(user => { if (!searchTerm) return true; const searchLower = searchTerm.toLowerCase(); const emailMatch = user.email ? user.email.toLowerCase().includes(searchLower) : false; const userMatch = user.username ? user.username.toLowerCase().includes(searchLower) : false; return emailMatch || userMatch; }); return ( <div className="animate-fade-in space-y-6"> <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4"> <div> <h1 className="text-3xl font-bold text-neutral-100 border-l-4 border-amber-500 pl-4 tracking-wider">User Management</h1> <p className="text-neutral-400 mt-1 pl-4">Manage and monitor customer accounts.</p> </div> <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto"> <div className="relative"> <input type="text" placeholder="Search by username or email..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full sm:w-64 bg-[#1A1A1A] border border-neutral-800 text-neutral-100 text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 transition-colors duration-200 ease-in-out" /> </div> </div> </div> <div className="bg-[#121212] border border-neutral-800 rounded-2xl overflow-x-auto w-full shadow-lg"> <table className="w-full text-left text-sm text-neutral-300 whitespace-nowrap"> <thead className="bg-purple-900/20 text-neutral-400 font-medium"> <tr> <th className="px-6 py-4">ID</th> <th className="px-6 py-4">Username</th> <th className="px-6 py-4">Email</th> <th className="px-6 py-4">Role</th> <th className="px-6 py-4">Joined Date</th> <th className="px-6 py-4">Status</th> <th className="px-6 py-4 text-right">Actions</th> </tr> </thead> <tbody className="divide-y divide-purple-900/20"> {filteredUsers.map(user => ( <tr key={user.id} className="hover:bg-[#1A1A1A] transition-colors duration-200 ease-in-out"> <td className="px-6 py-4">{user.id}</td> <td className="px-6 py-4 font-bold text-neutral-100">{user.username}</td> <td className="px-6 py-4">{user.email || 'N/A'}</td> <td className="px-6 py-4"> <span className={`px-3 py-1 rounded-full text-xs font-medium border ${user.role === 'Admin' ? 'bg-pink-500/10 text-neutral-400 hover:text-neutral-100 border-neutral-800' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}> {user.role} </span> </td> <td className="px-6 py-4">{new Date(user.date_joined).toLocaleDateString()}</td> <td className="px-6 py-4"> {user.is_active ? ( <span className="text-green-400 font-medium bg-green-500/10 px-2 py-1 rounded text-xs border border-green-500/20">Active</span> ) : ( <span className="text-red-400 font-medium bg-red-500/10 px-2 py-1 rounded text-xs border border-red-500/20">Suspended</span> )} </td> <td className="px-6 py-4 text-right"> <button onClick={() => toggleUserStatus(user.id, user.is_active)} className={`text-xs px-3 py-1.5 rounded-lg transition-colors duration-200 ease-in-out font-bold uppercase tracking-wider ${user.is_active ? 'bg-[#1A1A1A] text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 border border-neutral-800' : 'bg-amber-700 text-neutral-100 hover:bg-neutral-800 border border-amber-700/50'}`} > {user.is_active ? 'Suspend' : 'Activate'} </button> </td> </tr> ))} {filteredUsers.length === 0 && !loading && ( <tr><td colSpan="7" className="px-6 py-8 text-center text-neutral-400">No users found.</td></tr> )} </tbody> </table> </div> </div> );
-}; export default AdminUsers;
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import AdminUserDetailModal from "./AdminUserDetailModal";
+const AdminUsers = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const handleViewUser = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/`,
+      );
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  const toggleUserStatus = async (id, currentStatus) => {
+    try {
+      const token = sessionStorage.getItem("authTokens")
+        ? JSON.parse(sessionStorage.getItem("authTokens")).access
+        : null;
+      await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/${id}/`,
+        { is_active: !currentStatus },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      fetchUsers();
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
+    }
+  };
+  const filteredUsers = users.filter((user) => {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    const emailMatch = user.email
+      ? user.email.toLowerCase().includes(searchLower)
+      : false;
+    const userMatch = user.username
+      ? user.username.toLowerCase().includes(searchLower)
+      : false;
+    return emailMatch || userMatch;
+  });
+  return (
+    <div className="animate-fade-in space-y-6">
+      {" "}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        {" "}
+        <div>
+          {" "}
+          <h1 className="text-3xl font-bold text-neutral-100 border-l-4 border-neutral-100 pl-4 tracking-wider">
+            User Management
+          </h1>{" "}
+          <p className="text-neutral-400 mt-1 pl-4">
+            Manage and monitor customer accounts.
+          </p>{" "}
+        </div>{" "}
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          {" "}
+          <div className="relative">
+            {" "}
+            <input
+              type="text"
+              placeholder="Search by username or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full sm:w-64 bg-[#1A1A1A] border border-neutral-800 text-neutral-100 text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-neutral-100 transition-colors duration-200 ease-in-out"
+            />{" "}
+          </div>{" "}
+        </div>{" "}
+      </div>{" "}
+      <div className="bg-[#121212] border border-neutral-800 rounded-2xl overflow-x-auto w-full shadow-lg">
+        {" "}
+        <table className="w-full text-left text-sm text-neutral-300 whitespace-nowrap">
+          {" "}
+          <thead className="bg-[#1A1A1A] text-neutral-400 font-medium">
+            {" "}
+            <tr>
+              {" "}
+              <th className="px-6 py-4">ID</th>{" "}
+              <th className="px-6 py-4">Username</th>{" "}
+              <th className="px-6 py-4">Email</th>{" "}
+              <th className="px-6 py-4">Role</th>{" "}
+              <th className="px-6 py-4">Joined Date</th>{" "}
+              <th className="px-6 py-4">Status</th>{" "}
+              <th className="px-6 py-4 text-right">Actions</th>{" "}
+            </tr>{" "}
+          </thead>{" "}
+          <tbody className="divide-y divide-neutral-800">
+            {" "}
+            {filteredUsers.map((user) => (
+              <tr
+                key={user.id}
+                className="hover:bg-neutral-800 transition-colors duration-200 ease-in-out"
+              >
+                {" "}
+                <td className="px-6 py-4">{user.id}</td>{" "}
+                <td className="px-6 py-4 font-bold text-neutral-100">
+                  {user.username}
+                </td>{" "}
+                <td className="px-6 py-4">{user.email || "N/A"}</td>{" "}
+                <td className="px-6 py-4">
+                  {" "}
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium border ${user.role === "Admin" ? "bg-[#1A1A1A] text-neutral-400 hover:text-neutral-100 border-neutral-800" : "bg-[#1A1A1A] text-blue-400 border-neutral-800"}`}
+                  >
+                    {" "}
+                    {user.role}{" "}
+                  </span>{" "}
+                </td>{" "}
+                <td className="px-6 py-4">
+                  {new Date(user.date_joined).toLocaleDateString()}
+                </td>{" "}
+                <td className="px-6 py-4">
+                  {" "}
+                  {user.is_active ? (
+                    <span className="text-green-400 font-medium bg-green-500/10 px-2 py-1 rounded text-xs border border-neutral-800">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="text-red-400 font-medium bg-[#1A1A1A] px-2 py-1 rounded text-xs border border-neutral-800">
+                      Suspended
+                    </span>
+                  )}{" "}
+                </td>{" "}
+                <td className="px-6 py-4 text-right">
+                  {" "}
+                  <button
+                    onClick={() => handleViewUser(user)}
+                    className="text-xs px-3 py-1.5 rounded-lg transition-colors duration-200 ease-in-out font-bold uppercase tracking-wider bg-[#1A1A1A] text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 border border-neutral-800 mr-2"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => toggleUserStatus(user.id, user.is_active)}
+                    className={`text-xs px-3 py-1.5 rounded-lg transition-colors duration-200 ease-in-out font-bold uppercase tracking-wider ${user.is_active ? "bg-[#1A1A1A] text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 border border-neutral-800" : "bg-white text-black text-neutral-100 hover:bg-neutral-800 border border-neutral-600"}`}
+                  >
+                    {" "}
+                    {user.is_active ? "Suspend" : "Activate"}{" "}
+                  </button>{" "}
+                </td>{" "}
+              </tr>
+            ))}{" "}
+            {filteredUsers.length === 0 && !loading && (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="px-6 py-8 text-center text-neutral-400"
+                >
+                  No users found.
+                </td>
+              </tr>
+            )}{" "}
+          </tbody>{" "}
+        </table>{" "}
+      </div>{" "}
+      
+      <AdminUserDetailModal 
+        user={selectedUser} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onUpdate={() => {
+          fetchUsers();
+          setIsModalOpen(false); // Close modal on successful update to refresh state
+        }}
+      />
+    </div>
+  );
+};
+export default AdminUsers;

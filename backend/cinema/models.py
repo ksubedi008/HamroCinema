@@ -9,6 +9,8 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Customer')
     loyalty_points = models.IntegerField(default=0)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.username} ({self.role})"
@@ -186,3 +188,12 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} ({self.email})"
+
+class PasswordResetOTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otp_resets')
+    otp_code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"OTP for {self.user.username} ({self.otp_code})"

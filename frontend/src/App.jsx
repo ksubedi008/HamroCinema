@@ -8,7 +8,6 @@ import AdminShowtimes from './pages/admin/AdminShowtimes'
 import AdminMessages from './pages/admin/AdminMessages'
 import AdminBookings from './pages/admin/AdminBookings'
 import AdminUsers from './pages/admin/AdminUsers'
-
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRouteGuard from './components/AdminRouteGuard'
@@ -16,13 +15,15 @@ import Login from './pages/auth/Login'
 import AdminLogin from './pages/auth/AdminLogin'
 import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
-import ResetPassword from './pages/auth/ResetPassword'
-
 import Home from './pages/customer/Home'
 import MovieDetails from './pages/customer/MovieDetails'
 import SeatSelection from './pages/customer/SeatSelection'
 import Checkout from './pages/customer/Checkout'
 import UserBookingHistory from './pages/customer/UserBookingHistory'
+import MyProfile from './pages/customer/MyProfile'
+import EditProfile from './pages/customer/EditProfile'
+import ChangePassword from './pages/customer/ChangePassword'
+import MyTickets from './pages/customer/MyTickets'
 import PrivacyPolicy from './pages/customer/PrivacyPolicy'
 import TermsOfService from './pages/customer/TermsOfService'
 import NotFound from './pages/customer/NotFound'
@@ -52,6 +53,30 @@ function App() {
             </ProtectedRoute>
           } />
           
+          <Route path="my-profile" element={
+            <ProtectedRoute>
+              <MyProfile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="edit-profile" element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="profile/password" element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="tickets" element={
+            <ProtectedRoute>
+              <MyTickets />
+            </ProtectedRoute>
+          } />
+          
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<TermsOfService />} />
           <Route path="refund-policy" element={<RefundPolicy />} />
@@ -64,7 +89,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected Admin Routes */}
         <Route path="/k-subedi-08" element={
@@ -72,6 +96,7 @@ function App() {
             <AdminLayout />
           </AdminRouteGuard>
         }>
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="movies" element={<AdminMovies />} />
           <Route path="showtimes" element={<AdminShowtimes />} />

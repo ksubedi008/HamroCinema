@@ -5,9 +5,15 @@ from rest_framework import serializers
 from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage
 
 class UserSerializer(serializers.ModelSerializer):
+    total_bookings = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'date_joined', 'is_active', 'loyalty_points']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'profile_picture', 'role', 'date_joined', 'is_active', 'loyalty_points', 'total_bookings']
+
+    def get_total_bookings(self, obj):
+        from .models import TicketItem
+        return TicketItem.objects.filter(booking__user=obj, booking__payment_status='Completed').count()
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,6 +76,19 @@ class TicketItemSerializer(serializers.ModelSerializer):
                     })
         
         return data
+
+class MyTicketSerializer(serializers.ModelSerializer):
+    movie_title = serializers.CharField(source='showtime.movie.title', read_only=True)
+    poster = serializers.ImageField(source='showtime.movie.poster', read_only=True)
+    start_time = serializers.DateTimeField(source='showtime.start_time', read_only=True)
+    screen_name = serializers.CharField(source='showtime.screen.screen_name', read_only=True)
+    seat_label = serializers.CharField(source='seat.seat_label', read_only=True)
+    booking_id = serializers.IntegerField(source='booking.id', read_only=True)
+    purchased_at = serializers.DateTimeField(source='booking.created_at', read_only=True)
+    
+    class Meta:
+        model = TicketItem
+        fields = ['id', 'booking_id', 'movie_title', 'poster', 'start_time', 'screen_name', 'seat_label', 'purchased_at']
 
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,33 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import SEO from '../../components/SEO';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import SEO from "../../components/SEO";
 const DashboardHome = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ movies: 0, activeShowtimes: 0, revenue: 0 });
-
+  const [stats, setStats] = useState({
+    movies: 0,
+    activeShowtimes: 0,
+    revenue: 0,
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [movRes, showRes, bookRes] = await Promise.all([
           axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`),
           axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/showtimes/`),
-          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`)
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`),
         ]);
-        
         const now = new Date();
-        const active = showRes.data.filter(st => new Date(st.end_time) > now);
-        
-        const completedBookings = bookRes.data.filter(b => b.payment_status === 'Completed');
-        const totalRev = completedBookings.reduce((sum, b) => sum + parseFloat(b.total_amount), 0);
-
+        const active = showRes.data.filter((st) => new Date(st.end_time) > now);
+        const completedBookings = bookRes.data.filter(
+          (b) => b.payment_status === "Completed",
+        );
+        const totalRev = completedBookings.reduce(
+          (sum, b) => sum + parseFloat(b.total_amount),
+          0,
+        );
         setStats({
           movies: movRes.data.length,
           activeShowtimes: active.length,
-          revenue: totalRev
+          revenue: totalRev,
         });
         setMovies(movRes.data);
       } catch (err) {
@@ -35,194 +39,324 @@ const DashboardHome = () => {
       }
       setLoading(false);
     };
-
     fetchData();
   }, []);
-
   return (
     <div className="space-y-10 pb-10 font-sans">
-      <SEO title="Dashboard | HamroCinema Admin" />
-      <motion.header 
+      {" "}
+      <SEO title="Dashboard | HamroCinema Admin" />{" "}
+      <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6"
       >
+        {" "}
         <div>
-          <h2 className="text-4xl font-extrabold text-zinc-100 mb-2 tracking-tight">System Overview</h2>
-          <p className="text-gray-400 text-sm tracking-widest uppercase font-semibold">Cinematic Command Center</p>
-        </div>
-        <Link to="/k-subedi-08/movies" className="btn-premium relative group overflow-hidden px-8 py-3 rounded-full tracking-wider">
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full "></div>
+          {" "}
+          <h2 className="text-4xl font-extrabold text-zinc-100 mb-2 tracking-tight">
+            System Overview
+          </h2>{" "}
+          <p className="text-neutral-400 text-sm tracking-widest uppercase font-semibold">
+            Cinematic Command Center
+          </p>{" "}
+        </div>{" "}
+        <Link
+          to="/k-subedi-08/movies"
+          className="btn-premium relative group overflow-hidden px-8 py-3 rounded-full tracking-wider"
+        >
+          {" "}
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full "></div>{" "}
           <span className="relative z-10 flex items-center gap-2">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
-            Add Movie
-          </span>
-        </Link>
-      </motion.header>
-
-      {/* Floating Stats Cards */}
+            {" "}
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>{" "}
+            Add Movie{" "}
+          </span>{" "}
+        </Link>{" "}
+      </motion.header>{" "}
+      {/* Floating Stats Cards */}{" "}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Total Movies Card */}
-        <motion.div 
+        {" "}
+        {/* Total Movies Card */}{" "}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="group bg-zinc-800  border border-zinc-800 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-zinc-800 flex items-center justify-between overflow-hidden relative"
+          className="group bg-[#1A1A1A] border border-neutral-800 rounded-3xl p-6 transition-all duration-200 ease-in-out hover:shadow-xl hover:border-neutral-800 flex items-center justify-between overflow-hidden relative"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 blur-2xl rounded-full group-hover:bg-purple-500/30 transition-all duration-500"></div>
+          {" "}
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 blur-2xl rounded-full group-hover:bg-purple-500/30 transition-all duration-200 ease-in-out"></div>{" "}
           <div className="relative z-10">
-            <p className="text-gray-400 text-xs tracking-widest font-bold uppercase mb-2">Total Movies</p>
-            <h3 className="text-4xl font-black text-white">{stats.movies}</h3>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-zinc-800 flex items-center justify-center relative z-10">
-            <svg className="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-            </svg>
-          </div>
-        </motion.div>
-
-        {/* Active Showtimes Card */}
-        <motion.div 
+            {" "}
+            <p className="text-neutral-400 text-xs tracking-widest font-bold uppercase mb-2">
+              Total Movies
+            </p>{" "}
+            <h3 className="text-4xl font-black text-neutral-100">
+              {stats.movies}
+            </h3>{" "}
+          </div>{" "}
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-neutral-800 flex items-center justify-center relative z-10">
+            {" "}
+            <svg
+              className="w-7 h-7 text-neutral-400 hover:text-neutral-100"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {" "}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+              />{" "}
+            </svg>{" "}
+          </div>{" "}
+        </motion.div>{" "}
+        {/* Active Showtimes Card */}{" "}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="group bg-zinc-800  border border-zinc-800 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-zinc-800 flex items-center justify-between overflow-hidden relative"
+          className="group bg-[#1A1A1A] border border-neutral-800 rounded-3xl p-6 transition-all duration-200 ease-in-out hover:shadow-xl hover:border-neutral-800 flex items-center justify-between overflow-hidden relative"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-cyan-500/20 blur-2xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-500"></div>
+          {" "}
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-cyan-500/20 blur-2xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-200 ease-in-out"></div>{" "}
           <div className="relative z-10">
-            <p className="text-gray-400 text-xs tracking-widest font-bold uppercase mb-2">Active Showtimes</p>
-            <h3 className="text-4xl font-black text-white">{stats.activeShowtimes}</h3>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-zinc-800 flex items-center justify-center relative z-10">
-            <svg className="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </motion.div>
-
-        {/* Total Revenue Card */}
-        <motion.div 
+            {" "}
+            <p className="text-neutral-400 text-xs tracking-widest font-bold uppercase mb-2">
+              Active Showtimes
+            </p>{" "}
+            <h3 className="text-4xl font-black text-neutral-100">
+              {stats.activeShowtimes}
+            </h3>{" "}
+          </div>{" "}
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-neutral-800 flex items-center justify-center relative z-10">
+            {" "}
+            <svg
+              className="w-7 h-7 text-neutral-400 hover:text-neutral-100"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {" "}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />{" "}
+            </svg>{" "}
+          </div>{" "}
+        </motion.div>{" "}
+        {/* Total Revenue Card */}{" "}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="group bg-zinc-800  border border-zinc-800 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-zinc-800 flex items-center justify-between overflow-hidden relative"
+          className="group bg-[#1A1A1A] border border-neutral-800 rounded-3xl p-6 transition-all duration-200 ease-in-out hover:shadow-xl hover:border-neutral-800 flex items-center justify-between overflow-hidden relative"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-pink-500/20 blur-2xl rounded-full group-hover:bg-pink-500/30 transition-all duration-500"></div>
+          {" "}
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-pink-500/20 blur-2xl rounded-full group-hover:bg-pink-500/30 transition-all duration-200 ease-in-out"></div>{" "}
           <div className="relative z-10">
-            <p className="text-gray-400 text-xs tracking-widest font-bold uppercase mb-2">Total Revenue</p>
-            <h3 className="text-3xl font-black text-white truncate max-w-[150px]">Rs. {stats.revenue.toLocaleString()}</h3>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-500/5 border border-zinc-800 flex items-center justify-center relative z-10">
-            <svg className="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Cinematic Movie Grid */}
+            {" "}
+            <p className="text-neutral-400 text-xs tracking-widest font-bold uppercase mb-2">
+              Total Revenue
+            </p>{" "}
+            <h3 className="text-3xl font-black text-neutral-100 truncate max-w-[150px]">
+              Rs. {stats.revenue.toLocaleString()}
+            </h3>{" "}
+          </div>{" "}
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-500/5 border border-neutral-800 flex items-center justify-center relative z-10">
+            {" "}
+            <svg
+              className="w-7 h-7 text-neutral-400 hover:text-neutral-100"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {" "}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />{" "}
+            </svg>{" "}
+          </div>{" "}
+        </motion.div>{" "}
+      </div>{" "}
+      {/* Cinematic Movie Grid */}{" "}
       <div className="pt-4">
-        <motion.div 
+        {" "}
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="flex items-center gap-3 mb-8"
         >
-          <div className="btn-premium w-12 h-1 rounded-full"></div>
-          <h3 className="text-2xl font-bold text-white tracking-wider">Now Showing</h3>
-        </motion.div>
-        
+          {" "}
+          <div className="btn-premium w-12 h-1 rounded-full"></div>{" "}
+          <h3 className="text-2xl font-bold text-neutral-100 tracking-wider">
+            Now Showing
+          </h3>{" "}
+        </motion.div>{" "}
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {" "}
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-zinc-800 border border-zinc-800 rounded-2xl overflow-hidden relative">
-                <div className="aspect-[2/3] w-full bg-gradient-to-tr from-purple-900/20 to-cyan-900/10 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-zinc-900 ">
-                  <div className="h-4 bg-white/20 rounded-full w-3/4 mb-2 animate-pulse"></div>
-                  <div className="h-3 bg-white/10 rounded-full w-1/4 animate-pulse"></div>
-                </div>
+              <div
+                key={i}
+                className="bg-[#1A1A1A] border border-neutral-800 rounded-2xl overflow-hidden relative"
+              >
+                {" "}
+                <div className="aspect-[2/3] w-full bg-gradient-to-tr from-purple-900/20 to-cyan-900/10 animate-pulse"></div>{" "}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-[#1A1A1A] ">
+                  {" "}
+                  <div className="h-4 bg-white/20 rounded-full w-3/4 mb-2 animate-pulse"></div>{" "}
+                  <div className="h-3 bg-white/10 rounded-full w-1/4 animate-pulse"></div>{" "}
+                </div>{" "}
               </div>
-            ))}
+            ))}{" "}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-            {movies.filter(movie => movie.status === 'Now Showing' && movie.is_active).map((movie, index) => (
-              <motion.div 
-                key={movie.id} 
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.08 }}
-                className="group relative bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800 hover:border-zinc-800 hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-              >
-                {/* Floating Genre Badge */}
-                {movie.genre && (
-                  <div className="absolute top-3 left-3 z-20 px-3 py-1 bg-zinc-900/90  rounded-lg border border-zinc-800 text-[10px] font-black text-white tracking-widest uppercase shadow-lg group-hover:border-zinc-800 group-hover:text-rose-500 transition-colors">
-                    {movie.genre}
-                  </div>
-                )}
-                
-                {/* Poster Container */}
-                <div className="aspect-[2/3] w-full relative overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
-                  {movie.poster ? (
-                    <>
-                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" />
-                      {/* Gradient overlay for text readability */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0510] via-transparent to-transparent opacity-90"></div>
-                    </>
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 border-2 border-dashed border-zinc-800 rounded-2xl m-2 bg-zinc-950 group-hover:border-zinc-800 group-hover:shadow-[inset_0_0_30px_rgba(168,85,247,0.1)] transition-all">
-                      <svg className="w-10 h-10 text-gray-600 mb-3 group-hover:text-rose-500/50 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span className="text-xs font-bold uppercase tracking-widest text-gray-500 text-center leading-relaxed">Poster<br/>Missing</span>
+            {" "}
+            {movies
+              .filter(
+                (movie) => movie.status === "Now Showing" && movie.is_active,
+              )
+              .map((movie, index) => (
+                <motion.div
+                  key={movie.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: index * 0.08 }}
+                  className="group relative bg-[#121212] rounded-2xl overflow-hidden border border-neutral-800 hover:border-neutral-800 hover:shadow-xl transition-all duration-200 ease-in-out "
+                >
+                  {" "}
+                  {/* Floating Genre Badge */}{" "}
+                  {movie.genre && (
+                    <div className="absolute top-3 left-3 z-20 px-3 py-1 bg-[#1A1A1A]/90 rounded-lg border border-neutral-800 text-[10px] font-black text-neutral-100 tracking-widest uppercase shadow-lg group-hover:border-neutral-800 group-hover:text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">
+                      {" "}
+                      {movie.genre}{" "}
                     </div>
-                  )}
-                </div>
-
-                {/* Movie Details */}
-                <div className="p-4 relative z-10 bg-zinc-950">
-                  <h4 className="text-sm font-bold text-gray-100 truncate group-hover:text-white transition-colors">{movie.title}</h4>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-xs text-gray-500 font-medium">{movie.duration} min</p>
-                    <div className={`w-2 h-2 rounded-full ${movie.is_active ? 'bg-green-500 shadow-lg' : 'bg-red-500 shadow-lg'}`}></div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-            
-            {movies.filter(movie => movie.status === 'Now Showing' && movie.is_active).length === 0 && (
-              <motion.div 
+                  )}{" "}
+                  {/* Poster Container */}{" "}
+                  <div className="aspect-[2/3] w-full relative overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+                    {" "}
+                    {movie.poster ? (
+                      <>
+                        {" "}
+                        <img
+                          src={movie.poster}
+                          alt={movie.title}
+                          className="w-full h-full object-cover transition-transform duration-200 ease-in-out"
+                        />{" "}
+                        {/* Gradient overlay for text readability */}{" "}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0510] via-transparent to-transparent opacity-90"></div>{" "}
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 border-2 border-dashed border-neutral-800 rounded-2xl m-2 bg-[#121212] group-hover:border-neutral-800 group-hover:shadow-[inset_0_0_30px_rgba(168,85,247,0.1)] transition-all duration-200 ease-in-out">
+                        {" "}
+                        <svg
+                          className="w-10 h-10 text-gray-600 mb-3 group-hover:text-neutral-400 hover:text-neutral-300 transition-colors duration-200 ease-in-out"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          {" "}
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />{" "}
+                        </svg>{" "}
+                        <span className="text-xs font-bold uppercase tracking-widest text-neutral-400 text-center leading-relaxed">
+                          Poster
+                          <br />
+                          Missing
+                        </span>{" "}
+                      </div>
+                    )}{" "}
+                  </div>{" "}
+                  {/* Movie Details */}{" "}
+                  <div className="p-4 relative z-10 bg-[#121212]">
+                    {" "}
+                    <h4 className="text-sm font-bold text-neutral-100 truncate group-hover:text-neutral-100 transition-colors duration-200 ease-in-out">
+                      {movie.title}
+                    </h4>{" "}
+                    <div className="flex items-center justify-between mt-1">
+                      {" "}
+                      <p className="text-xs text-neutral-400 font-medium">
+                        {movie.duration} min
+                      </p>{" "}
+                      <div
+                        className={`w-2 h-2 rounded-full ${movie.is_active ? "bg-green-500 shadow-lg" : "bg-red-500 shadow-lg"}`}
+                      ></div>{" "}
+                    </div>{" "}
+                  </div>{" "}
+                </motion.div>
+              ))}{" "}
+            {movies.filter(
+              (movie) => movie.status === "Now Showing" && movie.is_active,
+            ).length === 0 && (
+              <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                className="col-span-full py-16 flex flex-col items-center justify-center bg-zinc-800 rounded-3xl border border-zinc-800 border-dashed "
+                className="col-span-full py-16 flex flex-col items-center justify-center bg-[#1A1A1A] rounded-3xl border border-neutral-800 border-dashed "
               >
-                <svg className="w-16 h-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                </svg>
-                <p className="text-gray-400 text-lg font-medium mb-4">No movies currently showing today.</p>
-                <Link to="/k-subedi-08/movies" className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium transition-colors border border-zinc-800">
-                  Import or Add Movies
-                </Link>
+                {" "}
+                <svg
+                  className="w-16 h-16 text-gray-600 mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {" "}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+                  />{" "}
+                </svg>{" "}
+                <p className="text-neutral-400 text-lg font-medium mb-4">
+                  No movies currently showing today.
+                </p>{" "}
+                <Link
+                  to="/k-subedi-08/movies"
+                  className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-neutral-100 font-medium transition-colors duration-200 ease-in-out border border-neutral-800"
+                >
+                  {" "}
+                  Import or Add Movies{" "}
+                </Link>{" "}
               </motion.div>
-            )}
+            )}{" "}
           </div>
-        )}
-      </div>
-      
-      {/* Tailwind config fix to ensure shimmer animation is available if not already in global css */}
-      <style>{`
-        @keyframes shimmer {
-          100% { transform: translateX(100%); }
-        }
-      `}</style>
+        )}{" "}
+      </div>{" "}
+      {/* Tailwind config fix to ensure shimmer animation is available if not already in global css */}{" "}
+      <style>{` @keyframes shimmer { 100% { transform: translateX(100%); } } `}</style>{" "}
     </div>
   );
 };
-
 export default DashboardHome;

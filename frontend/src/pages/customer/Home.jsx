@@ -6,170 +6,153 @@ import SEO from '../../components/SEO';
 import MovieSkeleton from '../../components/MovieSkeleton';
 
 const Home = () => {
-    const [nowShowingMovies, setNowShowingMovies] = useState([]);
-    const [comingSoonMovies, setComingSoonMovies] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [nowShowingMovies, setNowShowingMovies] = useState([]);
+  const [comingSoonMovies, setComingSoonMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchMovies = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`);
-                // Only show active movies
-                const activeMovies = res.data.filter(m => m.is_active);
-                setNowShowingMovies(activeMovies.filter(m => m.status === 'Now Showing' || !m.status));
-                setComingSoonMovies(activeMovies.filter(m => m.status === 'Coming Soon'));
-            } catch (err) {
-                console.error("Error fetching movies:", err);
-            }
-            setLoading(false);
-        };
-        fetchMovies();
-    }, []);
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/`);
+        // Only show active movies
+        const activeMovies = res.data.filter(m => m.is_active);
+        setNowShowingMovies(activeMovies.filter(m => m.status === 'Now Showing' || !m.status));
+        setComingSoonMovies(activeMovies.filter(m => m.status === 'Coming Soon'));
+      } catch (err) {
+        console.error("Error fetching movies:", err);
+      }
+      setLoading(false);
+    };
+    fetchMovies();
+  }, []);
 
-    const featuredMovie = nowShowingMovies.length > 0 ? nowShowingMovies[0] : null;
+  const featuredMovie = nowShowingMovies.length > 0 ? nowShowingMovies[0] : null;
 
-    return (
-        <div className="w-full pb-20 animate-fade-in">
-            <SEO 
-                title="Now Showing | HamroCinema" 
-                description="Book premium movie tickets online at HamroCinema. Browse showtimes, select your favorite seats, and experience the magic of cinema."
-            />
-            {/* Hero Banner */}
-            {featuredMovie && (
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden"
-                >
-                    {/* Background Image & Overlay */}
-                    <div className="absolute inset-0 z-0">
-                        {featuredMovie.poster ? (
-                            <img src={featuredMovie.poster} alt={featuredMovie.title} className="w-full h-full object-cover opacity-30 md:opacity-40 blur-[4px] md:blur-[2px]" />
-                        ) : (
-                            <div className="w-full h-full bg-gradient-to-b from-stone-800/50 to-stone-950 opacity-50"></div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-stone-950/20 md:to-transparent"></div>
-                    </div>
+  return (
+    <div className="w-full pb-20 animate-fade-in">
+      <SEO title="Now Showing | HamroCinema" description="Book premium movie tickets online at HamroCinema. Browse showtimes, select your favorite seats, and experience the magic of cinema." />
 
-                    {/* Content */}
-                    <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col md:flex-row items-center gap-6 md:gap-12 pt-10 md:pt-20">
-                        {featuredMovie.poster && (
-                            <img src={featuredMovie.poster} alt={featuredMovie.title} className="hidden md:block w-48 lg:w-64 rounded-2xl shadow-lg border border-zinc-800" />
-                        )}
-                        <div className="max-w-2xl text-center md:text-left mt-8 md:mt-0">
-                            <span className="btn-premium px-3 py-1 text-[10px] md:text-xs uppercase tracking-wider rounded-full mb-3 md:mb-4 inline-block">Now Showing</span>
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight mb-3 md:mb-4 drop-shadow-lg">{featuredMovie.title}</h1>
-                            <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-gray-300 font-medium mb-4 md:mb-6">
-                                <span>{featuredMovie.duration} mins</span>
-                                <span className="hidden sm:inline">•</span>
-                                <span>{featuredMovie.genre}</span>
-                                <span className="hidden sm:inline">•</span>
-                                <span>{new Date(featuredMovie.release_date).getFullYear()}</span>
-                            </div>
-                            <p className="text-stone-300 text-sm md:text-lg mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 px-4 md:px-0">{featuredMovie.description}</p>
-                            <Link to={`/movie/${featuredMovie.id}`} className="btn-premium px-6 py-3 md:px-8 md:py-4 rounded-full inline-flex items-center gap-2 text-sm md:text-lg">
-                                Book Tickets
-                                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                            </Link>
-                        </div>
-                    </div>
-                </motion.div>
+      {/* Hero Banner */}
+      {featuredMovie && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+          {/* Background Image & Overlay */}
+          <div className="absolute inset-0 z-0">
+            {featuredMovie.poster ? (
+              <img src={featuredMovie.poster} alt={featuredMovie.title} className="w-full h-full object-cover opacity-30 md:opacity-40 blur-[4px] md:blur-[2px]" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-b from-stone-800/50 to-stone-950 opacity-50"></div>
             )}
+            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-stone-950/20 md:to-transparent"></div>
+          </div>
 
-            {/* Now Showing Grid */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 relative z-20">
-                <div className="flex items-center justify-between mb-6 md:mb-8">
-                    <h2 className="text-xl md:text-2xl font-bold text-white border-l-4 border-rose-500 pl-3 md:pl-4">Now Showing</h2>
-                </div>
-
-                {loading ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                        {[...Array(6)].map((_, i) => (
-                            <MovieSkeleton key={i} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                        {nowShowingMovies.map((movie, index) => (
-                            <motion.div
-                                key={movie.id}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.5, delay: index * 0.05 }}
-                            >
-                                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-zinc-950 border border-zinc-800 hover:border-zinc-800 transition-all hover:-translate-y-1 hover:md:-translate-y-2 hover:shadow-xl">
-                                <div className="aspect-[2/3] w-full relative">
-                                    {movie.poster ? (
-                                        <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-                                    
-                                    {/* Hover Overlay Button */}
-                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
-                                        <span className="btn-premium px-4 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-base">Book Now</span>
-                                    </div>
-                                </div>
-                                <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
-                                    <h3 className="font-bold text-white text-base md:text-lg truncate mb-1">{movie.title}</h3>
-                                    <p className="text-xs md:text-sm text-stone-400 truncate">{movie.genre}</p>
-                                </div>
-                            </Link>
-                            </motion.div>
-                        ))}
-                    </div>
-                )}
+          {/* Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col md:flex-row items-center gap-6 md:gap-12 pt-10 md:pt-20">
+            {featuredMovie.poster && (
+              <img src={featuredMovie.poster} alt={featuredMovie.title} className="hidden md:block w-48 lg:w-64 rounded-2xl shadow-lg border border-neutral-800" />
+            )}
+            <div className="max-w-2xl text-center md:text-left mt-8 md:mt-0">
+              <span className="btn-premium px-3 py-1 text-[10px] md:text-xs uppercase tracking-wider rounded-full mb-3 md:mb-4 inline-block">Now Showing</span>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-neutral-100 tracking-tight mb-3 md:mb-4 drop-shadow-lg">{featuredMovie.title}</h1>
+              
+              <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-neutral-300 font-medium mb-4 md:mb-6">
+                <span>{featuredMovie.duration} mins</span>
+                <span className="hidden sm:inline">•</span>
+                <span>{featuredMovie.genre}</span>
+                <span className="hidden sm:inline">•</span>
+                <span>{new Date(featuredMovie.release_date).getFullYear()}</span>
+              </div>
+              
+              <p className="text-stone-300 text-sm md:text-lg mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 px-4 md:px-0">{featuredMovie.description}</p>
+              
+              <Link to={`/movie/${featuredMovie.id}`} className="btn-premium px-6 py-3 md:px-8 md:py-4 rounded-full inline-flex items-center gap-2 text-sm md:text-lg">
+                Book Tickets
+                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </Link>
             </div>
-            
-            {/* Coming Soon Section */}
-            {comingSoonMovies.length > 0 && (
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20 relative z-20">
-                    <div className="flex items-center justify-between mb-6 md:mb-8">
-                        <h2 className="text-xl md:text-2xl font-bold text-white border-l-4 border-yellow-500 pl-3 md:pl-4">Coming Soon</h2>
-                    </div>
+          </div>
+        </motion.div>
+      )}
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                        {comingSoonMovies.map((movie, index) => (
-                            <motion.div
-                                key={movie.id}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.5, delay: index * 0.05 }}
-                            >
-                                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-zinc-950 border border-yellow-900/30 hover:border-yellow-500/50 transition-all hover:-translate-y-1 hover:md:-translate-y-2 hover:shadow-xl">
-                                <div className="aspect-[2/3] w-full relative">
-                                    {movie.poster ? (
-                                        <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" />
-                                    ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-amber-900/30 to-stone-950 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-                                    
-                                    {/* Hover Overlay Button */}
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
-                                        <span className="px-4 py-1.5 md:px-6 md:py-2 bg-yellow-600/20 text-yellow-500 font-bold rounded-full border border-yellow-500/50 mb-2 text-xs md:text-base text-center">Coming Soon</span>
-                                        <span className="text-white font-bold text-xs md:text-sm bg-black/50 px-3 py-1 md:px-4 md:py-1 rounded-full">View Info</span>
-                                    </div>
-                                </div>
-                                <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
-                                    <h3 className="font-bold text-white text-base md:text-lg truncate mb-1">{movie.title}</h3>
-                                    <p className="text-[10px] md:text-sm text-amber-500 font-medium truncate mb-1">
-                                        Releases: {new Date(movie.release_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                    </p>
-                                    <p className="text-xs md:text-sm text-gray-400 truncate">{movie.genre}</p>
-                                </div>
-                            </Link>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            )}
+      {/* Now Showing Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 relative z-20">
+        <div className="flex items-center justify-between mb-6 md:mb-8">
+          <h2 className="text-xl md:text-2xl font-bold text-neutral-100 border-l-4 border-neutral-600 pl-3 md:pl-4">Now Showing</h2>
         </div>
-    );
+
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+            {[...Array(6)].map((_, i) => (
+              <MovieSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+            {nowShowingMovies.map((movie, index) => (
+              <motion.div key={movie.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: index * 0.05 }}>
+                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#121212] border border-neutral-800 hover:border-neutral-800 transition-all duration-200 ease-in-out hover:shadow-xl">
+                  <div className="aspect-[2/3] w-full relative">
+                    {movie.poster ? (
+                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    
+                    {/* Hover Overlay Button */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
+                      <span className="btn-premium px-4 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-base">Book Now</span>
+                    </div>
+                  </div>
+                  <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
+                    <h3 className="font-bold text-neutral-100 text-base md:text-lg truncate mb-1">{movie.title}</h3>
+                    <p className="text-xs md:text-sm text-stone-400 truncate">{movie.genre}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Coming Soon Section */}
+      {comingSoonMovies.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20 relative z-20">
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-neutral-100 border-l-4 border-yellow-500 pl-3 md:pl-4">Coming Soon</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+            {comingSoonMovies.map((movie, index) => (
+              <motion.div key={movie.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: index * 0.05 }}>
+                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#121212] border border-yellow-900/30 hover:border-yellow-500/50 transition-all duration-200 ease-in-out hover:shadow-xl">
+                  <div className="aspect-[2/3] w-full relative">
+                    {movie.poster ? (
+                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-200 ease-in-out" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-amber-900/30 to-stone-950 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    
+                    {/* Hover Overlay Button */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
+                      <span className="px-4 py-1.5 md:px-6 md:py-2 bg-yellow-600/20 text-yellow-500 font-bold rounded-full border border-yellow-500/50 mb-2 text-xs md:text-base text-center">Coming Soon</span>
+                      <span className="text-neutral-100 font-bold text-xs md:text-sm bg-black/50 px-3 py-1 md:px-4 md:py-1 rounded-full">View Info</span>
+                    </div>
+                  </div>
+                  <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
+                    <h3 className="font-bold text-neutral-100 text-base md:text-lg truncate mb-1">{movie.title}</h3>
+                    <p className="text-[10px] md:text-sm text-amber-500 font-medium truncate mb-1">
+                      Releases: {new Date(movie.release_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                    <p className="text-xs md:text-sm text-neutral-400 truncate">{movie.genre}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Home;

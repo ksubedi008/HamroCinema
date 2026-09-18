@@ -199,3 +199,60 @@ class VerifyPaymentView(APIView):
             
         except Exception as e:
             return redirect('http://localhost:5173/booking-history?payment=error')
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        user = request.user
+        if request.data.get('remove_profile_picture') == 'true':
+            if user.profile_picture:
+                user.profile_picture.delete(save=False)
+            user.profile_picture = None
+            user.save()
+
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MyTicketsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from .models import TicketItem
+        from .serializers import MyTicketSerializer
+        tickets = TicketItem.objects.filter(
+            booking__user=request.user,
+            booking__payment_status='Completed'
+        ).order_by('showtime__start_time')
+        
+        serializer = MyTicketSerializer(tickets, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        from django.contrib.auth import update_session_auth_hash
+        
+        user = request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response({"error": "Both old and new passwords are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not user.check_password(old_password):
+            return Response({"error": "Incorrect current password."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)
+        
+        return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)

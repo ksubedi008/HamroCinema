@@ -20,6 +20,6 @@
 
 @layer components {
   .btn-premium {
-    @apply transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 active:shadow-none bg-amber-700 hover:bg-amber-800 text-white font-bold;
+    @apply transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 active:shadow-none bg-white text-black hover:bg-neutral-200 font-bold;
   }
 }

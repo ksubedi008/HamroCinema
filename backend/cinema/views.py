@@ -9,38 +9,37 @@ import hashlib
 import base64
 import json
 import time
+import requests
+import os
+from django.db import transaction
 from .permissions import IsCustomAdminUser
 from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage, LoyaltyTransaction
 from .serializers import (
     UserSerializer, MovieSerializer, TheaterScreenSerializer, ShowtimeSerializer, 
     SeatSerializer, BookingSerializer, TicketItemSerializer, ContactMessageSerializer, LoyaltyTransactionSerializer
 )
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 
 from .utils import cancel_expired_bookings
 
 class UserViewSet(viewsets.ModelViewSet):
     # FIX: Secure this admin endpoint using our custom role-based permission class
     permission_classes = [IsCustomAdminUser]
-    queryset = User.objects.all()
+    queryset = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0))
     serializer_class = UserSerializer
 
     @action(detail=True, methods=['post'], url_path='loyalty-transactions')
     def add_loyalty_transaction(self, request, pk=None):
         user = self.get_object()
         amount = request.data.get('amount')
-        description = request.data.get('description', 'Admin Adjustment')
+        description = request.data.get('description', 'Admin promotional adjustment')
         if amount is not None:
             try:
                 amount = int(amount)
-                # Create the transaction
-                transaction = LoyaltyTransaction.objects.create(
-                    user=user,
-                    amount=amount,
-                    transaction_type='Adjustment',
-                    description=description
-                )
-                # the post_save signal on LoyaltyTransaction automatically updates the user's loyalty_points
-                user.refresh_from_db()
+                from .utils import update_user_loyalty
+                update_user_loyalty(user, amount, 'Adjustment', description)
+                user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=user.id)
                 return Response({'status': 'success', 'loyalty_points': user.loyalty_points})
             except ValueError:
                 return Response({'error': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
@@ -60,17 +59,16 @@ class MyLoyaltyTransactionsView(APIView):
         if amount:
             try:
                 amount = int(amount)
-                LoyaltyTransaction.objects.create(
-                    user=request.user,
-                    amount=amount,
-                    transaction_type='Spent' if amount < 0 else 'Earned',
-                    description=description
-                )
-                request.user.refresh_from_db()
-                return Response({'status': 'success', 'loyalty_points': request.user.loyalty_points})
-            except ValueError:
-                return Response({'error': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
+                from .utils import update_user_loyalty
+                transaction_type = 'Spent' if amount < 0 else 'Earned'
+                update_user_loyalty(request.user, amount, transaction_type, description)
+                user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=request.user.id)
+                return Response({'status': 'success', 'loyalty_points': user.loyalty_points})
+            except ValueError as e:
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'error': 'amount is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
@@ -246,14 +244,9 @@ class VerifyPaymentView(APIView):
                 booking.save()
                 
                 # Create a LoyaltyTransaction instead of manually adding points
-                from .models import LoyaltyTransaction
+                from .utils import update_user_loyalty
                 points_earned = booking.tickets.count() * 10
-                LoyaltyTransaction.objects.create(
-                    user=booking.user,
-                    amount=points_earned,
-                    transaction_type='Earned',
-                    description='Points earned from ticket booking'
-                )
+                update_user_loyalty(booking.user, points_earned, 'Earned', 'Points earned from ticket booking')
                 
                 return redirect('http://localhost:5173/booking-history?payment=success')
                 
@@ -266,7 +259,8 @@ class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(request.user)
+        user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=request.user.id)
+        serializer = UserSerializer(user)
         return Response(serializer.data)
 
     def patch(self, request):

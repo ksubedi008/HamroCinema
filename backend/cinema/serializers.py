@@ -1,10 +1,11 @@
 from datetime import timedelta
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.db import transaction
 from rest_framework import serializers
 from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage, LoyaltyTransaction
 
 class UserSerializer(serializers.ModelSerializer):
+    loyalty_points = serializers.SerializerMethodField()
     total_bookings = serializers.SerializerMethodField()
 
     class Meta:
@@ -14,6 +15,13 @@ class UserSerializer(serializers.ModelSerializer):
     def get_total_bookings(self, obj):
         from .models import TicketItem
         return TicketItem.objects.filter(booking__user=obj, booking__payment_status='Completed').count()
+
+    def get_loyalty_points(self, obj):
+        if hasattr(obj, 'loyalty_points'):
+            return obj.loyalty_points
+        from .models import LoyaltyTransaction
+        total = LoyaltyTransaction.objects.filter(user=obj).aggregate(Sum('amount'))['amount__sum']
+        return total or 0
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:

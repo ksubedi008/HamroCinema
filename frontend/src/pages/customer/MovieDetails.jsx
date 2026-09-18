@@ -107,13 +107,12 @@ const MovieDetails = () => {
       {/* Showtimes Section or Coming Soon state */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
         {movie.status === 'Coming Soon' ? (
-          <div className="bg-[#121212] border border-yellow-900/50 rounded-2xl p-12 text-center shadow-lg">
-             <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <div className="bg-[#1A1A1A] border border-neutral-800 rounded-2xl p-12 text-center shadow-lg">
+             <div className="w-16 h-16 bg-neutral-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-neutral-700">
+              <svg className="w-8 h-8 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
              </div>
-             <h2 className="text-3xl font-black text-neutral-100 mb-2">Coming Soon</h2>
-             <p className="text-neutral-400 text-lg">Tickets are not yet available for this movie.</p>
-             <p className="text-sm text-yellow-500/80 mt-4 font-medium tracking-widest uppercase">Stay Tuned!</p>
+             <h2 className="text-3xl font-black text-neutral-100 mb-2">Release Pending</h2>
+             <p className="text-neutral-400 text-lg">Ticketing will open closer to the official release date.</p>
           </div>
         ) : (
           <>

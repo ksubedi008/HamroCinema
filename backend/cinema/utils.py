@@ -35,3 +35,16 @@ def cancel_expired_bookings():
         
         # 2. Update status of these bookings to Expired
         Booking.objects.filter(id__in=booking_ids).update(payment_status='Expired')
+
+from django.db import transaction
+from django.db.models import F
+from .models import LoyaltyTransaction
+
+@transaction.atomic
+def update_user_loyalty(user, amount, transaction_type, description):
+    LoyaltyTransaction.objects.create(
+        user=user,
+        amount=amount,
+        transaction_type=transaction_type,
+        description=description
+    )

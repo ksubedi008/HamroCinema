@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 
 const LoyaltyHistory = () => {
-  const { authTokens, user } = useContext(AuthContext);
+  const { authTokens, user, fetchCurrentUser } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,6 +12,7 @@ const LoyaltyHistory = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
+        await fetchCurrentUser(); // Silently re-fetch global user profile
         const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/api/users/me/loyalty-transactions/`,
           { headers: { Authorization: `Bearer ${authTokens.access}` } }

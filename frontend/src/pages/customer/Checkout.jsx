@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'; 
@@ -6,73 +6,56 @@ import { AuthContext } from '../../context/AuthContext';
 const Checkout = () => { 
   const location = useLocation(); 
   const navigate = useNavigate(); 
-  const { user, updateUserPoints } = useContext(AuthContext); 
+  const { user, fetchCurrentUser } = useContext(AuthContext); 
   const [isSubmitting, setIsSubmitting] = useState(false); 
   const [error, setError] = useState(''); 
-  const [pointsToUse, setPointsToUse] = useState(0); 
+  const [livePoints, setLivePoints] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState('esewa');
+  const [pendingBookingId, setPendingBookingId] = useState(null);
+
+  useEffect(() => {
+    const fetchLivePoints = async () => {
+      try {
+        const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null;
+        if (token) {
+          const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me/`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setLivePoints(response.data.loyalty_points);
+        }
+      } catch (err) {
+        console.error("Failed to fetch live points:", err);
+      }
+    };
+    fetchLivePoints();
+  }, []);
+
+  useEffect(() => {
+    console.log("State changed to:", paymentMethod);
+  }, [paymentMethod]);
   
-  // If navigated here directly without state, kick back 
   if (!location.state || !location.state.showtime || !location.state.selectedSeats) { 
     return ( 
       <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4"> 
         <div className="bg-[#121212] border border-neutral-800 p-8 rounded-3xl text-center max-w-md"> 
           <p className="text-neutral-100 mb-4">No booking session found.</p> 
-          <button onClick={() => navigate('/')} className="btn-premium px-6 py-2 rounded-full">Go Home</button> 
+          <button onClick={() => navigate('/')} className="btn-premium px-6 py-2 rounded-full bg-neutral-800 text-neutral-100">Go Home</button> 
         </div> 
       </div> 
     ); 
   } 
   
   const { showtime, selectedSeats, totalPrice } = location.state; 
-  
-  // Ensure points to use doesn't exceed the total price or the user's balance 
-  const maxPointsUsable = Math.min(user?.loyalty_points || 0, totalPrice); 
-  const finalPrice = Math.max(0, totalPrice - pointsToUse); 
-  
-  const handlePayment = async () => { 
-    setIsSubmitting(true); 
-    setError(''); 
-    try { 
-      // 1. Create the booking as Pending 
-      const bookingRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`, { 
-        user: user.id, 
-        showtime: showtime.id, 
-        total_amount: finalPrice, 
-        payment_status: 'Pending', 
-      }); 
-      const bookingId = bookingRes.data.id; 
-      
-      // 2. Create ticket items 
-      const ticketPromises = selectedSeats.map(seat => 
-        axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/tickets/`, { 
-          booking: bookingId, 
-          showtime: showtime.id, 
-          seat: seat.id, 
-          lock_status: 'Booked' 
-        }) 
-      ); 
-      await Promise.all(ticketPromises); 
-      
-      // 3. Handle Loyalty Points subtraction on client by creating a ledger entry
-      if (pointsToUse > 0) { 
-        const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null;
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/me/loyalty-transactions/`, 
-          { amount: -pointsToUse, description: "Spent on booking" },
-          { headers: { Authorization: `Bearer ${token}` } }
-        ); 
-        const newPointBalance = (user.loyalty_points || 0) - pointsToUse; 
-        updateUserPoints(newPointBalance); 
-      } 
-      
-      // 4. Request eSewa payload from backend 
-      const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null; 
+  const canUseLoyalty = livePoints >= totalPrice;
+
+  const handleEsewaPayment = async (bookingId, token) => {
+    try {
       const payloadRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payments/initiate/`, 
         { booking_id: bookingId }, 
         { headers: { Authorization: `Bearer ${token}` } } 
       ); 
       const payload = payloadRes.data; 
       
-      // 5. Dynamically build and submit the eSewa form 
       const form = document.createElement("form"); 
       form.setAttribute("method", "POST"); 
       form.setAttribute("action", "https://rc-epay.esewa.com.np/api/epay/main/v2/form"); 
@@ -85,9 +68,69 @@ const Checkout = () => {
       } 
       document.body.appendChild(form); 
       form.submit(); 
+    } catch (error) {
+      console.error("eSewa Payment Error:", error);
+      throw error;
+    }
+  };
+
+  const handleLoyaltyPayment = async (bookingId, token) => {
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/me/loyalty-transactions/`, 
+      { amount: -totalPrice, description: `Spent on booking ${bookingId}` },
+      { headers: { Authorization: `Bearer ${token}` } }
+    ); 
+    await fetchCurrentUser(); 
+    navigate('/booking-history?payment=success');
+  };
+
+  const handleCheckout = async (e) => { 
+    if (e) e.preventDefault();
+    console.log("Checkout triggered. Selected method:", paymentMethod);
+    setIsSubmitting(true); 
+    setError(''); 
+    try { 
+      const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null;
+      let bookingId = pendingBookingId;
+
+      if (!bookingId) {
+        // 1. Create the Pending Booking
+        const bookingRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/bookings/`, { 
+          user: user.id, 
+          showtime: showtime.id, 
+          total_amount: totalPrice, 
+          payment_status: paymentMethod === 'loyalty' ? 'Completed' : 'Pending', 
+        }, { headers: { Authorization: `Bearer ${token}` } }); 
+        bookingId = bookingRes.data.id; 
+        
+        // 2. Create the tickets
+        const ticketPromises = selectedSeats.map(seat => 
+          axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/tickets/`, { 
+            booking: bookingId, 
+            showtime: showtime.id, 
+            seat: seat.id, 
+            lock_status: 'Booked' 
+          }, { headers: { Authorization: `Bearer ${token}` } }) 
+        ); 
+        await Promise.all(ticketPromises); 
+        
+        setPendingBookingId(bookingId);
+      }
+      
+      // 3. Trigger the selected payment handler
+      if (paymentMethod === 'loyalty') {
+        await handleLoyaltyPayment(bookingId, token);
+      } else if (paymentMethod === 'esewa') {
+        await handleEsewaPayment(bookingId, token);
+      }
+
     } catch (err) { 
       console.error("Booking failed:", err); 
-      setError("Failed to complete booking. Please try again."); 
+      console.error("Backend Error Data:", err.response?.data);
+      if (err.response?.data?.non_field_errors) {
+        setError("This seat is no longer available. Please select another seat.");
+      } else {
+        setError("Failed to complete booking. Please try again."); 
+      }
     } finally { 
       setIsSubmitting(false); 
     } 
@@ -108,8 +151,8 @@ const Checkout = () => {
             {error} 
           </div> 
         )} 
-        <div className="bg-[#121212] border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl"> 
-          <div className="p-8 border-b border-neutral-800"> 
+        <div className="bg-[#1A1A1A] border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl"> 
+          <div className="p-8 border-b border-neutral-800 bg-[#121212]"> 
             <div className="flex justify-between items-start mb-6"> 
               <div> 
                 <h2 className="text-2xl font-bold text-neutral-100 mb-2">{showtime.movie_title}</h2> 
@@ -124,7 +167,7 @@ const Checkout = () => {
             <h3 className="text-lg font-bold text-neutral-100 mb-4">Selected Seats</h3> 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8"> 
               {selectedSeats.map(seat => ( 
-                <div key={seat.id} className="bg-[#121212] border border-neutral-800 p-3 rounded-xl flex justify-between items-center"> 
+                <div key={seat.id} className="bg-[#1A1A1A] border border-neutral-800 p-3 rounded-xl flex justify-between items-center"> 
                   <div> 
                     <span className="text-neutral-100 font-bold block">{seat.seat_label}</span> 
                     <span className="text-xs text-neutral-400">{seat.tier}</span> 
@@ -142,39 +185,66 @@ const Checkout = () => {
                 <span className="text-neutral-400">Tax & Fees</span> 
                 <span className="text-neutral-100">Rs. 0</span> 
               </div> 
-              {user?.loyalty_points > 0 && ( 
-                <div className="mb-6 p-4 bg-purple-900/20 border border-neutral-800 rounded-xl"> 
-                  <div className="flex justify-between items-center mb-2"> 
-                    <span className="font-bold text-neutral-400 hover:text-neutral-100">Loyalty Points</span> 
-                    <span className="text-sm text-neutral-400">Balance: {user.loyalty_points} pts</span> 
-                  </div> 
-                  <div className="flex items-center gap-4"> 
-                    <input type="range" min="0" max={maxPointsUsable} value={pointsToUse} onChange={(e) => setPointsToUse(Number(e.target.value))} className="w-full accent-purple-500" /> 
-                    <span className="text-neutral-100 font-bold w-16 text-right">-{pointsToUse}</span> 
-                  </div> 
-                  <p className="text-xs text-neutral-400 hover:text-neutral-100 mt-2 text-right">You save Rs. {pointsToUse}</p> 
-                </div> 
-              )} 
-              <div className="flex justify-between items-center border-t border-neutral-800 pt-4"> 
+              
+              <div className="flex justify-between items-center border-t border-neutral-800 pt-4 mb-2"> 
                 <span className="text-xl font-bold text-neutral-100">Total Amount</span> 
-                <span className="text-3xl font-black text-neutral-400 hover:text-neutral-100">Rs. {finalPrice}</span> 
-              </div> 
-              <p className="text-right text-xs text-green-400 mt-2 font-medium">You will earn {selectedSeats.length * 10} points from this booking!</p> 
+                <span className="text-3xl font-black text-neutral-100">Rs. {totalPrice}</span> 
+              </div>
+              <p className="text-right text-sm text-neutral-400 font-medium mb-6">You will earn {selectedSeats.length * 10} points from this booking.</p> 
+
+              {/* Payment Method Selector */}
+              <h3 className="text-lg font-bold text-neutral-100 mb-4">Select Payment Method</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {/* eSewa */}
+                <div 
+                  onClick={() => setPaymentMethod('esewa')}
+                  className={`cursor-pointer p-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                    paymentMethod === 'esewa' 
+                    ? 'border-neutral-500 bg-neutral-800/50' 
+                    : 'border-neutral-800 bg-[#1A1A1A] hover:border-neutral-600'
+                  }`}
+                >
+                  <span className="font-bold text-neutral-100 text-lg tracking-wide mb-1">eSewa</span>
+                  <span className="text-xs text-neutral-400">Digital Wallet</span>
+                </div>
+
+                {/* Loyalty Points */}
+                <div 
+                  onClick={() => {
+                    if (canUseLoyalty) setPaymentMethod('loyalty');
+                  }}
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                    !canUseLoyalty 
+                    ? 'border-neutral-800 bg-[#121212] opacity-50 cursor-not-allowed'
+                    : paymentMethod === 'loyalty' 
+                      ? 'border-neutral-500 bg-neutral-800/50 cursor-pointer' 
+                      : 'border-neutral-800 bg-[#1A1A1A] hover:border-neutral-600 cursor-pointer'
+                  }`}
+                >
+                  <span className="font-bold text-neutral-100 text-lg tracking-wide mb-1">Loyalty</span>
+                  <span className="text-xs text-neutral-400">Bal: {livePoints} pts</span>
+                  {!canUseLoyalty && <span className="text-[10px] text-red-400 mt-1">Insufficient</span>}
+                </div>
+              </div>
             </div> 
           </div> 
-          <div className="p-8 border-t border-neutral-800 text-center"> 
-            <p className="text-sm text-neutral-400 mb-6">You will be redirected to eSewa to complete your payment securely.</p> 
-            <button onClick={handlePayment} disabled={isSubmitting} className={`btn-premium w-full bg-[#60bb46] hover:bg-[#52a33b] text-neutral-100 font-bold py-3 px-6 rounded-lg flex justify-center items-center gap-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`} > 
+          <div className="p-8 border-t border-neutral-800 bg-[#1A1A1A] text-center"> 
+            <p className="text-sm text-neutral-400 mb-6">
+              {paymentMethod === 'esewa' && "You will be redirected to eSewa to complete your payment securely."}
+              {paymentMethod === 'loyalty' && "Your loyalty points will be deducted to complete this booking."}
+            </p> 
+            <button 
+              onClick={(e) => handleCheckout(e)} 
+              disabled={isSubmitting} 
+              className={`w-full bg-neutral-100 hover:bg-neutral-300 text-[#121212] font-bold py-4 px-6 rounded-xl flex justify-center items-center gap-2 transition-colors ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`} 
+            > 
               {isSubmitting ? ( 
                 <> 
-                  <svg className="animate-spin h-5 w-5 text-neutral-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 
-                  Redirecting to eSewa... 
+                  <svg className="animate-spin h-5 w-5 text-[#121212]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 
+                  Processing... 
                 </> 
               ) : ( 
-                <> 
-                  <img src="https://esewa.com.np/common/images/esewa-logo.png" alt="eSewa" className="h-6 filter brightness-0 invert" /> 
-                  Pay Rs. {finalPrice} with eSewa 
-                </> 
+                `Complete Booking`
               )} 
             </button> 
           </div> 

@@ -118,29 +118,29 @@ const Home = () => {
       {comingSoonMovies.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20 relative z-20">
           <div className="flex items-center justify-between mb-6 md:mb-8">
-            <h2 className="text-xl md:text-2xl font-bold text-neutral-100 border-l-4 border-yellow-500 pl-3 md:pl-4">Coming Soon</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-neutral-100 border-l-4 border-neutral-700 pl-3 md:pl-4">Coming Soon</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {comingSoonMovies.map((movie, index) => (
               <motion.div key={movie.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5, delay: index * 0.05 }}>
-                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#121212] border border-yellow-900/30 hover:border-yellow-500/50 transition-all duration-200 ease-in-out hover:shadow-xl">
+                <Link to={`/movie/${movie.id}`} className="block group relative rounded-xl md:rounded-2xl overflow-hidden bg-[#1A1A1A] border border-neutral-800 hover:border-neutral-600 transition-all duration-200 ease-in-out hover:shadow-xl">
                   <div className="aspect-[2/3] w-full relative">
                     {movie.poster ? (
                       <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-200 ease-in-out" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-amber-900/30 to-stone-950 flex items-center justify-center text-stone-500 text-xs md:text-base">No Poster</div>
+                      <div className="w-full h-full bg-gradient-to-br from-neutral-800/30 to-[#1A1A1A] flex items-center justify-center text-neutral-500 text-xs md:text-base">No Poster</div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
                     
                     {/* Hover Overlay Button */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ">
-                      <span className="px-4 py-1.5 md:px-6 md:py-2 bg-yellow-600/20 text-yellow-500 font-bold rounded-full border border-yellow-500/50 mb-2 text-xs md:text-base text-center">Coming Soon</span>
+                      <span className="px-4 py-1.5 md:px-6 md:py-2 bg-neutral-800 text-neutral-300 font-bold rounded-full border border-neutral-700 mb-2 text-xs md:text-base text-center">Coming Soon</span>
                       <span className="text-neutral-100 font-bold text-xs md:text-sm bg-black/50 px-3 py-1 md:px-4 md:py-1 rounded-full">View Info</span>
                     </div>
                   </div>
-                  <div className="p-3 md:p-4 relative z-10 bg-gradient-to-t from-stone-950 to-stone-950/90">
+                  <div className="p-3 md:p-4 relative z-10 bg-[#1A1A1A]">
                     <h3 className="font-bold text-neutral-100 text-base md:text-lg truncate mb-1">{movie.title}</h3>
-                    <p className="text-[10px] md:text-sm text-amber-500 font-medium truncate mb-1">
+                    <p className="text-[10px] md:text-sm text-neutral-400 font-medium truncate mb-1">
                       Releases: {new Date(movie.release_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                     <p className="text-xs md:text-sm text-neutral-400 truncate">{movie.genre}</p>

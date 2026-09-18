@@ -29,5 +29,6 @@ urlpatterns = [
     path('users/me/loyalty-transactions/', MyLoyaltyTransactionsView.as_view(), name='my_loyalty_transactions'),
     path('payments/initiate/', InitiatePaymentView.as_view(), name='initiate_payment'),
     path('payments/verify/', VerifyPaymentView.as_view(), name='verify_payment'),
+
     path('', include(router.urls)),
 ]

@@ -116,13 +116,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    if (authTokens) {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me/`, {
+          headers: { Authorization: `Bearer ${authTokens.access}` }
+        });
+        updateUserProfile(response.data);
+      } catch (error) {
+        console.error("Failed to fetch current user profile", error);
+      }
+    }
+  };
+
   const contextData = {
     user,
     authTokens,
     loginUser,
     logoutUser,
     updateUserPoints,
-    updateUserProfile
+    updateUserProfile,
+    fetchCurrentUser
   };
 
   return (

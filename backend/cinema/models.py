@@ -8,7 +8,6 @@ class User(AbstractUser):
         ('Customer', 'Customer'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Customer')
-    loyalty_points = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
 
@@ -214,13 +213,3 @@ class LoyaltyTransaction(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.amount} ({self.transaction_type})"
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.db.models import Sum
-
-@receiver(post_save, sender=LoyaltyTransaction)
-def update_user_loyalty_points(sender, instance, **kwargs):
-    user = instance.user
-    total = LoyaltyTransaction.objects.filter(user=user).aggregate(total_points=Sum('amount'))['total_points']
-    user.loyalty_points = total or 0
-    user.save(update_fields=['loyalty_points'])

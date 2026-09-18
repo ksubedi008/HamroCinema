@@ -4,18 +4,21 @@ import { AuthContext } from "../../context/AuthContext";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 const MyProfile = () => {
-  const { authTokens } = useContext(AuthContext);
+  const { authTokens, fetchCurrentUser } = useContext(AuthContext);
   const [profile, setProfile] = useState(null);
+  const [livePoints, setLivePoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        await fetchCurrentUser(); // Silently re-fetch global user profile
         const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/api/users/me/`,
           { headers: { Authorization: `Bearer ${authTokens.access}` } },
         );
         setProfile(response.data);
+        setLivePoints(response.data.loyalty_points);
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile data.");
@@ -164,7 +167,7 @@ const MyProfile = () => {
                 Loyalty Points
               </p>{" "}
               <p className="text-3xl font-black text-neutral-100">
-                {profile.loyalty_points}
+                {livePoints}
               </p>{" "}
               <p className="text-xs text-neutral-500 font-normal mt-1">
                 Includes promotional gifts

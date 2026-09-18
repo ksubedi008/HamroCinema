@@ -53,10 +53,14 @@ const Checkout = () => {
       ); 
       await Promise.all(ticketPromises); 
       
-      // 3. Handle Loyalty Points subtraction on client 
+      // 3. Handle Loyalty Points subtraction on client by creating a ledger entry
       if (pointsToUse > 0) { 
+        const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null;
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/me/loyalty-transactions/`, 
+          { amount: -pointsToUse, description: "Spent on booking" },
+          { headers: { Authorization: `Bearer ${token}` } }
+        ); 
         const newPointBalance = (user.loyalty_points || 0) - pointsToUse; 
-        await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user.id}/`, { loyalty_points: newPointBalance }); 
         updateUserPoints(newPointBalance); 
       } 
       

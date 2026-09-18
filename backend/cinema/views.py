@@ -10,11 +10,13 @@ import base64
 import json
 import time
 from .permissions import IsCustomAdminUser
-from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage
+from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage, LoyaltyTransaction
 from .serializers import (
     UserSerializer, MovieSerializer, TheaterScreenSerializer, ShowtimeSerializer, 
-    SeatSerializer, BookingSerializer, TicketItemSerializer, ContactMessageSerializer
+    SeatSerializer, BookingSerializer, TicketItemSerializer, ContactMessageSerializer, LoyaltyTransactionSerializer
 )
+
+from .utils import cancel_expired_bookings
 
 class UserViewSet(viewsets.ModelViewSet):
     # FIX: Secure this admin endpoint using our custom role-based permission class
@@ -22,18 +24,53 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(detail=True, methods=['patch'], url_path='loyalty-points')
-    def update_loyalty_points(self, request, pk=None):
+    @action(detail=True, methods=['post'], url_path='loyalty-transactions')
+    def add_loyalty_transaction(self, request, pk=None):
         user = self.get_object()
-        points = request.data.get('loyalty_points')
-        if points is not None:
+        amount = request.data.get('amount')
+        description = request.data.get('description', 'Admin Adjustment')
+        if amount is not None:
             try:
-                user.loyalty_points = int(points)
-                user.save(update_fields=['loyalty_points'])
+                amount = int(amount)
+                # Create the transaction
+                transaction = LoyaltyTransaction.objects.create(
+                    user=user,
+                    amount=amount,
+                    transaction_type='Adjustment',
+                    description=description
+                )
+                # the post_save signal on LoyaltyTransaction automatically updates the user's loyalty_points
+                user.refresh_from_db()
                 return Response({'status': 'success', 'loyalty_points': user.loyalty_points})
             except ValueError:
-                return Response({'error': 'Invalid points value'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'error': 'loyalty_points not provided'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'amount not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+class MyLoyaltyTransactionsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        transactions = LoyaltyTransaction.objects.filter(user=request.user).order_by('-created_at')
+        serializer = LoyaltyTransactionSerializer(transactions, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        amount = request.data.get('amount')
+        description = request.data.get('description', 'Spent')
+        if amount:
+            try:
+                amount = int(amount)
+                LoyaltyTransaction.objects.create(
+                    user=request.user,
+                    amount=amount,
+                    transaction_type='Spent' if amount < 0 else 'Earned',
+                    description=description
+                )
+                request.user.refresh_from_db()
+                return Response({'status': 'success', 'loyalty_points': request.user.loyalty_points})
+            except ValueError:
+                return Response({'error': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'amount is required'}, status=status.HTTP_400_BAD_REQUEST)
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
@@ -62,6 +99,10 @@ class ShowtimeViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
         return [IsCustomAdminUser()]
 
+    def retrieve(self, request, *args, **kwargs):
+        cancel_expired_bookings()
+        return super().retrieve(request, *args, **kwargs)
+
 class SeatViewSet(viewsets.ModelViewSet):
     queryset = Seat.objects.all()
     serializer_class = SeatSerializer
@@ -75,6 +116,7 @@ class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
 
     def get_queryset(self):
+        cancel_expired_bookings()
         user = self.request.user
         if user.role in ['Admin', 'Manager']:
             return Booking.objects.all()
@@ -102,6 +144,7 @@ class TicketItemViewSet(viewsets.ModelViewSet):
     serializer_class = TicketItemSerializer
 
     def get_queryset(self):
+        cancel_expired_bookings()
         user = self.request.user
         if user.role in ['Admin', 'Manager']:
             return TicketItem.objects.all()
@@ -202,10 +245,15 @@ class VerifyPaymentView(APIView):
                 booking.esewa_ref_id = transaction_code
                 booking.save()
                 
-                # Assign loyalty points (10 per ticket)
+                # Create a LoyaltyTransaction instead of manually adding points
+                from .models import LoyaltyTransaction
                 points_earned = booking.tickets.count() * 10
-                booking.user.loyalty_points += points_earned
-                booking.user.save()
+                LoyaltyTransaction.objects.create(
+                    user=booking.user,
+                    amount=points_earned,
+                    transaction_type='Earned',
+                    description='Points earned from ticket booking'
+                )
                 
                 return redirect('http://localhost:5173/booking-history?payment=success')
                 

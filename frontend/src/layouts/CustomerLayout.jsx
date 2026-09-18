@@ -82,6 +82,7 @@ const CustomerLayout = () => {
                           </Link> 
                         )} 
                         <Link to="/my-profile" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-sm font-medium text-neutral-300 hover:bg-gray-800 hover:text-neutral-100 transition-colors duration-200 ease-in-out"> My Profile </Link> 
+                        <Link to="/loyalty-history" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-sm font-medium text-neutral-300 hover:bg-gray-800 hover:text-neutral-100 transition-colors duration-200 ease-in-out"> My Loyalty Points </Link> 
                         <Link to="/booking-history" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-sm font-medium text-neutral-300 hover:bg-gray-800 hover:text-neutral-100 transition-colors duration-200 ease-in-out"> My Bookings </Link> 
                         <Link to="/tickets" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-sm font-medium text-neutral-300 hover:bg-gray-800 hover:text-neutral-100 transition-colors duration-200 ease-in-out"> My Tickets </Link> 
                         <Link to="/edit-profile" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-sm font-medium text-neutral-300 hover:bg-gray-800 hover:text-neutral-100 transition-colors duration-200 ease-in-out"> Edit Profile </Link> 
@@ -143,6 +144,7 @@ const CustomerLayout = () => {
                     </Link> 
                   )} 
                   <Link to="/my-profile" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-neutral-300 hover:text-neutral-100 py-2">My Profile</Link> 
+                  <Link to="/loyalty-history" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-neutral-300 hover:text-neutral-100 py-2">My Loyalty Points</Link> 
                   <Link to="/booking-history" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-neutral-300 hover:text-neutral-100 py-2">My Bookings</Link> 
                   <Link to="/tickets" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-neutral-300 hover:text-neutral-100 py-2">My Tickets</Link> 
                   <Link to="/edit-profile" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-neutral-300 hover:text-neutral-100 py-2">Edit Profile</Link> 

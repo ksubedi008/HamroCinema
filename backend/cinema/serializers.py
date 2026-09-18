@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.db.models import Q
 from django.db import transaction
 from rest_framework import serializers
-from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage
+from .models import User, Movie, TheaterScreen, Showtime, Seat, Booking, TicketItem, ContactMessage, LoyaltyTransaction
 
 class UserSerializer(serializers.ModelSerializer):
     total_bookings = serializers.SerializerMethodField()
@@ -84,13 +84,19 @@ class MyTicketSerializer(serializers.ModelSerializer):
     screen_name = serializers.CharField(source='showtime.screen.screen_name', read_only=True)
     seat_label = serializers.CharField(source='seat.seat_label', read_only=True)
     booking_id = serializers.IntegerField(source='booking.id', read_only=True)
+    payment_status = serializers.CharField(source='booking.payment_status', read_only=True)
     purchased_at = serializers.DateTimeField(source='booking.created_at', read_only=True)
     
     class Meta:
         model = TicketItem
-        fields = ['id', 'booking_id', 'movie_title', 'poster', 'start_time', 'screen_name', 'seat_label', 'purchased_at']
+        fields = ['id', 'booking_id', 'movie_title', 'poster', 'start_time', 'screen_name', 'seat_label', 'purchased_at', 'payment_status']
 
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
+        fields = '__all__'
+
+class LoyaltyTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoyaltyTransaction
         fields = '__all__'

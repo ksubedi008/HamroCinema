@@ -24,6 +24,7 @@ import MyProfile from './pages/customer/MyProfile'
 import EditProfile from './pages/customer/EditProfile'
 import ChangePassword from './pages/customer/ChangePassword'
 import MyTickets from './pages/customer/MyTickets'
+import LoyaltyHistory from './pages/customer/LoyaltyHistory'
 import PrivacyPolicy from './pages/customer/PrivacyPolicy'
 import TermsOfService from './pages/customer/TermsOfService'
 import NotFound from './pages/customer/NotFound'
@@ -56,6 +57,12 @@ function App() {
           <Route path="my-profile" element={
             <ProtectedRoute>
               <MyProfile />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="loyalty-history" element={
+            <ProtectedRoute>
+              <LoyaltyHistory />
             </ProtectedRoute>
           } />
 

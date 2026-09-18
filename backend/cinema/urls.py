@@ -4,7 +4,7 @@ from .auth_views import CustomTokenObtainPairView, CustomTokenRefreshView, Regis
 from .views import (
     UserViewSet, MovieViewSet, TheaterScreenViewSet, ShowtimeViewSet, 
     SeatViewSet, BookingViewSet, TicketItemViewSet, ContactMessageViewSet,
-    InitiatePaymentView, VerifyPaymentView, UserProfileView, MyTicketsView, ChangePasswordView
+    InitiatePaymentView, VerifyPaymentView, UserProfileView, MyTicketsView, ChangePasswordView, MyLoyaltyTransactionsView
 )
 
 router = DefaultRouter()
@@ -26,6 +26,7 @@ urlpatterns = [
     path('users/me/', UserProfileView.as_view(), name='user_profile'),
     path('users/me/password/', ChangePasswordView.as_view(), name='change_password'),
     path('users/me/tickets/', MyTicketsView.as_view(), name='my_tickets'),
+    path('users/me/loyalty-transactions/', MyLoyaltyTransactionsView.as_view(), name='my_loyalty_transactions'),
     path('payments/initiate/', InitiatePaymentView.as_view(), name='initiate_payment'),
     path('payments/verify/', VerifyPaymentView.as_view(), name='verify_payment'),
     path('', include(router.urls)),

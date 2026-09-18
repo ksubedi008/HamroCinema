@@ -8,6 +8,7 @@ const UserBookingHistory = () => {
   const location = useLocation();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [payingBookingId, setPayingBookingId] = useState(null);
 
   const queryParams = new URLSearchParams(location.search);
   const paymentStatus = queryParams.get('payment');
@@ -59,6 +60,35 @@ const UserBookingHistory = () => {
     }
   }, [user]);
 
+  const handlePayNow = async (bookingId) => {
+    setPayingBookingId(bookingId);
+    try {
+      const token = sessionStorage.getItem('authTokens') ? JSON.parse(sessionStorage.getItem('authTokens')).access : null; 
+      const payloadRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payments/initiate/`, 
+        { booking_id: bookingId }, 
+        { headers: { Authorization: `Bearer ${token}` } } 
+      ); 
+      const payload = payloadRes.data; 
+      
+      const form = document.createElement("form"); 
+      form.setAttribute("method", "POST"); 
+      form.setAttribute("action", "https://rc-epay.esewa.com.np/api/epay/main/v2/form"); 
+      for (const key in payload) { 
+        const hiddenField = document.createElement("input"); 
+        hiddenField.setAttribute("type", "hidden"); 
+        hiddenField.setAttribute("name", key); 
+        hiddenField.setAttribute("value", payload[key]); 
+        form.appendChild(hiddenField); 
+      } 
+      document.body.appendChild(form); 
+      form.submit();
+    } catch (err) {
+      console.error("Payment initiation failed", err);
+      alert("Failed to initiate payment. Please try again later.");
+      setPayingBookingId(null);
+    }
+  };
+
   if (loading) return <div className="flex justify-center py-40"><div className="w-12 h-12 border-4 border-neutral-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
   return (
@@ -104,9 +134,25 @@ const UserBookingHistory = () => {
                 <div className="p-6 md:p-8 flex-1 border-b border-dashed md:border-b-0 md:border-r border-gray-600">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-2xl font-semibold text-neutral-100">{booking.showtime.movie_title}</h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${booking.payment_status === 'Completed' ? 'bg-[#1A1A1A] text-green-400' : 'bg-[#1A1A1A] text-yellow-400'}`}>
-                      {booking.payment_status}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        booking.payment_status === 'Completed' ? 'bg-[#1A1A1A] text-green-400 border border-green-900/50' : 
+                        booking.payment_status === 'Pending' ? 'bg-[#1A1A1A] text-yellow-400 border border-yellow-900/50' :
+                        booking.payment_status === 'Expired' ? 'bg-[#1A1A1A] text-neutral-500 border border-neutral-800' :
+                        'bg-[#1A1A1A] text-red-400 border border-red-900/50'
+                      }`}>
+                        {booking.payment_status}
+                      </span>
+                      {booking.payment_status === 'Pending' && (
+                        <button
+                          onClick={() => handlePayNow(booking.id)}
+                          disabled={payingBookingId === booking.id}
+                          className="bg-white text-black px-4 py-1.5 rounded text-sm font-bold hover:bg-neutral-200 transition-colors duration-200 ease-in-out disabled:opacity-50"
+                        >
+                          {payingBookingId === booking.id ? 'Processing...' : 'Pay Now'}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="space-y-2 text-sm text-neutral-300">
@@ -148,23 +194,31 @@ const UserBookingHistory = () => {
 
                   {/* QR Code */}
                   <div className="flex-shrink-0 flex flex-col items-center justify-center border-t border-dashed md:border-t-0 md:border-l border-gray-600 pt-6 md:pt-0 md:pl-8">
-                    <div className="bg-white p-2 rounded-md">
-                      <img 
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                          `HamroCinema Ticket\n` + 
-                          `Booking ID: ${booking.id}\n` +
-                          `User: ${user.username}\n` +
-                          `Movie: ${booking.showtime.movie_title}\n` +
-                          `Screen: ${booking.showtime.screen_name}\n` +
-                          `Showtime: ${new Date(booking.showtime.start_time).toLocaleString()}\n` +
-                          `Seats: ${booking.tickets.map(t => t.seat_label).join(', ')}\n` +
-                          `Total: Rs. ${booking.total_amount}`
-                        )}`} 
-                        alt="Ticket QR" 
-                        className="w-24 h-24 sm:w-28 sm:h-28"
-                      />
-                    </div>
-                    <p className="text-xs text-neutral-400 mt-3 font-medium uppercase tracking-wider text-center">Scan at Entry</p>
+                    {booking.payment_status === 'Completed' ? (
+                      <>
+                        <div className="bg-white p-2 rounded-md">
+                          <img 
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                              `HamroCinema Ticket\n` + 
+                              `Booking ID: ${booking.id}\n` +
+                              `User: ${user.username}\n` +
+                              `Movie: ${booking.showtime.movie_title}\n` +
+                              `Screen: ${booking.showtime.screen_name}\n` +
+                              `Showtime: ${new Date(booking.showtime.start_time).toLocaleString()}\n` +
+                              `Seats: ${booking.tickets.map(t => t.seat_label).join(', ')}\n` +
+                              `Total: Rs. ${booking.total_amount}`
+                            )}`} 
+                            alt="Ticket QR" 
+                            className="w-24 h-24 sm:w-28 sm:h-28"
+                          />
+                        </div>
+                        <p className="text-xs text-neutral-400 mt-3 font-medium uppercase tracking-wider text-center">Scan at Entry</p>
+                      </>
+                    ) : (
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center border-2 border-dashed border-neutral-700 rounded-md">
+                        <p className="text-xs text-neutral-500 text-center px-2">QR Code Unavailable</p>
+                      </div>
+                    )}
                   </div>
 
                 </div>

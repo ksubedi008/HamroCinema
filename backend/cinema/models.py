@@ -150,6 +150,7 @@ class Booking(models.Model):
         ('Pending', 'Pending'),
         ('Completed', 'Completed'),
         ('Failed', 'Failed'),
+        ('Expired', 'Expired'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE, related_name='bookings')
@@ -197,3 +198,29 @@ class PasswordResetOTP(models.Model):
 
     def __str__(self):
         return f"OTP for {self.user.username} ({self.otp_code})"
+
+class LoyaltyTransaction(models.Model):
+    TRANSACTION_TYPES = (
+        ('Earned', 'Earned'),
+        ('Spent', 'Spent'),
+        ('Adjustment', 'Adjustment'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='loyalty_transactions')
+    amount = models.IntegerField()
+    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES, default='Adjustment')
+    description = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.amount} ({self.transaction_type})"
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models import Sum
+
+@receiver(post_save, sender=LoyaltyTransaction)
+def update_user_loyalty_points(sender, instance, **kwargs):
+    user = instance.user
+    total = LoyaltyTransaction.objects.filter(user=user).aggregate(total_points=Sum('amount'))['total_points']
+    user.loyalty_points = total or 0
+    user.save(update_fields=['loyalty_points'])

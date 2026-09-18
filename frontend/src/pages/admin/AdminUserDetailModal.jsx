@@ -4,24 +4,30 @@ import axios from "axios";
 const AdminUserDetailModal = ({ user, isOpen, onClose, onUpdate }) => {
   const [isEditingPoints, setIsEditingPoints] = useState(false);
   const [editPointsValue, setEditPointsValue] = useState("");
+  const [editPointsReason, setEditPointsReason] = useState("Admin Adjustment");
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
-      setEditPointsValue(user.loyalty_points || 0);
+      setEditPointsValue("");
+      setEditPointsReason("Admin Adjustment");
       setIsEditingPoints(false);
     }
   }, [user]);
 
   const handleSavePoints = async () => {
+    if (!editPointsValue || isNaN(parseInt(editPointsValue, 10))) {
+      alert("Please enter a valid amount.");
+      return;
+    }
     setIsSaving(true);
     try {
       const token = sessionStorage.getItem("authTokens")
         ? JSON.parse(sessionStorage.getItem("authTokens")).access
         : null;
-      await axios.patch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/users/${user.id}/loyalty-points/`,
-        { loyalty_points: parseInt(editPointsValue, 10) },
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/${user.id}/loyalty-transactions/`,
+        { amount: parseInt(editPointsValue, 10), description: editPointsReason },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("User loyalty points updated successfully");
@@ -134,30 +140,40 @@ const AdminUserDetailModal = ({ user, isOpen, onClose, onUpdate }) => {
             <h4 className="text-xs text-neutral-400 uppercase tracking-wider border-b border-neutral-800 pb-2">
               Additional Info
             </h4>
-            <div className="flex justify-between items-center">
+            <div className={isEditingPoints ? "flex flex-col gap-2" : "flex justify-between items-center"}>
               <span className="text-sm text-neutral-400">Loyalty Points</span>
               {isEditingPoints ? (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2 w-full mt-1">
                   <input
                     type="number"
+                    placeholder="Amount (e.g. 500)"
                     value={editPointsValue}
                     onChange={(e) => setEditPointsValue(e.target.value)}
-                    className="w-20 bg-[#121212] border border-neutral-800 rounded px-2 py-1 text-sm text-neutral-100 focus:outline-none focus:border-neutral-500"
+                    className="w-full bg-[#121212] border border-neutral-800 rounded px-3 py-2 text-sm text-neutral-100 focus:outline-none focus:border-neutral-500"
                   />
-                  <button onClick={handleSavePoints} disabled={isSaving} className="text-xs px-2 py-1 bg-white text-black rounded font-medium hover:bg-neutral-200">
-                    {isSaving ? "..." : "Save"}
-                  </button>
-                  <button onClick={() => setIsEditingPoints(false)} className="text-xs px-2 py-1 bg-[#1A1A1A] text-neutral-400 border border-neutral-800 rounded hover:text-neutral-100 transition-colors duration-200 ease-in-out">
-                    Cancel
-                  </button>
+                  <input
+                    type="text"
+                    placeholder="Reason (e.g. Promotional Gift)"
+                    value={editPointsReason}
+                    onChange={(e) => setEditPointsReason(e.target.value)}
+                    className="w-full bg-[#121212] border border-neutral-800 rounded px-3 py-2 text-sm text-neutral-100 focus:outline-none focus:border-neutral-500"
+                  />
+                  <div className="flex gap-2 justify-end mt-1">
+                    <button onClick={() => setIsEditingPoints(false)} className="text-xs px-3 py-1.5 bg-[#1A1A1A] text-neutral-400 border border-neutral-800 rounded hover:text-neutral-100 transition-colors duration-200 ease-in-out">
+                      Cancel
+                    </button>
+                    <button onClick={handleSavePoints} disabled={isSaving} className="text-xs px-3 py-1.5 bg-white text-black rounded font-medium hover:bg-neutral-200">
+                      {isSaving ? "Saving..." : "Add Points"}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-neutral-100">
                     {user.loyalty_points ?? 0}
                   </span>
-                  <button onClick={() => setIsEditingPoints(true)} className="text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out" title="Edit Points">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  <button onClick={() => setIsEditingPoints(true)} className="text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out" title="Add Points">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   </button>
                 </div>
               )}

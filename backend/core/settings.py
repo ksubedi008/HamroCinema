@@ -13,17 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-k1f9d5fz65-&xk-s_!u)1g(9v3h!z!t3ktots+t8pl=by(+f_6')
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1', 
-    'https://l2l1wx8c-8000.inc1.devtunnels.ms/'
-] 
-# In production, set this to your Vercel URL
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", 
-    "https://l2l1wx8c-5173.inc1.devtunnels.ms", 
-]
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -105,7 +98,6 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 AUTH_USER_MODEL = 'cinema.User'
-CORS_ALLOW_ALL_ORIGINS = True
 
 # Media files
 MEDIA_URL = '/media/'

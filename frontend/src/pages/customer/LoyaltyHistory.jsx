@@ -2,12 +2,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const LoyaltyHistory = () => {
   const { authTokens, user, fetchCurrentUser } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useDocumentTitle('Loyalty Ledger | HamroCinema');
 
   useEffect(() => {
     const fetchTransactions = async () => {

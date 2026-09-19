@@ -4,12 +4,15 @@ import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import AlertMessage from '../../components/AlertMessage';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const MyTickets = () => {
   const { authTokens } = useContext(AuthContext);
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useDocumentTitle('My Tickets | HamroCinema');
 
   useEffect(() => {
     const fetchTickets = async () => {

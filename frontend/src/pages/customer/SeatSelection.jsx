@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import CinemaSeatMap from './CinemaSeatMap'; 
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const SeatSelection = () => { 
   const { id } = useParams(); 
@@ -16,6 +17,8 @@ const SeatSelection = () => {
   const [selectedSeats, setSelectedSeats] = useState([]); 
   const [loading, setLoading] = useState(true); 
   
+  useDocumentTitle('Select Seats | HamroCinema');
+
   useEffect(() => { 
     const fetchDetails = async () => { 
       try { 

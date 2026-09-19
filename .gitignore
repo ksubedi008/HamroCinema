@@ -1,11 +1,43 @@
-# Python
-venv/
+# Dependencies
+node_modules/
+backend/venv/
+backend/env/
+.venv/
+env/
+
+# Python / Django
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
 db.sqlite3
+db.sqlite3-journal
+media/
+backend/static/
 .env
 
-# Node
-node_modules/
+# Build Output
 dist/
+build/
+out/
+frontend/dist/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.gemini/

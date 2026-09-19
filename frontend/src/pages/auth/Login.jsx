@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import AlertMessage from '../../components/AlertMessage';
 import logo from '../../assets/logo.png';
 
 const Login = () => {
@@ -60,9 +61,7 @@ const Login = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-xl text-sm text-center">
-                {error}
-              </div>
+              <AlertMessage message={error} type="error" />
             )}
 
             <div>

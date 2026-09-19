@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import AlertMessage from '../../components/AlertMessage';
 
 const ForgotPassword = () => { 
   const [step, setStep] = useState(1); 
@@ -71,17 +72,10 @@ const ForgotPassword = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"> 
         <div className="bg-[#121212] py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-neutral-800"> 
           {message && ( 
-            <div className="bg-[#1A1A1A] border border-emerald-500/30 p-4 rounded-xl mb-6 flex items-center gap-3 shadow-sm"> 
-              <svg className="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> 
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /> 
-              </svg> 
-              <div className="text-sm font-medium text-emerald-400">{message}</div> 
-            </div> 
+            <div className="mb-6"><AlertMessage message={message} type="success" /></div>
           )} 
           {error && ( 
-            <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-xl text-sm text-center mb-6"> 
-              {error} 
-            </div> 
+            <div className="mb-6"><AlertMessage message={error} type="error" /></div>
           )} 
           {step === 1 ? ( 
             <form className="space-y-6" onSubmit={handleSendOTP}> 

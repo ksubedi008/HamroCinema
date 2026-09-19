@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
+import AlertMessage from '../../components/AlertMessage';
 
 const EditProfile = () => {
   const { user, authTokens, updateUserProfile } = useContext(AuthContext);
@@ -113,14 +114,10 @@ const EditProfile = () => {
         <div className="px-6 py-8 sm:p-10">
           <h2 className="text-3xl font-black text-neutral-100 mb-8 border-l-4 border-neutral-600 pl-4">My Profile</h2>
           {message && (
-            <div className="mb-6 bg-green-900/20 border border-green-800 text-green-400 px-4 py-3 rounded-lg text-sm font-medium">
-              {message}
-            </div>
+            <div className="mb-6"><AlertMessage message={message} type="success" /></div>
           )}
           {error && (
-            <div className="mb-6 bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm font-medium">
-              {error}
-            </div>
+            <div className="mb-6"><AlertMessage message={error} type="error" /></div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6 pb-6 border-b border-neutral-800">

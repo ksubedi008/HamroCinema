@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import AlertMessage from '../../components/AlertMessage';
 
 const UserBookingHistory = () => {
   const { user } = useContext(AuthContext);
@@ -95,21 +96,11 @@ const UserBookingHistory = () => {
     <div className="min-h-screen bg-[#121212] pt-12 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-5xl mx-auto">
         {successMessage && (
-          <div className="bg-[#1A1A1A] border border-neutral-800 text-neutral-300 p-4 rounded-xl mb-8 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              <span className="font-medium">{successMessage}</span>
-            </div>
-          </div>
+          <div className="mb-8"><AlertMessage message={successMessage} type="success" /></div>
         )}
 
         {errorMessage && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl mb-8 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              <span className="font-medium">{errorMessage}</span>
-            </div>
-          </div>
+          <div className="mb-8"><AlertMessage message={errorMessage} type="error" /></div>
         )}
 
         <h1 className="text-3xl font-black text-neutral-100 mb-8 border-l-4 border-amber-500 pl-4">Booking History</h1>

@@ -54,29 +54,45 @@ class MyLoyaltyTransactionsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        amount = request.data.get('amount')
-        description = request.data.get('description', 'Spent')
-        if amount:
-            try:
-                amount = int(amount)
-                from .utils import update_user_loyalty
-                transaction_type = 'Spent' if amount < 0 else 'Earned'
-                
-                if description.startswith('Spent on booking'):
-                    try:
-                        booking_id = description.split(' ')[-1]
-                        from .models import Booking
-                        booking = Booking.objects.get(id=booking_id)
-                        description = f'Redeemed tickets for {booking.showtime.movie.title}'
-                    except Exception:
-                        pass
-
-                update_user_loyalty(request.user, amount, transaction_type, description)
-                user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=request.user.id)
-                return Response({'status': 'success', 'loyalty_points': user.loyalty_points})
-            except ValueError as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'error': 'amount is required'}, status=status.HTTP_400_BAD_REQUEST)
+        description = request.data.get('description', '')
+        
+        # Security: Only allow booking payments via this endpoint for standard users
+        if not description.startswith('Spent on booking'):
+            return Response({'error': 'Unauthorized transaction type'}, status=status.HTTP_403_FORBIDDEN)
+            
+        try:
+            booking_id = description.split(' ')[-1]
+            from .models import Booking
+            # Tenancy Check: Ensure booking belongs to request.user
+            booking = Booking.objects.get(id=booking_id, user=request.user)
+            
+            # Server-Side Price Calculation: Don't trust client amount payload
+            total_cost = sum(500 if t.seat.tier == 'Gold' else 300 for t in booking.tickets.all())
+            
+            # Check user balance securely
+            from django.db.models import Sum
+            from django.db.models.functions import Coalesce
+            current_user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=request.user.id)
+            
+            if current_user.loyalty_points < total_cost:
+                return Response({'error': 'Insufficient loyalty points'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Complete the transaction securely
+            from .utils import update_user_loyalty
+            update_user_loyalty(request.user, -total_cost, 'Spent', f'Redeemed tickets for {booking.showtime.movie.title}')
+            
+            booking.payment_status = 'Completed'
+            booking.total_amount = total_cost
+            booking.save()
+            
+            # Fetch updated points
+            current_user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=request.user.id)
+            return Response({'status': 'success', 'loyalty_points': current_user.loyalty_points})
+            
+        except Booking.DoesNotExist:
+            return Response({'error': 'Booking not found or unauthorized'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -122,6 +138,7 @@ class SeatViewSet(viewsets.ModelViewSet):
 
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
+    permission_classes = [IsAuthenticated] # Endpoint Protection: Lock down to authenticated users
 
     def get_queryset(self):
         cancel_expired_bookings()
@@ -129,6 +146,11 @@ class BookingViewSet(viewsets.ModelViewSet):
         if user.role in ['Admin', 'Manager']:
             return Booking.objects.all()
         return Booking.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        # Action Authorization: Force user to be request.user and payment_status to Pending
+        # This prevents malicious clients from spoofing another user's ID or bypassing payment
+        serializer.save(user=self.request.user, payment_status='Pending')
 
     def create(self, request, *args, **kwargs):
         from django.utils import timezone
@@ -150,6 +172,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 
 class TicketItemViewSet(viewsets.ModelViewSet):
     serializer_class = TicketItemSerializer
+    permission_classes = [IsAuthenticated] # Endpoint Protection: Lock down to authenticated users
 
     def get_queryset(self):
         cancel_expired_bookings()
@@ -157,6 +180,14 @@ class TicketItemViewSet(viewsets.ModelViewSet):
         if user.role in ['Admin', 'Manager']:
             return TicketItem.objects.all()
         return TicketItem.objects.filter(booking__user=user)
+
+    def perform_create(self, serializer):
+        booking = serializer.validated_data.get('booking')
+        # Tenancy Isolation: Ensure user cannot attach tickets to someone else's booking
+        if booking.user != self.request.user and self.request.user.role not in ['Admin', 'Manager']:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("You cannot add tickets to a booking that belongs to another user.")
+        serializer.save()
 
 class ContactMessageViewSet(viewsets.ModelViewSet):
     queryset = ContactMessage.objects.all().order_by('-created_at')
@@ -177,6 +208,11 @@ class InitiatePaymentView(APIView):
         
         try:
             booking = Booking.objects.get(id=booking_id, user=request.user)
+            
+            # Server-Side Price Calculation: Calculate true cost to prevent client price spoofing
+            total_calculated = sum(500 if t.seat.tier == 'Gold' else 300 for t in booking.tickets.all())
+            booking.total_amount = total_calculated
+            booking.save()
             
             total_amount = str(booking.total_amount)
             transaction_uuid = f"{booking.id}-{int(time.time())}"

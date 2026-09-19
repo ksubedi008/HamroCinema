@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
+import AlertMessage from '../../components/AlertMessage';
 
 const MyTickets = () => {
   const { authTokens } = useContext(AuthContext);
@@ -49,9 +50,7 @@ const MyTickets = () => {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm font-medium">
-          {error}
-        </div>
+        <div className="mb-6"><AlertMessage message={error} type="error" /></div>
       )}
 
       {tickets.length === 0 && !error ? (

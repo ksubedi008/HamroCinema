@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'; 
+import AlertMessage from '../../components/AlertMessage'; 
 
 const Checkout = () => { 
   const location = useLocation(); 
@@ -160,9 +161,7 @@ const Checkout = () => {
       <div className="max-w-3xl mx-auto"> 
         <h1 className="text-3xl font-black text-neutral-100 mb-8 border-l-4 border-neutral-600 pl-4">Checkout</h1> 
         {error && ( 
-          <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl mb-8"> 
-            {error} 
-          </div> 
+          <div className="mb-8"><AlertMessage message={error} type="error" /></div>
         )} 
         <div className="bg-[#1A1A1A] border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl"> 
           <div className="p-8 border-b border-neutral-800 bg-[#121212]"> 

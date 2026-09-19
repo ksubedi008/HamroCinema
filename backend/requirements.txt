@@ -33,3 +33,5 @@ wrapt==2.3.0
 WTForms==3.2.2
 gunicorn
 whitenoise
+cloudinary>=1.40.0
+django-cloudinary-storage>=0.3.0

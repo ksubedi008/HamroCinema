@@ -35,3 +35,4 @@ gunicorn
 whitenoise
 cloudinary>=1.40.0
 django-cloudinary-storage>=0.3.0
+djangorestframework-simplejwt>=5.3.0

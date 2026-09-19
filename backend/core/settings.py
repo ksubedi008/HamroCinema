@@ -16,8 +16,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-k1f9d5fz65-&xk-s_!u)1
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://hamro-cinema.vercel.app", 
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

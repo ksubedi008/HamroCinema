@@ -61,6 +61,16 @@ class MyLoyaltyTransactionsView(APIView):
                 amount = int(amount)
                 from .utils import update_user_loyalty
                 transaction_type = 'Spent' if amount < 0 else 'Earned'
+                
+                if description.startswith('Spent on booking'):
+                    try:
+                        booking_id = description.split(' ')[-1]
+                        from .models import Booking
+                        booking = Booking.objects.get(id=booking_id)
+                        description = f'Redeemed tickets for {booking.showtime.movie.title}'
+                    except Exception:
+                        pass
+
                 update_user_loyalty(request.user, amount, transaction_type, description)
                 user = User.objects.annotate(loyalty_points=Coalesce(Sum('loyalty_transactions__amount'), 0)).get(id=request.user.id)
                 return Response({'status': 'success', 'loyalty_points': user.loyalty_points})
@@ -246,9 +256,9 @@ class VerifyPaymentView(APIView):
                 # Create a LoyaltyTransaction instead of manually adding points
                 from .utils import update_user_loyalty
                 points_earned = booking.tickets.count() * 10
-                update_user_loyalty(booking.user, points_earned, 'Earned', 'Points earned from ticket booking')
+                update_user_loyalty(booking.user, points_earned, 'Earned', f'Points earned from {booking.showtime.movie.title}')
                 
-                return redirect('http://localhost:5173/booking-history?payment=success')
+                return redirect(f'http://localhost:5173/payment-success?booking_id={booking.id}')
                 
             return redirect('http://localhost:5173/booking-history?payment=failed')
             

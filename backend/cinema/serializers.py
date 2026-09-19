@@ -49,13 +49,6 @@ class SeatSerializer(serializers.ModelSerializer):
         model = Seat
         fields = '__all__'
 
-class BookingSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-    
-    class Meta:
-        model = Booking
-        fields = '__all__'
-
 class TicketItemSerializer(serializers.ModelSerializer):
     seat_label = serializers.CharField(source='seat.seat_label', read_only=True)
     
@@ -84,6 +77,15 @@ class TicketItemSerializer(serializers.ModelSerializer):
                     })
         
         return data
+
+class BookingSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    showtime_details = ShowtimeSerializer(source='showtime', read_only=True)
+    tickets = TicketItemSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Booking
+        fields = '__all__'
 
 class MyTicketSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source='showtime.movie.title', read_only=True)

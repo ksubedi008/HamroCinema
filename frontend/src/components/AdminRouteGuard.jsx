@@ -10,7 +10,7 @@ const AdminRouteGuard = ({ children }) => {
   
   try { 
     const tokens = JSON.parse(tokenStr); 
-    if (tokens?.user?.role === 'Admin' || tokens?.user?.role === 'Manager') { 
+    if (tokens?.user?.role === 'Admin' || tokens?.user?.role === 'Manager' || tokens?.user?.is_staff) { 
       return children; 
     } 
   } catch (e) { 

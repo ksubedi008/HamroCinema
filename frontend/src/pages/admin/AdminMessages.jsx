@@ -130,10 +130,9 @@ const AdminMessages = () => {
                     {!msg.is_read ? (
                       <button
                         onClick={() => markAsRead(msg.id)}
-                        className="bg-white text-black hover:bg-neutral-800 text-neutral-100 text-xs px-3 py-1.5 rounded-lg transition-colors duration-200 ease-in-out font-bold uppercase tracking-wider"
+                        className="px-3 py-1.5 text-xs font-semibold rounded-md border border-neutral-700 text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors duration-200"
                       >
-                        {" "}
-                        Mark Read{" "}
+                        Mark Read
                       </button>
                     ) : (
                       <span className="text-neutral-400 text-xs uppercase tracking-wider font-bold">

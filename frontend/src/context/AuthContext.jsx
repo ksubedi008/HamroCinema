@@ -31,7 +31,8 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: response.data.user };
       }
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Login failed" };
+      const errorMessage = error.response?.data?.detail || error.response?.data?.non_field_errors?.[0] || 'Invalid username or password.';
+      return { success: false, error: errorMessage };
     }
   };
 

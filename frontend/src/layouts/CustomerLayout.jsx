@@ -48,9 +48,8 @@ const CustomerLayout = () => {
             
             {/* Desktop Navigation */} 
             <nav className="hidden md:flex items-center gap-8"> 
-              <Link to="/" className="text-sm font-bold text-neutral-300 hover:text-neutral-400 hover:text-neutral-100 uppercase tracking-widest transition-colors duration-200 ease-in-out">Now Showing</Link> 
-              <a href="#coming-soon" className="text-sm font-bold text-neutral-400 hover:text-neutral-300 uppercase tracking-widest transition-colors duration-200 ease-in-out cursor-not-allowed">Coming Soon</a> 
-              <a href="#experiences" className="text-sm font-bold text-neutral-400 hover:text-neutral-300 uppercase tracking-widest transition-colors duration-200 ease-in-out cursor-not-allowed">Experiences</a> 
+              <Link to="/" className="text-sm font-bold text-neutral-300 hover:text-neutral-100 uppercase tracking-widest transition-colors duration-200 ease-in-out">Now Showing</Link> 
+              <Link to="/coming-soon" className="text-sm font-bold text-neutral-400 hover:text-neutral-100 uppercase tracking-widest transition-colors duration-200 ease-in-out">Coming Soon</Link> 
             </nav> 
             
             {/* Desktop Auth / Profile */} 
@@ -119,8 +118,8 @@ const CustomerLayout = () => {
         {isMobileMenuOpen && ( 
           <div className="md:hidden absolute top-20 left-0 w-full bg-[#121212] border-b border-neutral-800 animate-fade-in shadow-2xl"> 
             <div className="px-4 py-6 flex flex-col gap-4"> 
-              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-bold text-neutral-300 hover:text-neutral-400 hover:text-neutral-100 uppercase tracking-widest">Now Showing</Link> 
-              <a href="#coming-soon" className="text-base font-bold text-neutral-400 uppercase tracking-widest cursor-not-allowed">Coming Soon</a> 
+              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-bold text-neutral-300 hover:text-neutral-100 uppercase tracking-widest">Now Showing</Link> 
+              <Link to="/coming-soon" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-bold text-neutral-400 hover:text-neutral-100 uppercase tracking-widest">Coming Soon</Link> 
               <div className="border-t border-neutral-800 my-2"></div> 
               
               {user ? ( 
@@ -195,8 +194,7 @@ const CustomerLayout = () => {
               <h3 className="text-neutral-100 font-bold mb-6 text-sm tracking-wider uppercase">Quick Links</h3> 
               <ul className="flex flex-col gap-4 text-sm text-neutral-400"> 
                 <li><Link to="/" className="hover:text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">Now Showing</Link></li> 
-                <li><a href="#coming-soon" className="hover:text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">Coming Soon</a></li> 
-                <li><a href="#experiences" className="hover:text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">Experiences</a></li> 
+                <li><Link to="/coming-soon" className="hover:text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">Coming Soon</Link></li> 
                 <li><Link to="/login" className="hover:text-neutral-400 hover:text-neutral-100 transition-colors duration-200 ease-in-out">My Account</Link></li> 
               </ul> 
             </div> 

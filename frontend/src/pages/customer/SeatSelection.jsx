@@ -102,7 +102,7 @@ const SeatSelection = () => {
           </div> 
           {/* Summary Sidebar */} 
           <div className="w-full lg:w-80 flex-shrink-0"> 
-            <div className="bg-[#121212] rounded-3xl p-6 border border-neutral-800 sticky top-28"> 
+            <div className="bg-[#121212] rounded-3xl p-6 border border-neutral-800 sticky top-24"> 
               <h3 className="text-xl font-bold text-neutral-100 mb-6">Booking Summary</h3> 
               {selectedSeats.length === 0 ? ( 
                 <div className="text-center py-10"> 

@@ -9,9 +9,12 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
     return <Navigate to="/login" replace />; 
   } 
   
-  if (requiredRole && user.role !== requiredRole && user.role !== 'Admin') { 
-    // If an Admin tries to access something, usually they have access to everything. 
-    // Otherwise, kick them to home if they don't have the specific role. 
+  if (user.role === 'Admin' || user.role === 'Manager' || user.is_staff) { 
+    // Strict boundaries: Admins cannot use customer routes
+    return <Navigate to="/k-subedi-08/dashboard" replace />; 
+  }
+
+  if (requiredRole && user.role !== requiredRole) { 
     return <Navigate to="/" replace />; 
   } 
   return children;

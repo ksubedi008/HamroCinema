@@ -80,7 +80,20 @@ const Checkout = () => {
       { headers: { Authorization: `Bearer ${token}` } }
     ); 
     await fetchCurrentUser(); 
-    navigate('/booking-history?payment=success');
+    navigate(`/payment-success?booking_id=${bookingId}`, { 
+      state: { 
+        bookingDetails: {
+          id: bookingId,
+          total_amount: totalPrice,
+          payment_status: 'Completed',
+          showtime_details: {
+            movie_title: showtime.movie_title,
+            start_time: showtime.start_time
+          },
+          tickets: selectedSeats.map(seat => ({ seat_label: seat.seat_label }))
+        }
+      } 
+    });
   };
 
   const handleCheckout = async (e) => { 

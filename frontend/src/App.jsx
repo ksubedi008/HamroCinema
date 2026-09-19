@@ -16,6 +16,7 @@ import AdminLogin from './pages/auth/AdminLogin'
 import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import Home from './pages/customer/Home'
+import ComingSoon from './pages/customer/ComingSoon'
 import MovieDetails from './pages/customer/MovieDetails'
 import SeatSelection from './pages/customer/SeatSelection'
 import Checkout from './pages/customer/Checkout'
@@ -28,6 +29,7 @@ import LoyaltyHistory from './pages/customer/LoyaltyHistory'
 import PrivacyPolicy from './pages/customer/PrivacyPolicy'
 import TermsOfService from './pages/customer/TermsOfService'
 import NotFound from './pages/customer/NotFound'
+import PaymentSuccess from './pages/customer/PaymentSuccess'
 import PreferencesWidget from './components/PreferencesWidget'
 import RefundPolicy from './pages/customer/RefundPolicy'
 import ContactUs from './pages/customer/ContactUs'
@@ -39,6 +41,7 @@ function App() {
         {/* Public Customer Routes */}
         <Route path="/" element={<CustomerLayout />}>
           <Route index element={<Home />} />
+          <Route path="coming-soon" element={<ComingSoon />} />
           <Route path="movie/:id" element={<MovieDetails />} />
           <Route path="book/:id" element={<SeatSelection />} />
           
@@ -81,6 +84,12 @@ function App() {
           <Route path="tickets" element={
             <ProtectedRoute>
               <MyTickets />
+            </ProtectedRoute>
+          } />
+
+          <Route path="payment-success" element={
+            <ProtectedRoute>
+              <PaymentSuccess />
             </ProtectedRoute>
           } />
 
